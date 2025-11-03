@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useResumeData } from '../hooks/useResumeData'
 import Stepper from '../components/ui/Stepper'
 import Button from '../components/ui/Button'
+import Toast from '../components/ui/Toast'
 import PersonalInfoForm from '../components/forms/PersonalInfoForm'
 import WorkExperienceForm from '../components/forms/WorkExperienceForm'
 import EducationForm from '../components/forms/EducationForm'
@@ -24,6 +25,7 @@ const steps = [
 function Builder() {
   const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1)
+  const [toast, setToast] = useState(null)
   const {
     resumeData,
     isLoaded,
@@ -72,6 +74,22 @@ function Builder() {
   }
 
   const handleGenerateResume = () => {
+    // Basic validation
+    if (!resumeData.personalInfo.name) {
+      setToast({ message: 'Please fill in your name first', type: 'error' })
+      setCurrentStep(1)
+      return
+    }
+    if (resumeData.workExperience.length === 0 || !resumeData.workExperience[0].company) {
+      setToast({ message: 'Please add at least one work experience', type: 'error' })
+      setCurrentStep(2)
+      return
+    }
+    if (!resumeData.jobApplication.jobTitle || !resumeData.jobApplication.jobDescription) {
+      setToast({ message: 'Please fill in job application details', type: 'error' })
+      setCurrentStep(7)
+      return
+    }
     // Navigate to preview page
     navigate('/preview')
   }
@@ -174,6 +192,14 @@ function Builder() {
             </Button>
           )}
         </div>
+
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            onClose={() => setToast(null)}
+          />
+        )}
       </div>
     </div>
   )

@@ -7,6 +7,7 @@ import ResumePreview from '../components/resume/ResumePreview'
 import TemplateSelector from '../components/resume/TemplateSelector'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
+import Toast from '../components/ui/Toast'
 
 function Preview() {
   const navigate = useNavigate()
@@ -169,6 +170,15 @@ function Preview() {
             </div>
           </div>
         </div>
+
+        {error && (
+          <Toast
+            message={error}
+            type="error"
+            onClose={() => setError(null)}
+            duration={5000}
+          />
+        )}
       </div>
     </div>
   )
