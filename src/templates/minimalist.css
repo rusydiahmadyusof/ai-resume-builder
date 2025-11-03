@@ -1,0 +1,145 @@
+/* Minimalist Resume Template */
+.resume-minimalist {
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.resume-minimalist .resume-header {
+  padding: 3rem 2.5rem 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.resume-minimalist .resume-header h1 {
+  font-size: 2rem;
+  font-weight: 300;
+  margin: 0 0 1rem 0;
+  color: #1a1a1a;
+  letter-spacing: 3px;
+}
+
+.resume-minimalist .resume-header .contact-info {
+  display: flex;
+  justify-content: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.resume-minimalist .resume-header .contact-info a {
+  color: #6b7280;
+  text-decoration: none;
+}
+
+.resume-minimalist .resume-header .contact-info a:hover {
+  color: #1a1a1a;
+}
+
+.resume-minimalist .resume-body {
+  padding: 2.5rem;
+}
+
+.resume-minimalist .section {
+  margin-bottom: 2.5rem;
+}
+
+.resume-minimalist .section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.resume-minimalist .summary {
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #4b5563;
+  max-width: 90%;
+}
+
+.resume-minimalist .experience-item,
+.resume-minimalist .education-item {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.resume-minimalist .experience-item:last-child,
+.resume-minimalist .education-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.resume-minimalist .experience-item h3,
+.resume-minimalist .education-item h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-minimalist .experience-item .company,
+.resume-minimalist .education-item .institution {
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.resume-minimalist .experience-item .date,
+.resume-minimalist .education-item .date {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  margin-bottom: 0.75rem;
+  font-weight: 300;
+}
+
+.resume-minimalist .experience-item .responsibilities {
+  color: #4b5563;
+  margin-top: 0.75rem;
+  white-space: pre-line;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.resume-minimalist .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-minimalist .skill-tag {
+  background: transparent;
+  color: #4b5563;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 2px;
+  font-size: 0.85rem;
+  font-weight: 300;
+}
+
+.resume-minimalist .certification-item,
+.resume-minimalist .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.resume-minimalist .certification-item strong,
+.resume-minimalist .language-item strong {
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+@media print {
+  .resume-minimalist {
+    max-width: 100%;
+  }
+}
+

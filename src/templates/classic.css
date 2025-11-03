@@ -1,0 +1,140 @@
+/* Classic Resume Template */
+.resume-classic {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.8;
+}
+
+.resume-classic .resume-header {
+  border-bottom: 4px solid #2c3e50;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.resume-classic .resume-header h1 {
+  font-size: 2.25rem;
+  font-weight: 400;
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.resume-classic .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.resume-classic .resume-header .contact-info a {
+  color: #2c3e50;
+  text-decoration: none;
+}
+
+.resume-classic .resume-header .contact-info a:hover {
+  text-decoration: underline;
+}
+
+.resume-classic .resume-body {
+  padding: 2rem;
+}
+
+.resume-classic .section {
+  margin-bottom: 2rem;
+}
+
+.resume-classic .section-title {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #bdc3c7;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.resume-classic .summary {
+  font-size: 1rem;
+  line-height: 2;
+  color: #34495e;
+  text-align: justify;
+}
+
+.resume-classic .experience-item,
+.resume-classic .education-item {
+  margin-bottom: 1.5rem;
+  padding-left: 0;
+}
+
+.resume-classic .experience-item h3,
+.resume-classic .education-item h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.25rem 0;
+  font-style: italic;
+}
+
+.resume-classic .experience-item .company,
+.resume-classic .education-item .institution {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 0.25rem;
+}
+
+.resume-classic .experience-item .date,
+.resume-classic .education-item .date {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.resume-classic .experience-item .responsibilities {
+  color: #34495e;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
+
+.resume-classic .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-classic .skill-tag {
+  background: #ecf0f1;
+  color: #2c3e50;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  border: 1px solid #bdc3c7;
+}
+
+.resume-classic .certification-item,
+.resume-classic .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-left: 3px solid #bdc3c7;
+  padding-left: 1rem;
+}
+
+.resume-classic .certification-item strong,
+.resume-classic .language-item strong {
+  color: #2c3e50;
+}
+
+@media print {
+  .resume-classic {
+    max-width: 100%;
+  }
+}
+
