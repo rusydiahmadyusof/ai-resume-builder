@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useResumeData } from '../hooks/useResumeData'
 import { groqService } from '../services/groqService'
+import { pdfService } from '../services/pdfService'
 import ResumePreview from '../components/resume/ResumePreview'
 import TemplateSelector from '../components/resume/TemplateSelector'
 import Button from '../components/ui/Button'
@@ -9,10 +10,12 @@ import Card from '../components/ui/Card'
 
 function Preview() {
   const navigate = useNavigate()
+  const resumeRef = useRef(null)
   const { resumeData, isLoaded } = useResumeData()
   const [selectedTemplate, setSelectedTemplate] = useState('modern')
   const [generatedContent, setGeneratedContent] = useState(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -50,9 +53,25 @@ function Preview() {
     }
   }
 
-  const handleDownloadPDF = () => {
-    // This will be implemented in Phase 7
-    alert('PDF download will be available in the next phase')
+  const handleDownloadPDF = async () => {
+    if (!resumeRef.current) {
+      setError('Resume element not found')
+      return
+    }
+
+    setIsGeneratingPDF(true)
+    setError(null)
+
+    try {
+      const personalName = resumeData.personalInfo.name || 'Resume'
+      const filename = `${personalName.replace(/\s+/g, '_')}_Resume.pdf`
+      
+      await pdfService.generatePDF(resumeRef.current, filename)
+    } catch (err) {
+      setError(err.message || 'Failed to generate PDF')
+    } finally {
+      setIsGeneratingPDF(false)
+    }
   }
 
   if (!isLoaded) {
@@ -82,8 +101,11 @@ function Preview() {
             <Button variant="secondary" onClick={() => navigate('/builder')}>
               Edit Resume
             </Button>
-            <Button onClick={handleDownloadPDF} disabled={!generatedContent}>
-              Download PDF
+            <Button 
+              onClick={handleDownloadPDF} 
+              disabled={isGeneratingPDF}
+            >
+              {isGeneratingPDF ? 'Generating PDF...' : 'Download PDF'}
             </Button>
           </div>
         </div>
@@ -138,7 +160,7 @@ function Preview() {
 
           {/* Resume Preview */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="bg-white rounded-lg shadow-lg p-8" ref={resumeRef}>
               <ResumePreview
                 resumeData={resumeData}
                 selectedTemplate={selectedTemplate}
