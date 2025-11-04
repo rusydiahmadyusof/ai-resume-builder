@@ -1,0 +1,141 @@
+/* Business Resume Template */
+.resume-business {
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.7;
+}
+
+.resume-business .resume-header {
+  background: #003366;
+  color: white;
+  padding: 2.5rem 2rem;
+  border-bottom: 5px solid #0066cc;
+}
+
+.resume-business .resume-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-business .resume-header .contact-info {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.resume-business .resume-header .contact-info a {
+  color: white;
+  text-decoration: none;
+}
+
+.resume-business .resume-body {
+  padding: 2rem;
+}
+
+.resume-business .section {
+  margin-bottom: 2rem;
+}
+
+.resume-business .section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #003366;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid #0066cc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resume-business .summary {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #333;
+}
+
+.resume-business .experience-item,
+.resume-business .education-item {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+  border-left: 4px solid #0066cc;
+}
+
+.resume-business .experience-item h3,
+.resume-business .education-item h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #003366;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-business .experience-item .company,
+.resume-business .education-item .institution {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0066cc;
+  margin-bottom: 0.25rem;
+}
+
+.resume-business .experience-item .date,
+.resume-business .education-item .date {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.resume-business .experience-item .responsibilities {
+  color: #333;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
+
+.resume-business .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-business .skill-tag {
+  background: #e6f2ff;
+  color: #003366;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  border: 1px solid #0066cc;
+  font-weight: 600;
+}
+
+.resume-business .certification-item,
+.resume-business .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-left: 3px solid #e6f2ff;
+  padding-left: 1rem;
+}
+
+.resume-business .certification-item strong,
+.resume-business .language-item strong {
+  color: #003366;
+}
+
+@media print {
+  .resume-business {
+    max-width: 100%;
+  }
+  
+  .resume-business .resume-header {
+    background: #003366 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+

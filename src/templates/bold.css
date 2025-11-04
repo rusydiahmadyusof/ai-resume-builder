@@ -1,0 +1,188 @@
+/* Bold Resume Template */
+.resume-bold {
+  font-family: 'Arial Black', 'Arial', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.resume-bold .resume-header {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.resume-bold .resume-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 255, 255, 0.1) 10px,
+    rgba(255, 255, 255, 0.1) 20px
+  );
+  animation: slide 20s linear infinite;
+}
+
+@keyframes slide {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+.resume-bold .resume-header h1 {
+  font-size: 3rem;
+  font-weight: 900;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+  text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+}
+
+.resume-bold .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.resume-bold .resume-header .contact-info a {
+  color: white;
+  text-decoration: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.resume-bold .resume-body {
+  padding: 2.5rem;
+}
+
+.resume-bold .section {
+  margin-bottom: 2.5rem;
+}
+
+.resume-bold .section-title {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #ff6b6b;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 5px solid #ff6b6b;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.resume-bold .summary {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #2c2c2c;
+  background: #fff5f5;
+  padding: 1.5rem;
+  border-left: 6px solid #ff6b6b;
+  font-weight: 600;
+}
+
+.resume-bold .experience-item,
+.resume-bold .education-item {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #fff5f5;
+  border-left: 6px solid #ff6b6b;
+  border-radius: 8px;
+}
+
+.resume-bold .experience-item h3,
+.resume-bold .education-item h3 {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+}
+
+.resume-bold .experience-item .company,
+.resume-bold .education-item .institution {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ff6b6b;
+  margin-bottom: 0.5rem;
+}
+
+.resume-bold .experience-item .date,
+.resume-bold .education-item .date {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.resume-bold .experience-item .responsibilities {
+  color: #2c2c2c;
+  margin-top: 0.75rem;
+  white-space: pre-line;
+  font-weight: 600;
+}
+
+.resume-bold .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.resume-bold .skill-tag {
+  background: #ff6b6b;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 4px 6px rgba(255, 107, 107, 0.3);
+  text-transform: uppercase;
+}
+
+.resume-bold .certification-item,
+.resume-bold .language-item {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #fff5f5;
+  border-left: 5px solid #ff6b6b;
+  border-radius: 4px;
+}
+
+.resume-bold .certification-item strong,
+.resume-bold .language-item strong {
+  color: #1a1a1a;
+  font-weight: 900;
+}
+
+@media print {
+  .resume-bold {
+    max-width: 100%;
+  }
+  
+  .resume-bold .resume-header {
+    background: #ff6b6b !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .resume-bold .resume-header::before {
+    display: none;
+  }
+}
+

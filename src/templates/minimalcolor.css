@@ -1,0 +1,134 @@
+/* Minimal Color Resume Template */
+.resume-minimalcolor {
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.7;
+}
+
+.resume-minimalcolor .resume-header {
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 3rem 2.5rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.resume-minimalcolor .resume-header h1 {
+  font-size: 2.25rem;
+  font-weight: 300;
+  margin: 0 0 0.75rem 0;
+  color: #1a1a1a;
+  letter-spacing: 3px;
+}
+
+.resume-minimalcolor .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.resume-minimalcolor .resume-header .contact-info a {
+  color: #666;
+  text-decoration: none;
+}
+
+.resume-minimalcolor .resume-body {
+  padding: 2.5rem;
+}
+
+.resume-minimalcolor .section {
+  margin-bottom: 2rem;
+}
+
+.resume-minimalcolor .section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.85rem;
+}
+
+.resume-minimalcolor .summary {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+.resume-minimalcolor .experience-item,
+.resume-minimalcolor .education-item {
+  margin-bottom: 1.5rem;
+  padding-left: 0;
+  border-left: 2px solid #f0f0f0;
+  padding-left: 1rem;
+}
+
+.resume-minimalcolor .experience-item h3,
+.resume-minimalcolor .education-item h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-minimalcolor .experience-item .company,
+.resume-minimalcolor .education-item .institution {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.resume-minimalcolor .experience-item .date,
+.resume-minimalcolor .education-item .date {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 0.5rem;
+}
+
+.resume-minimalcolor .experience-item .responsibilities {
+  color: #444;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
+
+.resume-minimalcolor .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-minimalcolor .skill-tag {
+  background: #f8f8f8;
+  color: #666;
+  padding: 0.4rem 0.9rem;
+  border-radius: 2px;
+  font-size: 0.9rem;
+  border: 1px solid #e0e0e0;
+}
+
+.resume-minimalcolor .certification-item,
+.resume-minimalcolor .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.resume-minimalcolor .certification-item strong,
+.resume-minimalcolor .language-item strong {
+  color: #1a1a1a;
+}
+
+@media print {
+  .resume-minimalcolor {
+    max-width: 100%;
+  }
+}
+

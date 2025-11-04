@@ -1,0 +1,136 @@
+/* Compact Resume Template */
+.resume-compact {
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.resume-compact .resume-header {
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid #000000;
+  text-align: center;
+}
+
+.resume-compact .resume-header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-compact .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.resume-compact .resume-header .contact-info a {
+  color: #1a1a1a;
+  text-decoration: none;
+}
+
+.resume-compact .resume-body {
+  padding: 1.5rem 2rem;
+}
+
+.resume-compact .section {
+  margin-bottom: 1.25rem;
+}
+
+.resume-compact .section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resume-compact .summary {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #333;
+}
+
+.resume-compact .experience-item,
+.resume-compact .education-item {
+  margin-bottom: 1rem;
+  padding-left: 0;
+}
+
+.resume-compact .experience-item h3,
+.resume-compact .education-item h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.15rem 0;
+}
+
+.resume-compact .experience-item .company,
+.resume-compact .education-item .institution {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.15rem;
+}
+
+.resume-compact .experience-item .date,
+.resume-compact .education-item .date {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 0.25rem;
+}
+
+.resume-compact .experience-item .responsibilities {
+  color: #333;
+  margin-top: 0.25rem;
+  white-space: pre-line;
+  font-size: 0.85rem;
+}
+
+.resume-compact .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.resume-compact .skill-tag {
+  background: #f0f0f0;
+  color: #1a1a1a;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  border: 1px solid #ccc;
+}
+
+.resume-compact .certification-item,
+.resume-compact .language-item {
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0;
+  font-size: 0.85rem;
+}
+
+.resume-compact .certification-item strong,
+.resume-compact .language-item strong {
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+@media print {
+  .resume-compact {
+    max-width: 100%;
+  }
+}
+

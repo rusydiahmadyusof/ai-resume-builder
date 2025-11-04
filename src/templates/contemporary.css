@@ -1,0 +1,134 @@
+/* Contemporary Resume Template */
+.resume-contemporary {
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.resume-contemporary .resume-header {
+  background: #f8f9fa;
+  color: #1a1a1a;
+  padding: 3rem 2.5rem;
+  border-left: 6px solid #4a90e2;
+}
+
+.resume-contemporary .resume-header h1 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin: 0 0 0.75rem 0;
+  color: #1a1a1a;
+  letter-spacing: 1px;
+}
+
+.resume-contemporary .resume-header .contact-info {
+  display: flex;
+  justify-content: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.resume-contemporary .resume-header .contact-info a {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+.resume-contemporary .resume-body {
+  padding: 2.5rem;
+}
+
+.resume-contemporary .section {
+  margin-bottom: 2rem;
+}
+
+.resume-contemporary .section-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #4a90e2;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e0e0e0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-contemporary .summary {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #444;
+}
+
+.resume-contemporary .experience-item,
+.resume-contemporary .education-item {
+  margin-bottom: 1.75rem;
+  padding-left: 1.5rem;
+  border-left: 2px solid #e0e0e0;
+}
+
+.resume-contemporary .experience-item h3,
+.resume-contemporary .education-item h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-contemporary .experience-item .company,
+.resume-contemporary .education-item .institution {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #4a90e2;
+  margin-bottom: 0.25rem;
+}
+
+.resume-contemporary .experience-item .date,
+.resume-contemporary .education-item .date {
+  font-size: 0.9rem;
+  color: #999;
+  margin-bottom: 0.5rem;
+}
+
+.resume-contemporary .experience-item .responsibilities {
+  color: #444;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
+
+.resume-contemporary .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.resume-contemporary .skill-tag {
+  background: #f0f4f8;
+  color: #4a90e2;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  border: 1px solid #4a90e2;
+}
+
+.resume-contemporary .certification-item,
+.resume-contemporary .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.resume-contemporary .certification-item strong,
+.resume-contemporary .language-item strong {
+  color: #1a1a1a;
+}
+
+@media print {
+  .resume-contemporary {
+    max-width: 100%;
+  }
+}
+

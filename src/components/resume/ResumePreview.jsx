@@ -4,6 +4,22 @@ import '../../templates/modern.css'
 import '../../templates/classic.css'
 import '../../templates/creative.css'
 import '../../templates/minimalist.css'
+import '../../templates/professional.css'
+import '../../templates/tech.css'
+import '../../templates/executive.css'
+import '../../templates/academic.css'
+import '../../templates/bold.css'
+import '../../templates/elegant.css'
+import '../../templates/contemporary.css'
+import '../../templates/traditional.css'
+import '../../templates/business.css'
+import '../../templates/clean.css'
+import '../../templates/sidebar.css'
+import '../../templates/twocolumn.css'
+import '../../templates/compact.css'
+import '../../templates/executivesummary.css'
+import '../../templates/techstack.css'
+import '../../templates/minimalcolor.css'
 
 function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedContent }) {
 
@@ -19,12 +35,92 @@ function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedConte
   }
 
   const templateClass = `resume-${selectedTemplate}`
+  const isSidebarTemplate = selectedTemplate === 'sidebar'
 
   return (
     <div className={`${templateClass} resume-container overflow-x-auto`}>
       <ResumeHeader personalInfo={displayData.personalInfo} />
 
-      <div className="resume-body">
+      {isSidebarTemplate ? (
+        <>
+          <div className="resume-sidebar-content">
+            {displayData.summary && (
+              <ResumeSection title="Summary">
+                <div className="summary">{displayData.summary}</div>
+              </ResumeSection>
+            )}
+
+            {displayData.skills.length > 0 && (
+              <ResumeSection title="Skills">
+                <div className="skills-list">
+                  {displayData.skills.map((skill, index) => (
+                    <span key={index} className="skill-tag">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </ResumeSection>
+            )}
+
+            {displayData.certifications.length > 0 && (
+              <ResumeSection title="Certifications">
+                {displayData.certifications.map((cert, index) => (
+                  <div key={cert.id || index} className="certification-item">
+                    <strong>{cert.name || 'Certification'}</strong>
+                    {cert.issuer && ` - ${cert.issuer}`}
+                    {cert.date && ` (${cert.date})`}
+                  </div>
+                ))}
+              </ResumeSection>
+            )}
+
+            {displayData.languages.length > 0 && (
+              <ResumeSection title="Languages">
+                {displayData.languages.map((lang, index) => (
+                  <div key={lang.id || index} className="language-item">
+                    <strong>{lang.name || 'Language'}</strong> - {lang.proficiency || 'Proficiency'}
+                  </div>
+                ))}
+              </ResumeSection>
+            )}
+          </div>
+
+          <div className="resume-body">
+            {displayData.workExperience.length > 0 && (
+              <ResumeSection title="Work Experience">
+                {displayData.workExperience.map((exp, index) => (
+                  <div key={exp.id || index} className="experience-item">
+                    <h3>{exp.position || 'Position'}</h3>
+                    <div className="company">{exp.company || 'Company'}</div>
+                    <div className="date">
+                      {exp.startDate || 'Start'} - {exp.current ? 'Present' : exp.endDate || 'End'}
+                    </div>
+                    {exp.responsibilities && (
+                      <div className="responsibilities">{exp.responsibilities}</div>
+                    )}
+                  </div>
+                ))}
+              </ResumeSection>
+            )}
+
+            {displayData.education.length > 0 && (
+              <ResumeSection title="Education">
+                {displayData.education.map((edu, index) => (
+                  <div key={edu.id || index} className="education-item">
+                    <h3>{edu.degree || 'Degree'}</h3>
+                    <div className="institution">{edu.institution || 'Institution'}</div>
+                    {edu.field && <div className="field">{edu.field}</div>}
+                    <div className="date">
+                      {edu.startDate || 'Start'} - {edu.current ? 'Present' : edu.endDate || 'End'}
+                    </div>
+                  </div>
+                ))}
+              </ResumeSection>
+            )}
+          </div>
+        </>
+      ) : (
+        <div className="resume-body">
         {displayData.summary && (
           <ResumeSection title="Professional Summary">
             <div className="summary">{displayData.summary}</div>
@@ -101,7 +197,8 @@ function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedConte
             ))}
           </ResumeSection>
         )}
-      </div>
+        </div>
+      )}
     </div>
   )
 }

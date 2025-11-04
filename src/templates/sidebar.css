@@ -1,0 +1,175 @@
+/* Sidebar Resume Template */
+.resume-sidebar {
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.6;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  min-height: 297mm;
+}
+
+.resume-sidebar .resume-header {
+  background: #2c3e50;
+  color: white;
+  padding: 2rem 1.5rem;
+  grid-column: 1 / -1;
+  text-align: center;
+}
+
+.resume-sidebar .resume-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+}
+
+.resume-sidebar .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.resume-sidebar .resume-header .contact-info a {
+  color: white;
+  text-decoration: none;
+}
+
+.resume-sidebar .resume-sidebar-content {
+  background: #34495e;
+  color: white;
+  padding: 2rem 1.5rem;
+}
+
+.resume-sidebar .resume-body {
+  padding: 2rem;
+  background: #ffffff;
+}
+
+.resume-sidebar .section {
+  margin-bottom: 2rem;
+}
+
+.resume-sidebar .section-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-sidebar .resume-sidebar-content .section-title {
+  color: white;
+  border-bottom-color: white;
+}
+
+.resume-sidebar .summary {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #333;
+}
+
+.resume-sidebar .experience-item,
+.resume-sidebar .education-item {
+  margin-bottom: 1.5rem;
+}
+
+.resume-sidebar .experience-item h3,
+.resume-sidebar .education-item h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-sidebar .experience-item .company,
+.resume-sidebar .education-item .institution {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #3498db;
+  margin-bottom: 0.25rem;
+}
+
+.resume-sidebar .experience-item .date,
+.resume-sidebar .education-item .date {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.resume-sidebar .experience-item .responsibilities {
+  color: #333;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
+
+.resume-sidebar .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-sidebar .skill-tag {
+  background: #ecf0f1;
+  color: #2c3e50;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.resume-sidebar .resume-sidebar-content .skill-tag {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.resume-sidebar .certification-item,
+.resume-sidebar .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  color: white;
+}
+
+.resume-sidebar .certification-item strong,
+.resume-sidebar .language-item strong {
+  color: white;
+}
+
+@media print {
+  .resume-sidebar {
+    max-width: 100%;
+    grid-template-columns: 180px 1fr;
+  }
+  
+  .resume-sidebar .resume-header {
+    background: #2c3e50 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  
+  .resume-sidebar .resume-sidebar-content {
+    background: #34495e !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@media (max-width: 768px) {
+  .resume-sidebar {
+    grid-template-columns: 1fr;
+  }
+  
+  .resume-sidebar .resume-sidebar-content {
+    order: 2;
+  }
+  
+  .resume-sidebar .resume-body {
+    order: 1;
+  }
+}
+

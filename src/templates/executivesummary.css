@@ -1,0 +1,148 @@
+/* Executive Summary Resume Template */
+.resume-executivesummary {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.8;
+}
+
+.resume-executivesummary .resume-header {
+  background: #1a1a1a;
+  color: white;
+  padding: 3rem 2.5rem;
+  text-align: center;
+}
+
+.resume-executivesummary .resume-header h1 {
+  font-size: 2.75rem;
+  font-weight: 400;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.resume-executivesummary .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #d4af37;
+}
+
+.resume-executivesummary .resume-header .contact-info a {
+  color: #d4af37;
+  text-decoration: none;
+}
+
+.resume-executivesummary .resume-body {
+  padding: 3rem 2.5rem;
+}
+
+.resume-executivesummary .section {
+  margin-bottom: 2.5rem;
+}
+
+.resume-executivesummary .section-title {
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid #d4af37;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.resume-executivesummary .summary {
+  font-size: 1.2rem;
+  line-height: 2.2;
+  color: #2c2c2c;
+  text-align: justify;
+  font-style: italic;
+  background: #fafafa;
+  padding: 2rem;
+  border-left: 5px solid #d4af37;
+  margin-bottom: 3rem;
+}
+
+.resume-executivesummary .experience-item,
+.resume-executivesummary .education-item {
+  margin-bottom: 2rem;
+  padding-left: 0;
+}
+
+.resume-executivesummary .experience-item h3,
+.resume-executivesummary .education-item h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0 0 0.5rem 0;
+}
+
+.resume-executivesummary .experience-item .company,
+.resume-executivesummary .education-item .institution {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #d4af37;
+  margin-bottom: 0.5rem;
+}
+
+.resume-executivesummary .experience-item .date,
+.resume-executivesummary .education-item .date {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+  font-style: italic;
+}
+
+.resume-executivesummary .experience-item .responsibilities {
+  color: #2c2c2c;
+  margin-top: 0.75rem;
+  white-space: pre-line;
+  line-height: 1.9;
+}
+
+.resume-executivesummary .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.resume-executivesummary .skill-tag {
+  background: #f5f5f5;
+  color: #1a1a1a;
+  padding: 0.5rem 1.2rem;
+  border-radius: 2px;
+  font-size: 0.95rem;
+  border: 1px solid #d4af37;
+}
+
+.resume-executivesummary .certification-item,
+.resume-executivesummary .language-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem 0;
+  border-left: 4px solid #d4af37;
+  padding-left: 1.5rem;
+}
+
+.resume-executivesummary .certification-item strong,
+.resume-executivesummary .language-item strong {
+  color: #1a1a1a;
+}
+
+@media print {
+  .resume-executivesummary {
+    max-width: 100%;
+  }
+  
+  .resume-executivesummary .resume-header {
+    background: #1a1a1a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+

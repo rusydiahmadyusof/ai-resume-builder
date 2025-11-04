@@ -1,0 +1,156 @@
+/* Tech Stack Resume Template */
+.resume-techstack {
+  font-family: 'Roboto', 'Helvetica Neue', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #0d1117;
+  color: #c9d1d9;
+  line-height: 1.6;
+}
+
+.resume-techstack .resume-header {
+  background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+  color: #c9d1d9;
+  padding: 3rem 2.5rem;
+  text-align: center;
+  border-bottom: 3px solid #58a6ff;
+}
+
+.resume-techstack .resume-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  color: #58a6ff;
+  font-family: 'Courier New', monospace;
+}
+
+.resume-techstack .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-family: 'Courier New', monospace;
+}
+
+.resume-techstack .resume-header .contact-info a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+
+.resume-techstack .resume-body {
+  padding: 2.5rem;
+  background: #0d1117;
+}
+
+.resume-techstack .section {
+  margin-bottom: 2.5rem;
+}
+
+.resume-techstack .section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #58a6ff;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #30363d;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+}
+
+.resume-techstack .summary {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #b1bac4;
+  background: #161b22;
+  padding: 1.5rem;
+  border-left: 4px solid #58a6ff;
+  border-radius: 6px;
+}
+
+.resume-techstack .experience-item,
+.resume-techstack .education-item {
+  margin-bottom: 1.75rem;
+  padding: 1.5rem;
+  background: #161b22;
+  border-left: 4px solid #58a6ff;
+  border-radius: 6px;
+}
+
+.resume-techstack .experience-item h3,
+.resume-techstack .education-item h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #58a6ff;
+  margin: 0 0 0.5rem 0;
+}
+
+.resume-techstack .experience-item .company,
+.resume-techstack .education-item .institution {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #c9d1d9;
+  margin-bottom: 0.5rem;
+}
+
+.resume-techstack .experience-item .date,
+.resume-techstack .education-item .date {
+  font-size: 0.9rem;
+  color: #8b949e;
+  margin-bottom: 0.75rem;
+  font-family: 'Courier New', monospace;
+}
+
+.resume-techstack .experience-item .responsibilities {
+  color: #c9d1d9;
+  margin-top: 0.75rem;
+  white-space: pre-line;
+}
+
+.resume-techstack .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.resume-techstack .skill-tag {
+  background: #161b22;
+  color: #58a6ff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  border: 1px solid #30363d;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+.resume-techstack .certification-item,
+.resume-techstack .language-item {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #161b22;
+  border-left: 3px solid #58a6ff;
+  border-radius: 6px;
+}
+
+.resume-techstack .certification-item strong,
+.resume-techstack .language-item strong {
+  color: #58a6ff;
+}
+
+@media print {
+  .resume-techstack {
+    max-width: 100%;
+    background: #ffffff;
+    color: #1a1a1a;
+  }
+  
+  .resume-techstack .resume-header {
+    background: #161b22 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+

@@ -1,0 +1,135 @@
+/* Professional Resume Template */
+.resume-professional {
+  font-family: 'Calibri', 'Arial', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.resume-professional .resume-header {
+  background: #2c3e50;
+  color: white;
+  padding: 2.5rem 2rem;
+  border-bottom: 4px solid #3498db;
+}
+
+.resume-professional .resume-header h1 {
+  font-size: 2.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-professional .resume-header .contact-info {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+.resume-professional .resume-header .contact-info a {
+  color: white;
+  text-decoration: none;
+}
+
+.resume-professional .resume-body {
+  padding: 2rem;
+}
+
+.resume-professional .section {
+  margin-bottom: 2rem;
+}
+
+.resume-professional .section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #ecf0f1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.resume-professional .summary {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #34495e;
+}
+
+.resume-professional .experience-item,
+.resume-professional .education-item {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+  border-left: 3px solid #3498db;
+}
+
+.resume-professional .experience-item h3,
+.resume-professional .education-item h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-professional .experience-item .company,
+.resume-professional .education-item .institution {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #3498db;
+  margin-bottom: 0.25rem;
+}
+
+.resume-professional .experience-item .date,
+.resume-professional .education-item .date {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+}
+
+.resume-professional .experience-item .responsibilities {
+  color: #34495e;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
+
+.resume-professional .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-professional .skill-tag {
+  background: #ecf0f1;
+  color: #2c3e50;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  border-left: 3px solid #3498db;
+}
+
+.resume-professional .certification-item,
+.resume-professional .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-left: 3px solid #ecf0f1;
+  padding-left: 1rem;
+}
+
+.resume-professional .certification-item strong,
+.resume-professional .language-item strong {
+  color: #2c3e50;
+}
+
+@media print {
+  .resume-professional {
+    max-width: 100%;
+  }
+}
+

@@ -1,0 +1,139 @@
+/* Two Column Resume Template */
+.resume-twocolumn {
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.6;
+}
+
+.resume-twocolumn .resume-header {
+  background: #f8f9fa;
+  color: #1a1a1a;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border-bottom: 3px solid #495057;
+}
+
+.resume-twocolumn .resume-header h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+}
+
+.resume-twocolumn .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.resume-twocolumn .resume-header .contact-info a {
+  color: #495057;
+  text-decoration: none;
+}
+
+.resume-twocolumn .resume-body {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.resume-twocolumn .section {
+  margin-bottom: 2rem;
+}
+
+.resume-twocolumn .section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #495057;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #495057;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-twocolumn .summary {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #333;
+  grid-column: 1 / -1;
+}
+
+.resume-twocolumn .experience-item,
+.resume-twocolumn .education-item {
+  margin-bottom: 1.5rem;
+}
+
+.resume-twocolumn .experience-item h3,
+.resume-twocolumn .education-item h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-twocolumn .experience-item .company,
+.resume-twocolumn .education-item .institution {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.25rem;
+}
+
+.resume-twocolumn .experience-item .date,
+.resume-twocolumn .education-item .date {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.resume-twocolumn .experience-item .responsibilities {
+  color: #333;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+  font-size: 0.95rem;
+}
+
+.resume-twocolumn .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-twocolumn .skill-tag {
+  background: #e9ecef;
+  color: #495057;
+  padding: 0.4rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.resume-twocolumn .certification-item,
+.resume-twocolumn .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.resume-twocolumn .certification-item strong,
+.resume-twocolumn .language-item strong {
+  color: #1a1a1a;
+}
+
+@media print {
+  .resume-twocolumn {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .resume-twocolumn .resume-body {
+    grid-template-columns: 1fr;
+  }
+}
+

@@ -1,0 +1,135 @@
+/* Traditional Resume Template */
+.resume-traditional {
+  font-family: 'Times New Roman', serif;
+  max-width: 210mm;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #000000;
+  line-height: 1.8;
+}
+
+.resume-traditional .resume-header {
+  border-bottom: 2px solid #000000;
+  padding: 2rem;
+  text-align: center;
+}
+
+.resume-traditional .resume-header h1 {
+  font-size: 2.25rem;
+  font-weight: 400;
+  margin: 0 0 1rem 0;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.resume-traditional .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.resume-traditional .resume-header .contact-info a {
+  color: #000000;
+  text-decoration: none;
+}
+
+.resume-traditional .resume-body {
+  padding: 2rem;
+}
+
+.resume-traditional .section {
+  margin-bottom: 2rem;
+}
+
+.resume-traditional .section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #000000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.resume-traditional .summary {
+  font-size: 1rem;
+  line-height: 2;
+  color: #000000;
+  text-align: justify;
+}
+
+.resume-traditional .experience-item,
+.resume-traditional .education-item {
+  margin-bottom: 1.5rem;
+  padding-left: 0;
+}
+
+.resume-traditional .experience-item h3,
+.resume-traditional .education-item h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #000000;
+  margin: 0 0 0.25rem 0;
+}
+
+.resume-traditional .experience-item .company,
+.resume-traditional .education-item .institution {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 0.25rem;
+}
+
+.resume-traditional .experience-item .date,
+.resume-traditional .education-item .date {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.resume-traditional .experience-item .responsibilities {
+  color: #000000;
+  margin-top: 0.5rem;
+  white-space: pre-line;
+}
+
+.resume-traditional .skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resume-traditional .skill-tag {
+  background: #ffffff;
+  color: #000000;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0;
+  font-size: 0.9rem;
+  border: 1px solid #000000;
+}
+
+.resume-traditional .certification-item,
+.resume-traditional .language-item {
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0;
+  border-left: 2px solid #000000;
+  padding-left: 1rem;
+}
+
+.resume-traditional .certification-item strong,
+.resume-traditional .language-item strong {
+  color: #000000;
+  font-weight: 700;
+}
+
+@media print {
+  .resume-traditional {
+    max-width: 100%;
+  }
+}
+
