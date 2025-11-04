@@ -2,6 +2,7 @@ import Groq from 'groq-sdk'
 
 const groq = new Groq({
   apiKey: import.meta.env.VITE_GROQ_API_KEY,
+  dangerouslyAllowBrowser: true, // Required for browser usage
 })
 
 export const groqService = {
@@ -51,7 +52,7 @@ Return the response as a JSON object with the following structure:
             content: prompt,
           },
         ],
-        model: 'llama-3.1-70b-versatile',
+        model: 'llama-3.3-70b-versatile',
         temperature: 0.7,
         max_tokens: 2000,
       })
@@ -117,7 +118,7 @@ Make it concise, impactful, and tailored to the job requirements.`
             content: prompt,
           },
         ],
-        model: 'llama-3.1-70b-versatile',
+        model: 'llama-3.3-70b-versatile',
         temperature: 0.7,
         max_tokens: 200,
       })

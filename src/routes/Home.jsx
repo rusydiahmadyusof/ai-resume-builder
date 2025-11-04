@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 
 function Home() {
+  console.log('Home component rendering')
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full text-center">
