@@ -49,6 +49,7 @@ export const useResumeData = () => {
   const [isLoaded, setIsLoaded] = useState(false)
   const [saveStatus, setSaveStatus] = useState('idle') // 'idle', 'saving', 'saved', 'error'
   const [lastSaved, setLastSaved] = useState(null)
+  const [storageError, setStorageError] = useState(null)
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -71,22 +72,36 @@ export const useResumeData = () => {
       setSaveStatus('saving')
       
       // Save to localStorage
-      const success = storageService.saveResumeData(updated)
+      const result = storageService.saveResumeData(updated)
+      
+      // Handle result (could be boolean or object with success/error)
+      const success = typeof result === 'boolean' ? result : (result.success !== false)
       
       // Update status based on result
       if (success) {
         setSaveStatus('saved')
         setLastSaved(Date.now())
+        setStorageError(null)
         // Clear saved status after 3 seconds
         setTimeout(() => {
           setSaveStatus((prev) => (prev === 'saved' ? 'idle' : prev))
         }, 3000)
       } else {
         setSaveStatus('error')
-        // Clear error status after 5 seconds
-        setTimeout(() => {
-          setSaveStatus((prev) => (prev === 'error' ? 'idle' : prev))
-        }, 5000)
+        // Handle error details if available
+        if (typeof result === 'object' && result.error) {
+          setStorageError(result.error)
+          // Clear error after 10 seconds
+          setTimeout(() => {
+            setStorageError(null)
+            setSaveStatus('idle')
+          }, 10000)
+        } else {
+          // Clear error status after 5 seconds
+          setTimeout(() => {
+            setSaveStatus((prev) => (prev === 'error' ? 'idle' : prev))
+          }, 5000)
+        }
       }
       
       return updated
@@ -220,11 +235,23 @@ export const useResumeData = () => {
     storageService.clearResumeData()
   }
 
+  // Clear storage error manually
+  const clearStorageError = () => {
+    setStorageError(null)
+  }
+
+  // Clear storage error manually
+  const clearStorageError = () => {
+    setStorageError(null)
+  }
+
   return {
     resumeData,
     isLoaded,
     saveStatus,
     lastSaved,
+    storageError,
+    clearStorageError,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
