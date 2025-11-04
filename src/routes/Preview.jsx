@@ -19,6 +19,7 @@ import ATSAnalysis from '../components/ui/ATSAnalysis'
 import CoverLetterOptions from '../components/coverletter/CoverLetterOptions'
 import CoverLetterPreview from '../components/coverletter/CoverLetterPreview'
 import ResumeComparison from '../components/ui/ResumeComparison'
+import AnalyticsDashboard from '../components/ui/AnalyticsDashboard'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 import { versionService } from '../services/versionService'
 
@@ -325,6 +326,12 @@ function Preview() {
                 jobTitle={resumeData.jobApplication?.jobTitle}
               />
             )}
+
+            <AnalyticsDashboard
+              resumeData={resumeData}
+              jobData={resumeData.jobApplication}
+              generatedContent={generatedContent}
+            />
 
             {savedVersions.length >= 2 && (
               <ResumeComparison
