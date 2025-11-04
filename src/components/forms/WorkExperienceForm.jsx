@@ -1,16 +1,79 @@
-import { useForm } from 'react-hook-form'
+import { useState } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
+import { validateDateRange, validateDateNotFuture, validateDateNotTooOld } from '../../utils/dateValidation'
 
 function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
+  const [dateErrors, setDateErrors] = useState({})
+
   const handleAdd = () => {
     onAdd()
   }
 
+  const validateDates = (id, startDate, endDate, current) => {
+    const errors = {}
+    
+    // Validate start date
+    if (startDate) {
+      const futureCheck = validateDateNotFuture(startDate)
+      if (!futureCheck.valid) {
+        errors[`${id}-start`] = futureCheck.error
+      }
+      
+      const oldCheck = validateDateNotTooOld(startDate)
+      if (!oldCheck.valid) {
+        errors[`${id}-start`] = oldCheck.error
+      }
+    }
+
+    // Validate end date if not current
+    if (!current && endDate) {
+      const futureCheck = validateDateNotFuture(endDate)
+      if (!futureCheck.valid) {
+        errors[`${id}-end`] = futureCheck.error
+      }
+      
+      const oldCheck = validateDateNotTooOld(endDate)
+      if (!oldCheck.valid) {
+        errors[`${id}-end`] = oldCheck.error
+      }
+
+      // Validate date range
+      if (startDate) {
+        const rangeCheck = validateDateRange(startDate, endDate)
+        if (!rangeCheck.valid) {
+          errors[`${id}-end`] = rangeCheck.error
+        }
+      }
+    }
+
+    setDateErrors((prev) => ({
+      ...prev,
+      [`${id}-start`]: errors[`${id}-start`],
+      [`${id}-end`]: errors[`${id}-end`],
+    }))
+
+    return Object.keys(errors).length === 0
+  }
+
   const handleUpdate = (id, field, value) => {
     onUpdate(id, { [field]: value })
+    
+    // Validate dates if date fields changed
+    if (field === 'startDate' || field === 'endDate' || field === 'current') {
+      const exp = experiences.find((e) => e.id === id)
+      if (exp) {
+        const updatedExp = { ...exp, [field]: value }
+        validateDates(
+          id,
+          updatedExp.startDate,
+          updatedExp.endDate,
+          updatedExp.current
+        )
+      }
+    }
   }
 
   const handleRemove = (id) => {
@@ -57,12 +120,15 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="Start Date *"
-                type="month"
-                value={exp.startDate}
-                onChange={(e) => handleUpdate(exp.id, 'startDate', e.target.value)}
-              />
+              <div>
+                <Input
+                  label="Start Date *"
+                  type="month"
+                  value={exp.startDate}
+                  onChange={(e) => handleUpdate(exp.id, 'startDate', e.target.value)}
+                  error={dateErrors[`${exp.id}-start`]}
+                />
+              </div>
               <div>
                 <label className="flex items-center space-x-2 mb-2">
                   <input
@@ -79,6 +145,7 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
                     type="month"
                     value={exp.endDate}
                     onChange={(e) => handleUpdate(exp.id, 'endDate', e.target.value)}
+                    error={dateErrors[`${exp.id}-end`]}
                   />
                 )}
               </div>

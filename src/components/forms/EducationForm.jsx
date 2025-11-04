@@ -1,14 +1,78 @@
+import { useState } from 'react'
 import Input from '../ui/Input'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
+import { validateDateRange, validateDateNotFuture, validateDateNotTooOld } from '../../utils/dateValidation'
 
 function EducationForm({ education, onAdd, onUpdate, onRemove }) {
+  const [dateErrors, setDateErrors] = useState({})
+
   const handleAdd = () => {
     onAdd()
   }
 
+  const validateDates = (id, startDate, endDate, current) => {
+    const errors = {}
+    
+    // Validate start date
+    if (startDate) {
+      const futureCheck = validateDateNotFuture(startDate)
+      if (!futureCheck.valid) {
+        errors[`${id}-start`] = futureCheck.error
+      }
+      
+      const oldCheck = validateDateNotTooOld(startDate)
+      if (!oldCheck.valid) {
+        errors[`${id}-start`] = oldCheck.error
+      }
+    }
+
+    // Validate end date if not current
+    if (!current && endDate) {
+      const futureCheck = validateDateNotFuture(endDate)
+      if (!futureCheck.valid) {
+        errors[`${id}-end`] = futureCheck.error
+      }
+      
+      const oldCheck = validateDateNotTooOld(endDate)
+      if (!oldCheck.valid) {
+        errors[`${id}-end`] = oldCheck.error
+      }
+
+      // Validate date range
+      if (startDate) {
+        const rangeCheck = validateDateRange(startDate, endDate)
+        if (!rangeCheck.valid) {
+          errors[`${id}-end`] = rangeCheck.error
+        }
+      }
+    }
+
+    setDateErrors((prev) => ({
+      ...prev,
+      [`${id}-start`]: errors[`${id}-start`],
+      [`${id}-end`]: errors[`${id}-end`],
+    }))
+
+    return Object.keys(errors).length === 0
+  }
+
   const handleUpdate = (id, field, value) => {
     onUpdate(id, { [field]: value })
+    
+    // Validate dates if date fields changed
+    if (field === 'startDate' || field === 'endDate' || field === 'current') {
+      const edu = education.find((e) => e.id === id)
+      if (edu) {
+        const updatedEdu = { ...edu, [field]: value }
+        validateDates(
+          id,
+          updatedEdu.startDate,
+          updatedEdu.endDate,
+          updatedEdu.current
+        )
+      }
+    }
   }
 
   const handleRemove = (id) => {
@@ -62,12 +126,15 @@ function EducationForm({ education, onAdd, onUpdate, onRemove }) {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                label="Start Date"
-                type="month"
-                value={edu.startDate}
-                onChange={(e) => handleUpdate(edu.id, 'startDate', e.target.value)}
-              />
+              <div>
+                <Input
+                  label="Start Date"
+                  type="month"
+                  value={edu.startDate}
+                  onChange={(e) => handleUpdate(edu.id, 'startDate', e.target.value)}
+                  error={dateErrors[`${edu.id}-start`]}
+                />
+              </div>
               <div>
                 <label className="flex items-center space-x-2 mb-2">
                   <input
@@ -84,6 +151,7 @@ function EducationForm({ education, onAdd, onUpdate, onRemove }) {
                     type="month"
                     value={edu.endDate}
                     onChange={(e) => handleUpdate(edu.id, 'endDate', e.target.value)}
+                    error={dateErrors[`${edu.id}-end`]}
                   />
                 )}
               </div>
