@@ -27,7 +27,7 @@ function ErrorDisplay({ title, message, onRetry, className = '' }) {
           <p className="text-sm text-red-700 dark:text-red-400">{message}</p>
           {onRetry && (
             <div className="mt-3">
-              <Button onClick={onRetry} variant="outline" size="sm">
+              <Button onClick={onRetry} variant="outline" className="text-sm">
                 Try Again
               </Button>
             </div>

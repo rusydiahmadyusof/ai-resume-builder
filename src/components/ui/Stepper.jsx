@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types'
+import React from 'react'
 
 function Stepper({ steps, currentStep, onStepClick }) {
   return (
@@ -73,7 +74,7 @@ function Stepper({ steps, currentStep, onStepClick }) {
       </div>
 
       {/* Desktop: Full stepper */}
-      <div className="hidden sm:flex items-center justify-between">
+      <div className="hidden sm:flex items-center w-full">
         {steps.map((step, index) => {
           const stepNumber = index + 1
           const isActive = stepNumber === currentStep
@@ -81,19 +82,19 @@ function Stepper({ steps, currentStep, onStepClick }) {
           const isClickable = onStepClick && (isCompleted || isActive)
 
           return (
-            <div key={index} className="flex items-center flex-1">
-              <div className="flex flex-col items-center flex-1">
+            <React.Fragment key={index}>
+              <div className="flex flex-col items-center flex-1 min-w-0 relative">
                 <button
                   type="button"
                   onClick={() => isClickable && onStepClick(stepNumber)}
                   disabled={!isClickable}
                   className={`
-                    flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all
+                    flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all flex-shrink-0 relative z-10
                     ${
                       isActive
-                        ? 'bg-indigo-600 border-indigo-600 text-white'
+                        ? 'bg-indigo-600 border-indigo-600 text-white dark:bg-indigo-500 dark:border-indigo-500'
                         : isCompleted
-                        ? 'bg-green-500 border-green-500 text-white'
+                        ? 'bg-green-500 border-green-500 text-white dark:bg-green-600 dark:border-green-600'
                         : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
                     }
                     ${isClickable ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-not-allowed'}
@@ -119,8 +120,8 @@ function Stepper({ steps, currentStep, onStepClick }) {
                 </button>
                 <span
                   className={`
-                    mt-2 text-xs font-medium text-center
-                    ${isActive ? 'text-indigo-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}
+                    mt-2 text-xs font-medium text-center px-1 whitespace-nowrap
+                    ${isActive ? 'text-indigo-600 dark:text-indigo-400' : isCompleted ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}
                   `}
                 >
                   {step}
@@ -129,12 +130,12 @@ function Stepper({ steps, currentStep, onStepClick }) {
               {index < steps.length - 1 && (
                 <div
                   className={`
-                    flex-1 h-0.5 mx-2
-                    ${isCompleted ? 'bg-green-500' : 'bg-gray-300'}
+                    flex-1 h-0.5 mx-1 min-w-[20px] max-w-[80px] -mt-5
+                    ${isCompleted ? 'bg-green-500 dark:bg-green-600' : 'bg-gray-300 dark:bg-gray-600'}
                   `}
                 />
               )}
-            </div>
+            </React.Fragment>
           )
         })}
       </div>

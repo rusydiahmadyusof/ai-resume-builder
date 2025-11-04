@@ -17,6 +17,7 @@ import SkillsForm from '../components/forms/SkillsForm'
 import CertificationsForm from '../components/forms/CertificationsForm'
 import LanguagesForm from '../components/forms/LanguagesForm'
 import JobApplicationForm from '../components/forms/JobApplicationForm'
+import { formatDateToMonth } from '../utils/dateFormat'
 
 const steps = [
   'Personal Info',
@@ -124,16 +125,84 @@ function Builder() {
             data={resumeData.personalInfo}
             onUpdate={updatePersonalInfo}
             onWorkExperienceExtracted={(workExp) => {
-              // Add extracted work experience entries
-              workExp.forEach((exp) => {
-                addWorkExperience(exp)
+              console.log('Raw extracted work experience:', workExp)
+              
+              // Filter out empty work experience entries and add extracted ones
+              const validWorkExp = workExp.filter(exp => {
+                if (!exp || typeof exp !== 'object') return false
+                // Include if has at least company, position, or meaningful responsibilities
+                const hasCompany = exp.company && exp.company.trim().length > 0
+                const hasPosition = exp.position && exp.position.trim().length > 0
+                const hasResponsibilities = exp.responsibilities && exp.responsibilities.trim().length > 10
+                return hasCompany || hasPosition || hasResponsibilities
               })
-              if (workExp.length > 0) {
+              
+              console.log('Valid work experience entries:', validWorkExp)
+              
+              if (validWorkExp.length === 0) {
                 setToast({ 
-                  message: `Extracted ${workExp.length} work experience ${workExp.length === 1 ? 'entry' : 'entries'}. Check the Work Experience section.`, 
-                  type: 'success' 
+                  message: 'No valid work experience found in PDF. Please add manually.', 
+                  type: 'info',
+                  duration: 4000
                 })
+                return
               }
+              
+              // Check if first work experience entry is empty
+              const firstExp = resumeData.workExperience[0]
+              const firstIsEmpty = firstExp && 
+                !firstExp.company?.trim() && 
+                !firstExp.position?.trim() && 
+                !firstExp.responsibilities?.trim()
+              
+              // Process extracted entries
+              validWorkExp.forEach((exp, index) => {
+                setTimeout(() => {
+                  // Determine if current based on endDate
+                  const endDateStr = (exp.endDate || '').trim()
+                  const isCurrent = !endDateStr || 
+                    endDateStr.toLowerCase() === 'present' || 
+                    endDateStr.toLowerCase() === 'current' ||
+                    endDateStr.toLowerCase() === 'now' ||
+                    endDateStr.toLowerCase() === 'till date'
+                  
+                  // Format dates to yyyy-MM format (required for HTML5 month input)
+                  const formattedStartDate = formatDateToMonth(exp.startDate || '')
+                  const formattedEndDate = isCurrent ? '' : formatDateToMonth(endDateStr)
+                  
+                  // Format the extracted data to match expected structure
+                  const formattedExp = {
+                    company: (exp.company || '').trim(),
+                    position: (exp.position || '').trim(),
+                    startDate: formattedStartDate,
+                    endDate: formattedEndDate,
+                    current: isCurrent,
+                    responsibilities: (exp.responsibilities || '').trim(),
+                  }
+                  
+                  console.log(`Processing work experience ${index + 1}:`, formattedExp)
+                  
+                  // If first entry is empty and this is the first extracted entry, update it instead of adding
+                  if (index === 0 && firstIsEmpty && firstExp) {
+                    console.log('Updating first empty work experience entry')
+                    updateWorkExperience(firstExp.id, formattedExp)
+                  } else {
+                    // Add new entry for subsequent ones
+                    console.log('Adding new work experience entry')
+                    addWorkExperience(formattedExp)
+                  }
+                }, index * 100) // Stagger updates to avoid conflicts
+              })
+              
+              // Automatically navigate to Work Experience section after a short delay
+              setTimeout(() => {
+                setCurrentStep(2)
+                setToast({ 
+                  message: `Extracted ${validWorkExp.length} work experience ${validWorkExp.length === 1 ? 'entry' : 'entries'}. Review and update if needed.`, 
+                  type: 'success',
+                  duration: 5000
+                })
+              }, validWorkExp.length * 100 + 200)
             }}
           />
         )

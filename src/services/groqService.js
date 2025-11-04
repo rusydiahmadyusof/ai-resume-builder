@@ -147,8 +147,30 @@ Make it concise, impactful, and tailored to the job requirements.`
         throw new Error('Groq API key is not configured.')
       }
 
-      // Limit text to avoid token limits
-      const limitedText = pdfText.substring(0, 3000)
+      // Limit text to avoid token limits, but prioritize work experience section
+      // Try to find work experience section and include it even if near the end
+      let limitedText = pdfText
+      if (pdfText.length > 4000) {
+        // Try to find work experience keywords and prioritize that section
+        const workExpKeywords = ['work experience', 'employment', 'professional experience', 'career', 'employment history']
+        let workExpIndex = -1
+        for (const keyword of workExpKeywords) {
+          const index = pdfText.toLowerCase().indexOf(keyword.toLowerCase())
+          if (index !== -1) {
+            workExpIndex = index
+            break
+          }
+        }
+        
+        if (workExpIndex !== -1) {
+          // Include text from work experience section onwards (up to 4000 chars)
+          const start = Math.max(0, workExpIndex - 500) // Include 500 chars before for context
+          limitedText = pdfText.substring(start, start + 4000)
+        } else {
+          // Fallback: take first 4000 chars
+          limitedText = pdfText.substring(0, 4000)
+        }
+      }
 
       const prompt = `Extract personal information and work experience from the following resume text. Return ONLY a valid JSON object with this exact structure:
 
@@ -165,8 +187,8 @@ Make it concise, impactful, and tailored to the job requirements.`
     {
       "company": "company name",
       "position": "job title/position",
-      "startDate": "start date (MM/YYYY format)",
-      "endDate": "end date (MM/YYYY format) or 'Present'",
+      "startDate": "start date (MM/YYYY format, e.g., '12/2020' or '06/2019')",
+      "endDate": "end date (MM/YYYY format, e.g., '05/2022') or 'Present' if current",
       "responsibilities": "job description and key responsibilities"
     }
   ]
@@ -175,15 +197,15 @@ Make it concise, impactful, and tailored to the job requirements.`
 Resume text:
 ${limitedText}
 
-Important:
-- Extract only the information that is clearly present in the text
-- If a field is not found, return an empty string for that field (or empty array for workExperience)
-- For email, phone, and URLs, extract the exact values
-- For summary, extract the professional summary/objective section if available
-- For workExperience, extract all work experience entries with company, position, dates, and responsibilities
-- Dates should be in MM/YYYY format (e.g., "01/2020" or "Present")
-- If dates are not available, use empty strings
-- Return ONLY valid JSON, no additional text or explanation`
+IMPORTANT INSTRUCTIONS:
+1. Extract ALL work experience entries found in the resume
+2. For dates, extract the exact format found (could be MM/YYYY, YYYY, or text like "Present")
+3. If a date only shows year (e.g., "2013"), use that year format (e.g., "2013" or "01/2013")
+4. For responsibilities, include ALL bullet points and descriptions
+5. If company or position is missing but there's clear work experience, still include it
+6. Extract dates even if they're in different formats - we'll normalize them later
+7. Return ONLY valid JSON, no markdown, no code blocks, no explanations
+8. Ensure workExperience is always an array, even if empty`
 
       const completion = await groq.chat.completions.create({
         messages: [
@@ -197,8 +219,8 @@ Important:
           },
         ],
         model: 'llama-3.3-70b-versatile',
-        temperature: 0.3, // Lower temperature for more accurate extraction
-        max_tokens: 2000, // Increased for work experience extraction
+        temperature: 0.2, // Lower temperature for more accurate extraction
+        max_tokens: 3000, // Increased for multiple work experience entries
       })
 
       const content = completion.choices[0]?.message?.content || ''
@@ -233,13 +255,21 @@ Important:
           portfolio: (extractedData.portfolio || '').trim(),
           summary: (extractedData.summary || '').trim(),
           workExperience: Array.isArray(extractedData.workExperience) 
-            ? extractedData.workExperience.map(exp => ({
-                company: (exp.company || '').trim(),
-                position: (exp.position || '').trim(),
-                startDate: (exp.startDate || '').trim(),
-                endDate: (exp.endDate || '').trim(),
-                responsibilities: (exp.responsibilities || '').trim(),
-              })).filter(exp => exp.company || exp.position) // Only include entries with at least company or position
+            ? extractedData.workExperience
+                .map(exp => {
+                  // Handle both object and string formats
+                  if (typeof exp === 'string') {
+                    return null // Skip invalid entries
+                  }
+                  return {
+                    company: (exp.company || '').trim(),
+                    position: (exp.position || '').trim(),
+                    startDate: (exp.startDate || '').trim(),
+                    endDate: (exp.endDate || '').trim(),
+                    responsibilities: (exp.responsibilities || exp.description || exp.responsibility || '').trim(),
+                  }
+                })
+                .filter(exp => exp !== null && (exp.company || exp.position || exp.responsibilities)) // Include if has any meaningful data
             : [],
         }
         
