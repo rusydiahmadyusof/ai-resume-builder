@@ -18,7 +18,9 @@ import KeyboardShortcuts from '../components/ui/KeyboardShortcuts'
 import ATSAnalysis from '../components/ui/ATSAnalysis'
 import CoverLetterOptions from '../components/coverletter/CoverLetterOptions'
 import CoverLetterPreview from '../components/coverletter/CoverLetterPreview'
+import ResumeComparison from '../components/ui/ResumeComparison'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
+import { versionService } from '../services/versionService'
 
 function Preview() {
   const navigate = useNavigate()
@@ -33,6 +35,7 @@ function Preview() {
   const [isFullScreen, setIsFullScreen] = useState(false)
   const [coverLetter, setCoverLetter] = useState(null)
   const [isGeneratingCoverLetter, setIsGeneratingCoverLetter] = useState(false)
+  const [savedVersions, setSavedVersions] = useState([])
 
   // Calculate recommended template based on job title and description
   const recommendedTemplate = useMemo(() => {
@@ -60,6 +63,14 @@ function Preview() {
       navigate('/builder')
     }
   }, [isLoaded, resumeData, navigate])
+
+  // Load saved versions
+  useEffect(() => {
+    if (isLoaded) {
+      const versions = versionService.getAllVersions()
+      setSavedVersions(versions)
+    }
+  }, [isLoaded])
 
   const handleGenerateResume = async () => {
     if (!resumeData.jobApplication.jobTitle || !resumeData.jobApplication.jobDescription) {
@@ -312,6 +323,14 @@ function Preview() {
                 coverLetter={coverLetter}
                 personalInfo={resumeData.personalInfo}
                 jobTitle={resumeData.jobApplication?.jobTitle}
+              />
+            )}
+
+            {savedVersions.length >= 2 && (
+              <ResumeComparison
+                versions={savedVersions}
+                resumeData={resumeData}
+                selectedTemplate={selectedTemplate}
               />
             )}
 
