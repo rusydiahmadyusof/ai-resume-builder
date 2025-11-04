@@ -6,6 +6,7 @@ import Button from '../components/ui/Button'
 import Toast from '../components/ui/Toast'
 import Breadcrumbs from '../components/ui/Breadcrumbs'
 import WorkflowProgress from '../components/ui/WorkflowProgress'
+import VersionManager from '../components/ui/VersionManager'
 import PersonalInfoForm from '../components/forms/PersonalInfoForm'
 import WorkExperienceForm from '../components/forms/WorkExperienceForm'
 import EducationForm from '../components/forms/EducationForm'
@@ -31,6 +32,7 @@ function Builder() {
   const {
     resumeData,
     isLoaded,
+    restoreResumeData,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
@@ -194,7 +196,17 @@ function Builder() {
           onStepClick={handleStepClick}
         />
 
-        <div className="mb-6">{renderStepContent()}</div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="lg:col-span-2">
+            {renderStepContent()}
+          </div>
+          <div className="lg:col-span-1">
+            <VersionManager
+              resumeData={resumeData}
+              onRestore={restoreResumeData}
+            />
+          </div>
+        </div>
 
         <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white rounded-lg shadow-md p-4 sticky bottom-0 sm:relative z-10">
           <Button

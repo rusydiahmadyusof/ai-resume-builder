@@ -196,9 +196,16 @@ export const useResumeData = () => {
     storageService.clearResumeData()
   }
 
+  // Restore resume data from version
+  const restoreResumeData = (data) => {
+    setResumeData(data)
+    storageService.saveResumeData(data)
+  }
+
   return {
     resumeData,
     isLoaded,
+    restoreResumeData,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
