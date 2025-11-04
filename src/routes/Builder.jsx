@@ -156,13 +156,13 @@ function Builder() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Build Your Resume
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Fill in your details step by step. Your progress is automatically saved.
           </p>
         </div>
@@ -175,19 +175,29 @@ function Builder() {
 
         <div className="mb-6">{renderStepContent()}</div>
 
-        <div className="flex justify-between items-center bg-white rounded-lg shadow-md p-4">
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white rounded-lg shadow-md p-4 sticky bottom-0 sm:relative z-10">
           <Button
             variant="secondary"
             onClick={handlePrevious}
             disabled={currentStep === 1}
+            className="w-full sm:w-auto order-2 sm:order-1"
           >
             Previous
           </Button>
 
           {currentStep < steps.length ? (
-            <Button onClick={handleNext}>Next</Button>
+            <Button 
+              onClick={handleNext}
+              className="w-full sm:w-auto order-1 sm:order-2"
+            >
+              Next
+            </Button>
           ) : (
-            <Button onClick={handleGenerateResume} variant="primary">
+            <Button 
+              onClick={handleGenerateResume} 
+              variant="primary"
+              className="w-full sm:w-auto order-1 sm:order-2"
+            >
               Generate Resume
             </Button>
           )}

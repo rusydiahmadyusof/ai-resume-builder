@@ -25,8 +25,8 @@ function LanguagesForm({ languages, onAdd, onUpdate, onRemove }) {
             key={lang.id}
             className="border border-gray-200 rounded-lg p-4 space-y-4"
           >
-            <div className="flex justify-between items-center">
-              <h4 className="font-semibold text-gray-900">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
                 Language #{index + 1}
               </h4>
               {languages.length > 1 && (
@@ -34,6 +34,7 @@ function LanguagesForm({ languages, onAdd, onUpdate, onRemove }) {
                   variant="danger"
                   onClick={() => handleRemove(lang.id)}
                   type="button"
+                  className="w-full sm:w-auto text-sm"
                 >
                   Remove
                 </Button>

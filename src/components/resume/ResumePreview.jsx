@@ -21,7 +21,7 @@ function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedConte
   const templateClass = `resume-${selectedTemplate}`
 
   return (
-    <div className={`${templateClass} resume-container`}>
+    <div className={`${templateClass} resume-container overflow-x-auto`}>
       <ResumeHeader personalInfo={displayData.personalInfo} />
 
       <div className="resume-body">

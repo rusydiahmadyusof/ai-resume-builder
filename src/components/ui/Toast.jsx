@@ -19,13 +19,14 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
 
   return (
     <div
-      className={`fixed top-4 right-4 z-50 p-4 rounded-lg border shadow-lg max-w-md animate-slide-in ${bgColors[type]}`}
+      className={`fixed top-4 right-4 left-4 sm:left-auto sm:max-w-md z-50 p-4 rounded-lg border shadow-lg animate-slide-in ${bgColors[type]}`}
     >
-      <div className="flex items-start justify-between">
-        <p className="text-sm font-medium">{message}</p>
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-sm font-medium flex-1">{message}</p>
         <button
           onClick={onClose}
-          className="ml-4 text-gray-400 hover:text-gray-600"
+          className="text-gray-400 hover:text-gray-600 active:scale-95 touch-manipulation flex-shrink-0 w-6 h-6 flex items-center justify-center"
+          aria-label="Close"
         >
           ×
         </button>

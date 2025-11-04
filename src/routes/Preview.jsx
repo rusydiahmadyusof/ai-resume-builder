@@ -87,24 +87,29 @@ function Preview() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
       <div className="max-w-6xl mx-auto px-4">
-        <div className="mb-6 flex justify-between items-center">
+        <div className="mb-6 space-y-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               Resume Preview
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm sm:text-base text-gray-600">
               Review your AI-generated resume and choose a template
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="secondary" onClick={() => navigate('/builder')}>
+          <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+            <Button 
+              variant="secondary" 
+              onClick={() => navigate('/builder')}
+              className="w-full sm:w-auto"
+            >
               Edit Resume
             </Button>
             <Button 
               onClick={handleDownloadPDF} 
               disabled={isGeneratingPDF}
+              className="w-full sm:w-auto"
             >
               {isGeneratingPDF ? 'Generating PDF...' : 'Download PDF'}
             </Button>
@@ -161,7 +166,7 @@ function Preview() {
 
           {/* Resume Preview */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-8" ref={resumeRef}>
+            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 overflow-x-auto" ref={resumeRef}>
               <ResumePreview
                 resumeData={resumeData}
                 selectedTemplate={selectedTemplate}

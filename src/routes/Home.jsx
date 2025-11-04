@@ -1,15 +1,14 @@
 import { Link } from 'react-router-dom'
 
 function Home() {
-  console.log('Home component rendering')
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full text-center">
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
             AI Resume Builder
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-4">
+          <p className="text-lg sm:text-xl md:text-2xl text-gray-600 mb-4">
             Create professional, AI-tailored resumes in minutes
           </p>
           <p className="text-gray-500 mb-8">

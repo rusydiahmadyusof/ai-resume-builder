@@ -4,7 +4,6 @@ import Builder from './routes/Builder'
 import Preview from './routes/Preview'
 
 function App() {
-  console.log('App component rendering')
   try {
     return (
       <BrowserRouter>

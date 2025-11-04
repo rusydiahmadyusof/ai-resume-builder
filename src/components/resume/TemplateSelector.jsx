@@ -15,11 +15,11 @@ function TemplateSelector({ selectedTemplate, onSelect }) {
             type="button"
             onClick={() => onSelect(template.id)}
             className={`
-              p-4 border-2 rounded-lg text-left transition-all
+              p-4 border-2 rounded-lg text-left transition-all touch-manipulation active:scale-[0.98]
               ${
                 selectedTemplate === template.id
                   ? 'border-indigo-600 bg-indigo-50'
-                  : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'
+                  : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50 active:bg-gray-100'
               }
             `}
           >

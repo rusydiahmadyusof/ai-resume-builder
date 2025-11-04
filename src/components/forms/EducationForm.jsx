@@ -23,8 +23,8 @@ function EducationForm({ education, onAdd, onUpdate, onRemove }) {
             key={edu.id}
             className="border border-gray-200 rounded-lg p-4 space-y-4"
           >
-            <div className="flex justify-between items-center">
-              <h4 className="font-semibold text-gray-900">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
                 Education #{index + 1}
               </h4>
               {education.length > 1 && (
@@ -32,6 +32,7 @@ function EducationForm({ education, onAdd, onUpdate, onRemove }) {
                   variant="danger"
                   onClick={() => handleRemove(edu.id)}
                   type="button"
+                  className="w-full sm:w-auto text-sm"
                 >
                   Remove
                 </Button>

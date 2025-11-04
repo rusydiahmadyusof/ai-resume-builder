@@ -27,7 +27,7 @@ function SkillsForm({ skills, onUpdate }) {
   return (
     <Card title="Skills">
       <div className="space-y-4">
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <Input
             placeholder="Enter a skill and press Enter"
             value={skillInput}
@@ -35,7 +35,7 @@ function SkillsForm({ skills, onUpdate }) {
             onKeyPress={handleKeyPress}
             className="flex-1"
           />
-          <Button onClick={handleAddSkill} type="button">
+          <Button onClick={handleAddSkill} type="button" className="w-full sm:w-auto">
             Add
           </Button>
         </div>
