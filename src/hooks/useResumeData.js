@@ -240,9 +240,10 @@ export const useResumeData = () => {
     setStorageError(null)
   }
 
-  // Clear storage error manually
-  const clearStorageError = () => {
-    setStorageError(null)
+  // Restore resume data from version
+  const restoreResumeData = (data) => {
+    setResumeData(data)
+    storageService.saveResumeData(data)
   }
 
   return {
@@ -252,6 +253,7 @@ export const useResumeData = () => {
     lastSaved,
     storageError,
     clearStorageError,
+    restoreResumeData,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
