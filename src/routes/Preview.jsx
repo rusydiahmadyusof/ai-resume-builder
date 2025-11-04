@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useResumeData } from '../hooks/useResumeData'
 import { groqService } from '../services/groqService'
 import { pdfService } from '../services/pdfService'
+import { recommendTemplate } from '../utils/templateRecommendation'
 import ResumePreview from '../components/resume/ResumePreview'
 import TemplateSelector from '../components/resume/TemplateSelector'
 import Button from '../components/ui/Button'
@@ -18,6 +19,25 @@ function Preview() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
   const [error, setError] = useState(null)
+
+  // Calculate recommended template based on job title and description
+  const recommendedTemplate = useMemo(() => {
+    if (!resumeData.jobApplication?.jobTitle && !resumeData.jobApplication?.jobDescription) {
+      return null
+    }
+    return recommendTemplate(
+      resumeData.jobApplication.jobTitle || '',
+      resumeData.jobApplication.jobDescription || ''
+    )
+  }, [resumeData.jobApplication?.jobTitle, resumeData.jobApplication?.jobDescription])
+
+  // Set recommended template as default if available (only once)
+  useEffect(() => {
+    if (recommendedTemplate && selectedTemplate === 'modern') {
+      setSelectedTemplate(recommendedTemplate)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recommendedTemplate])
 
   useEffect(() => {
     // Check if we have minimal data to generate resume
@@ -123,6 +143,7 @@ function Preview() {
               <TemplateSelector
                 selectedTemplate={selectedTemplate}
                 onSelect={setSelectedTemplate}
+                recommendedTemplate={recommendedTemplate}
               />
             </Card>
 
