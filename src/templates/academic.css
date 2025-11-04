@@ -14,12 +14,35 @@
   text-align: center;
 }
 
+.resume-academic .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.resume-academic .resume-header-text {
+  flex: 1;
+}
+
 .resume-academic .resume-header h1 {
   font-size: 2.5rem;
   font-weight: 400;
   margin: 0 0 1rem 0;
   color: #2c3e50;
   font-style: italic;
+}
+
+.resume-academic .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-academic .resume-photo img {
+  width: 110px;
+  height: 110px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 2px solid #2c3e50;
 }
 
 .resume-academic .resume-header .contact-info {

@@ -17,12 +17,35 @@
   text-align: center;
 }
 
+.resume-compact .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.resume-compact .resume-header-text {
+  flex: 1;
+}
+
 .resume-compact .resume-header h1 {
   font-size: 1.75rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.resume-compact .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-compact .resume-photo img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #000000;
 }
 
 .resume-compact .resume-header .contact-info {

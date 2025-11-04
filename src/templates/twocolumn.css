@@ -16,10 +16,33 @@
   border-bottom: 3px solid #495057;
 }
 
+.resume-twocolumn .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.resume-twocolumn .resume-header-text {
+  flex: 1;
+}
+
 .resume-twocolumn .resume-header h1 {
   font-size: 2.5rem;
   font-weight: 600;
   margin: 0 0 0.75rem 0;
+}
+
+.resume-twocolumn .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-twocolumn .resume-photo img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #495057;
 }
 
 .resume-twocolumn .resume-header .contact-info {

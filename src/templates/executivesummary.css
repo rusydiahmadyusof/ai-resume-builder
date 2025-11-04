@@ -15,12 +15,36 @@
   text-align: center;
 }
 
+.resume-executivesummary .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.resume-executivesummary .resume-header-text {
+  flex: 1;
+}
+
 .resume-executivesummary .resume-header h1 {
   font-size: 2.75rem;
   font-weight: 400;
   margin: 0 0 0.75rem 0;
   letter-spacing: 3px;
   text-transform: uppercase;
+}
+
+.resume-executivesummary .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-executivesummary .resume-photo img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #d4af37;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
 .resume-executivesummary .resume-header .contact-info {

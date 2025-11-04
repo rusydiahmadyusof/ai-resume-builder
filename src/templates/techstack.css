@@ -16,12 +16,36 @@
   border-bottom: 3px solid #58a6ff;
 }
 
+.resume-techstack .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.resume-techstack .resume-header-text {
+  flex: 1;
+}
+
 .resume-techstack .resume-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
   color: #58a6ff;
   font-family: 'Courier New', monospace;
+}
+
+.resume-techstack .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-techstack .resume-photo img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #58a6ff;
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
 }
 
 .resume-techstack .resume-header .contact-info {

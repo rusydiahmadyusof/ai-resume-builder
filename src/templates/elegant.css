@@ -16,6 +16,17 @@
   border-bottom: 1px solid #e0e0e0;
 }
 
+.resume-elegant .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.resume-elegant .resume-header-text {
+  flex: 1;
+}
+
 .resume-elegant .resume-header h1 {
   font-size: 2.75rem;
   font-weight: 400;
@@ -23,6 +34,18 @@
   color: #2c2c2c;
   letter-spacing: 4px;
   font-variant: small-caps;
+}
+
+.resume-elegant .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-elegant .resume-photo img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2c2c2c;
 }
 
 .resume-elegant .resume-header .contact-info {

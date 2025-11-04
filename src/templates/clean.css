@@ -14,12 +14,35 @@
   text-align: center;
 }
 
+.resume-clean .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.resume-clean .resume-header-text {
+  flex: 1;
+}
+
 .resume-clean .resume-header h1 {
   font-size: 2.25rem;
   font-weight: 300;
   margin: 0 0 1rem 0;
   color: #2c2c2c;
   letter-spacing: 2px;
+}
+
+.resume-clean .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-clean .resume-photo img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e8e8e8;
 }
 
 .resume-clean .resume-header .contact-info {
