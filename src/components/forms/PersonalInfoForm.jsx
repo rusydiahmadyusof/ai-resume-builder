@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
+import Button from '../ui/Button'
 import Toast from '../ui/Toast'
 import { pdfParserService } from '../../services/pdfParserService'
 import { groqService } from '../../services/groqService'
@@ -172,30 +173,34 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
     <Card title="Personal Information">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* PDF Upload Section */}
-        <div className="space-y-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-2 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <label htmlFor="pdf-upload" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Upload Existing Resume (PDF) - Optional
           </label>
-          <p className="text-xs text-gray-600 mb-2">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
             Upload your existing resume PDF to automatically extract and fill in your personal information.
           </p>
           <div className="flex items-center gap-2">
             <input
+              id="pdf-upload"
               type="file"
               accept="application/pdf"
               onChange={handlePDFUpload}
               disabled={isParsingPDF}
-              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer disabled:opacity-50"
+              aria-label="Upload resume PDF"
+              aria-describedby="pdf-upload-help"
+              className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:hover:file:bg-blue-200 file:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             />
+            <span id="pdf-upload-help" className="sr-only">Upload a PDF file to extract personal information</span>
           </div>
           {isParsingPDF && (
-            <div className="flex items-center gap-2 text-sm text-blue-600">
-              <span className="animate-spin">⏳</span>
+            <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400" role="status" aria-live="polite">
+              <span className="animate-spin" aria-hidden="true">⏳</span>
               <span>Extracting information from PDF...</span>
             </div>
           )}
           {pdfError && (
-            <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+            <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-2 rounded" role="alert">
               {pdfError}
             </div>
           )}
@@ -315,7 +320,7 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
 
         {/* Photo Upload Section */}
         <div className="space-y-2">
-          <label className="block text-sm font-medium text-gray-700">
+          <label htmlFor="photo-upload" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Professional Photo (Optional)
           </label>
           <div className="flex flex-col sm:flex-row items-start gap-4">
@@ -323,27 +328,31 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
               <div className="relative">
                 <img
                   src={photoPreview}
-                  alt="Preview"
-                  className="w-32 h-32 object-cover rounded-lg border-2 border-gray-300"
+                  alt="Profile preview"
+                  className="w-32 h-32 object-cover rounded-lg border-2 border-gray-300 dark:border-gray-600"
                 />
-                <button
+                <Button
                   type="button"
                   onClick={handleRemovePhoto}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600 transition-colors"
+                  variant="danger"
+                  className="absolute -top-2 -right-2 w-8 h-8 p-0 rounded-full flex items-center justify-center text-sm min-h-0"
                   aria-label="Remove photo"
                 >
                   ×
-                </button>
+                </Button>
               </div>
             )}
             <div className="flex-1">
               <input
+                id="photo-upload"
                 type="file"
                 accept="image/*"
                 onChange={handlePhotoChange}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer"
+                aria-label="Upload professional photo"
+                aria-describedby="photo-upload-help"
+                className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-200 file:cursor-pointer"
               />
-              <p className="mt-1 text-xs text-gray-500">
+              <p id="photo-upload-help" className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Recommended: Square photo, max 2MB. JPG, PNG, or WebP format.
               </p>
               <input type="hidden" {...register('photo')} />
@@ -351,12 +360,13 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
           </div>
         </div>
 
-        <button
+        <Button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
+          variant="primary"
+          className="w-full"
         >
           Save Personal Information
-        </button>
+        </Button>
       </form>
 
       {toast && (

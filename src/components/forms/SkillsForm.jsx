@@ -45,13 +45,14 @@ function SkillsForm({ skills, onUpdate }) {
             {skills.map((skill, index) => (
               <span
                 key={index}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800"
+                className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-200"
               >
                 {skill}
                 <button
                   type="button"
                   onClick={() => handleRemoveSkill(skill)}
-                  className="ml-2 text-indigo-600 hover:text-indigo-800"
+                  className="ml-2 text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 rounded-full w-5 h-5 flex items-center justify-center transition-colors"
+                  aria-label={`Remove ${skill} skill`}
                 >
                   ×
                 </button>
@@ -61,7 +62,7 @@ function SkillsForm({ skills, onUpdate }) {
         )}
 
         {skills.length === 0 && (
-          <p className="text-sm text-gray-500 text-center py-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
             No skills added yet. Add your skills above.
           </p>
         )}

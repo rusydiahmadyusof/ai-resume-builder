@@ -87,10 +87,10 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
         {experiences.map((exp, index) => (
           <div
             key={exp.id}
-            className="border border-gray-200 rounded-lg p-4 space-y-4"
+            className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4 bg-gray-50/50 dark:bg-gray-800/50"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-              <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                 Experience #{index + 1}
               </h4>
               {experiences.length > 1 && (
@@ -108,15 +108,25 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 label="Company *"
-                value={exp.company}
+                value={exp.company || ''}
                 onChange={(e) => handleUpdate(exp.id, 'company', e.target.value)}
                 placeholder="Company Name"
+                required
+                error={(() => {
+                  const validation = validateWorkExperience(exp)
+                  return validation.errors.company
+                })()}
               />
               <Input
                 label="Position/Title *"
-                value={exp.position}
+                value={exp.position || ''}
                 onChange={(e) => handleUpdate(exp.id, 'position', e.target.value)}
                 placeholder="Job Title"
+                required
+                error={(() => {
+                  const validation = validateWorkExperience(exp)
+                  return validation.errors.position
+                })()}
               />
             </div>
 
@@ -125,26 +135,28 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
                 <Input
                   label="Start Date *"
                   type="month"
-                  value={exp.startDate}
+                  value={exp.startDate || ''}
                   onChange={(e) => handleUpdate(exp.id, 'startDate', e.target.value)}
                   error={dateErrors[`${exp.id}-start`]}
+                  required
                 />
               </div>
               <div>
-                <label className="flex items-center space-x-2 mb-2">
+                <label className="flex items-center space-x-2 mb-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={exp.current}
+                    checked={exp.current || false}
                     onChange={(e) => handleUpdate(exp.id, 'current', e.target.checked)}
-                    className="rounded"
+                    className="rounded w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 cursor-pointer"
+                    aria-label="Currently working at this position"
                   />
-                  <span className="text-sm text-gray-700">Currently working here</span>
+                  <span className="text-sm text-gray-700 dark:text-gray-300">Currently working here</span>
                 </label>
                 {!exp.current && (
                   <Input
                     label="End Date"
                     type="month"
-                    value={exp.endDate}
+                    value={exp.endDate || ''}
                     onChange={(e) => handleUpdate(exp.id, 'endDate', e.target.value)}
                     error={dateErrors[`${exp.id}-end`]}
                   />
@@ -155,7 +167,7 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
             <Textarea
               label="Responsibilities & Achievements"
               rows={4}
-              value={exp.responsibilities}
+              value={exp.responsibilities || ''}
               onChange={(e) => handleUpdate(exp.id, 'responsibilities', e.target.value)}
               placeholder="Describe your key responsibilities and achievements..."
             />

@@ -23,10 +23,10 @@ function LanguagesForm({ languages, onAdd, onUpdate, onRemove }) {
         {languages.map((lang, index) => (
           <div
             key={lang.id}
-            className="border border-gray-200 rounded-lg p-4 space-y-4"
+            className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4 bg-gray-50/50 dark:bg-gray-800/50"
           >
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-              <h4 className="font-semibold text-gray-900 text-sm sm:text-base">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base">
                 Language #{index + 1}
               </h4>
               {languages.length > 1 && (
@@ -44,19 +44,23 @@ function LanguagesForm({ languages, onAdd, onUpdate, onRemove }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
                 label="Language *"
-                value={lang.name}
+                value={lang.name || ''}
                 onChange={(e) => handleUpdate(lang.id, 'name', e.target.value)}
                 placeholder="English, Spanish, French, etc."
+                required
               />
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor={`proficiency-${lang.id}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                   Proficiency Level *
                 </label>
                 <select
-                  value={lang.proficiency}
+                  id={`proficiency-${lang.id}`}
+                  value={lang.proficiency || ''}
                   onChange={(e) => handleUpdate(lang.id, 'proficiency', e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  required
+                  className="w-full px-3 py-2.5 sm:py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base sm:text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
                 >
+                  <option value="">Select proficiency</option>
                   {proficiencyLevels.map((level) => (
                     <option key={level} value={level}>
                       {level}

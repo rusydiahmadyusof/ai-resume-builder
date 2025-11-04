@@ -21,10 +21,10 @@ function CertificationsForm({ certifications, onAdd, onUpdate, onRemove }) {
         {certifications.map((cert, index) => (
           <div
             key={cert.id}
-            className='border border-gray-200 rounded-lg p-4 space-y-4'
+            className='border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4 bg-gray-50/50 dark:bg-gray-800/50'
           >
             <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2'>
-              <h4 className='font-semibold text-gray-900 text-sm sm:text-base'>
+              <h4 className='font-semibold text-gray-900 dark:text-gray-100 text-sm sm:text-base'>
                 Certification #{index + 1}
               </h4>
               {certifications.length > 1 && (
@@ -42,13 +42,14 @@ function CertificationsForm({ certifications, onAdd, onUpdate, onRemove }) {
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <Input
                 label='Certification Name *'
-                value={cert.name}
+                value={cert.name || ''}
                 onChange={(e) => handleUpdate(cert.id, 'name', e.target.value)}
                 placeholder='AWS Certified Solutions Architect'
+                required
               />
               <Input
                 label='Issuing Organization'
-                value={cert.issuer}
+                value={cert.issuer || ''}
                 onChange={(e) =>
                   handleUpdate(cert.id, 'issuer', e.target.value)
                 }
@@ -60,13 +61,13 @@ function CertificationsForm({ certifications, onAdd, onUpdate, onRemove }) {
               <Input
                 label='Date'
                 type='month'
-                value={cert.date}
+                value={cert.date || ''}
                 onChange={(e) => handleUpdate(cert.id, 'date', e.target.value)}
               />
               <Input
                 label='Credential URL'
                 type='url'
-                value={cert.url}
+                value={cert.url || ''}
                 onChange={(e) => handleUpdate(cert.id, 'url', e.target.value)}
                 placeholder='https://...'
               />

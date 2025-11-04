@@ -3,6 +3,8 @@ import { useState } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
+import Button from '../ui/Button'
+import Toast from '../ui/Toast'
 import { jobExtractionService } from '../../services/jobExtractionService'
 import { groqService } from '../../services/groqService'
 
@@ -11,6 +13,7 @@ function JobApplicationForm({ data, onUpdate }) {
   const [isExtracting, setIsExtracting] = useState(false)
   const [extractionError, setExtractionError] = useState(null)
   const [extractionSuccess, setExtractionSuccess] = useState(false)
+  const [toast, setToast] = useState(null)
 
   const {
     register,
@@ -57,6 +60,7 @@ function JobApplicationForm({ data, onUpdate }) {
 
         setExtractionSuccess(true)
         setExtractionError(null)
+        setToast({ message: 'Job information extracted successfully! Please review the fields below.', type: 'success' })
         
         // Clear success message after 5 seconds
         setTimeout(() => {
@@ -87,16 +91,17 @@ function JobApplicationForm({ data, onUpdate }) {
     <Card title="Job Application Details">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* URL Extraction Section */}
-        <div className="space-y-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="space-y-2 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+          <label htmlFor="job-url-input" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Extract from Job URL (Optional)
           </label>
-          <p className="text-xs text-gray-600 mb-2">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
             Enter a job posting URL to automatically extract the job title and description. 
             Works best for sites that allow sharing. Some sites (like JobStreet, Indeed) may require manual entry due to restrictions.
           </p>
           <div className="flex gap-2">
             <input
+              id="job-url-input"
               type="url"
               value={jobUrl}
               onChange={(e) => {
@@ -106,37 +111,38 @@ function JobApplicationForm({ data, onUpdate }) {
               }}
               placeholder="https://jobstreet.com/job/... or https://indeed.com/viewjob?..."
               disabled={isExtracting}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              aria-label="Job posting URL"
+              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed text-sm text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800"
             />
-            <button
+            <Button
               type="button"
               onClick={handleExtractFromURL}
               disabled={isExtracting || !jobUrl.trim()}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold disabled:opacity-50 disabled:cursor-not-allowed text-sm whitespace-nowrap"
+              className="whitespace-nowrap"
             >
               {isExtracting ? (
                 <span className="flex items-center gap-2">
-                  <span className="animate-spin">⏳</span>
+                  <span className="animate-spin" aria-hidden="true">⏳</span>
                   Extracting...
                 </span>
               ) : (
                 'Extract'
               )}
-            </button>
+            </Button>
           </div>
           {isExtracting && (
-            <div className="flex items-center gap-2 text-sm text-blue-600">
-              <span className="animate-spin">⏳</span>
+            <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400" role="status" aria-live="polite">
+              <span className="animate-spin" aria-hidden="true">⏳</span>
               <span>Fetching and extracting job information...</span>
             </div>
           )}
           {extractionSuccess && (
-            <div className="text-sm text-green-600 bg-green-50 p-2 rounded">
+            <div className="text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 p-2 rounded" role="alert">
               ✓ Job information extracted successfully! Please review the fields below.
             </div>
           )}
           {extractionError && (
-            <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+            <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-2 rounded" role="alert">
               ⚠ {extractionError}
             </div>
           )}
@@ -159,13 +165,23 @@ function JobApplicationForm({ data, onUpdate }) {
           placeholder="Paste the job description here. The AI will use this to tailor your resume..."
         />
 
-        <button
+        <Button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-md hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]"
+          variant="primary"
+          className="w-full"
         >
           Save Job Application Details
-        </button>
+        </Button>
       </form>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+          duration={5000}
+        />
+      )}
     </Card>
   )
 }
