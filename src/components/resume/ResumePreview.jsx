@@ -1,27 +1,55 @@
+import { lazy, Suspense } from 'react'
 import ResumeHeader from './ResumeHeader'
 import ResumeSection from './ResumeSection'
+
+// Lazy load template CSS files for better performance
+const loadTemplateCSS = (templateName) => {
+  try {
+    return require(`../../templates/${templateName}.css`)
+  } catch {
+    return null
+  }
+}
+
+// Preload commonly used templates
 import '../../templates/modern.css'
 import '../../templates/classic.css'
-import '../../templates/creative.css'
-import '../../templates/minimalist.css'
 import '../../templates/professional.css'
-import '../../templates/tech.css'
-import '../../templates/executive.css'
-import '../../templates/academic.css'
-import '../../templates/bold.css'
-import '../../templates/elegant.css'
-import '../../templates/contemporary.css'
-import '../../templates/traditional.css'
-import '../../templates/business.css'
-import '../../templates/clean.css'
-import '../../templates/sidebar.css'
-import '../../templates/twocolumn.css'
-import '../../templates/compact.css'
-import '../../templates/executivesummary.css'
-import '../../templates/techstack.css'
-import '../../templates/minimalcolor.css'
 
 function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedContent }) {
+  // Dynamically load template CSS if not already loaded
+  React.useEffect(() => {
+    const templateMap = {
+      modern: () => import('../../templates/modern.css'),
+      classic: () => import('../../templates/classic.css'),
+      creative: () => import('../../templates/creative.css'),
+      minimalist: () => import('../../templates/minimalist.css'),
+      professional: () => import('../../templates/professional.css'),
+      tech: () => import('../../templates/tech.css'),
+      executive: () => import('../../templates/executive.css'),
+      academic: () => import('../../templates/academic.css'),
+      bold: () => import('../../templates/bold.css'),
+      elegant: () => import('../../templates/elegant.css'),
+      contemporary: () => import('../../templates/contemporary.css'),
+      traditional: () => import('../../templates/traditional.css'),
+      business: () => import('../../templates/business.css'),
+      clean: () => import('../../templates/clean.css'),
+      sidebar: () => import('../../templates/sidebar.css'),
+      twocolumn: () => import('../../templates/twocolumn.css'),
+      compact: () => import('../../templates/compact.css'),
+      executivesummary: () => import('../../templates/executivesummary.css'),
+      techstack: () => import('../../templates/techstack.css'),
+      minimalcolor: () => import('../../templates/minimalcolor.css'),
+    }
+
+    const loader = templateMap[selectedTemplate]
+    if (loader) {
+      loader().catch(() => {
+        // Fallback to modern if template fails to load
+        console.warn(`Failed to load template: ${selectedTemplate}`)
+      })
+    }
+  }, [selectedTemplate])
 
   // Use generated content if available, otherwise use original data
   const displayData = {

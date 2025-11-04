@@ -9,12 +9,17 @@ function App() {
     return (
       <BrowserRouter>
         <div className="min-h-screen bg-gray-50">
+          <a href="#main-content" className="skip-to-main">
+            Skip to main content
+          </a>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/builder" element={<Builder />} />
-            <Route path="/preview" element={<Preview />} />
-          </Routes>
+          <main id="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/builder" element={<Builder />} />
+              <Route path="/preview" element={<Preview />} />
+            </Routes>
+          </main>
         </div>
       </BrowserRouter>
     )
