@@ -1,0 +1,69 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "remove": "Remove",
+    "submit": "Submit",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "nav": {
+    "home": "Home",
+    "builder": "Build Resume",
+    "preview": "Preview"
+  },
+  "home": {
+    "title": "AI Resume Builder",
+    "subtitle": "Create professional, tailored resumes with AI",
+    "getStarted": "Get Started",
+    "features": {
+      "ai": "AI-Powered Content",
+      "templates": "20 Professional Templates",
+      "pdf": "PDF Export",
+      "ats": "ATS Optimization"
+    }
+  },
+  "builder": {
+    "title": "Build Your Resume",
+    "personalInfo": "Personal Information",
+    "workExperience": "Work Experience",
+    "education": "Education",
+    "skills": "Skills",
+    "certifications": "Certifications",
+    "languages": "Languages",
+    "jobApplication": "Job Application"
+  },
+  "preview": {
+    "title": "Resume Preview",
+    "generate": "Generate AI Resume",
+    "download": "Download PDF",
+    "selectTemplate": "Select Template"
+  },
+  "ats": {
+    "title": "ATS Analysis",
+    "score": "ATS Score",
+    "excellent": "Excellent",
+    "good": "Good",
+    "fair": "Fair",
+    "needsImprovement": "Needs Improvement"
+  },
+  "coverLetter": {
+    "title": "Cover Letter",
+    "generate": "Generate Cover Letter",
+    "tone": "Tone",
+    "length": "Length",
+    "style": "Style"
+  },
+  "comparison": {
+    "title": "Compare Versions",
+    "merge": "Merge Versions",
+    "differences": "Differences Found",
+    "changes": "change(s)"
+  }
+}
+

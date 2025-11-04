@@ -8,7 +8,7 @@ function App() {
   try {
     return (
       <BrowserRouter>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
           <a href="#main-content" className="skip-to-main">
             Skip to main content
           </a>
@@ -26,9 +26,11 @@ function App() {
   } catch (error) {
     console.error('Error in App component:', error)
     return (
-      <div style={{ padding: '20px' }}>
-        <h1>Error in App</h1>
-        <p>{error.message}</p>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 max-w-md w-full">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">Error in App</h1>
+          <p className="text-gray-600 dark:text-gray-400">{error.message}</p>
+        </div>
       </div>
     )
   }

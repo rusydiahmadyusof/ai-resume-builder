@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 function Stepper({ steps, currentStep, onStepClick }) {
   return (
     <div className="mb-6 sm:mb-8">
@@ -24,7 +26,7 @@ function Stepper({ steps, currentStep, onStepClick }) {
                           ? 'bg-indigo-600 border-indigo-600 text-white scale-110'
                           : isCompleted
                           ? 'bg-green-500 border-green-500 text-white'
-                          : 'bg-white border-gray-300 text-gray-500'
+                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
                       }
                       ${isClickable ? 'active:scale-95' : 'cursor-not-allowed'}
                     `}
@@ -50,7 +52,7 @@ function Stepper({ steps, currentStep, onStepClick }) {
                   <span
                     className={`
                       mt-1 text-[10px] font-medium text-center max-w-[60px] truncate
-                      ${isActive ? 'text-indigo-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}
+                      ${isActive ? 'text-indigo-600 dark:text-indigo-400' : isCompleted ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}
                     `}
                   >
                     {step}
@@ -60,7 +62,7 @@ function Stepper({ steps, currentStep, onStepClick }) {
                   <div
                     className={`
                       w-4 h-0.5
-                      ${isCompleted ? 'bg-green-500' : 'bg-gray-300'}
+                      ${isCompleted ? 'bg-green-500 dark:bg-green-600' : 'bg-gray-300 dark:bg-gray-600'}
                     `}
                   />
                 )}
@@ -92,7 +94,7 @@ function Stepper({ steps, currentStep, onStepClick }) {
                         ? 'bg-indigo-600 border-indigo-600 text-white'
                         : isCompleted
                         ? 'bg-green-500 border-green-500 text-white'
-                        : 'bg-white border-gray-300 text-gray-500'
+                        : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
                     }
                     ${isClickable ? 'cursor-pointer hover:scale-110 active:scale-95' : 'cursor-not-allowed'}
                   `}
@@ -138,6 +140,16 @@ function Stepper({ steps, currentStep, onStepClick }) {
       </div>
     </div>
   )
+}
+
+Stepper.propTypes = {
+  steps: PropTypes.arrayOf(PropTypes.string).isRequired,
+  currentStep: PropTypes.number.isRequired,
+  onStepClick: PropTypes.func,
+}
+
+Stepper.defaultProps = {
+  onStepClick: null,
 }
 
 export default Stepper

@@ -1,0 +1,69 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "add": "Agregar",
+    "remove": "Quitar",
+    "submit": "Enviar",
+    "close": "Cerrar",
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito"
+  },
+  "nav": {
+    "home": "Inicio",
+    "builder": "Crear Currículum",
+    "preview": "Vista Previa"
+  },
+  "home": {
+    "title": "Constructor de Currículum IA",
+    "subtitle": "Crea currículums profesionales y personalizados con IA",
+    "getStarted": "Comenzar",
+    "features": {
+      "ai": "Contenido con IA",
+      "templates": "20 Plantillas Profesionales",
+      "pdf": "Exportar PDF",
+      "ats": "Optimización ATS"
+    }
+  },
+  "builder": {
+    "title": "Crea Tu Currículum",
+    "personalInfo": "Información Personal",
+    "workExperience": "Experiencia Laboral",
+    "education": "Educación",
+    "skills": "Habilidades",
+    "certifications": "Certificaciones",
+    "languages": "Idiomas",
+    "jobApplication": "Solicitud de Trabajo"
+  },
+  "preview": {
+    "title": "Vista Previa del Currículum",
+    "generate": "Generar Currículum con IA",
+    "download": "Descargar PDF",
+    "selectTemplate": "Seleccionar Plantilla"
+  },
+  "ats": {
+    "title": "Análisis ATS",
+    "score": "Puntuación ATS",
+    "excellent": "Excelente",
+    "good": "Bueno",
+    "fair": "Regular",
+    "needsImprovement": "Necesita Mejora"
+  },
+  "coverLetter": {
+    "title": "Carta de Presentación",
+    "generate": "Generar Carta de Presentación",
+    "tone": "Tono",
+    "length": "Longitud",
+    "style": "Estilo"
+  },
+  "comparison": {
+    "title": "Comparar Versiones",
+    "merge": "Fusionar Versiones",
+    "differences": "Diferencias Encontradas",
+    "changes": "cambio(s)"
+  }
+}
+

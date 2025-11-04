@@ -1,7 +1,9 @@
-import { forwardRef } from 'react'
+import { forwardRef, useId, memo } from 'react'
+import PropTypes from 'prop-types'
 
-const Textarea = forwardRef(({ label, error, className = '', ...props }, ref) => {
-  const id = props.id || `textarea-${Math.random().toString(36).substr(2, 9)}`
+const Textarea = memo(forwardRef(({ label, error, className = '', ...props }, ref) => {
+  const generatedId = useId()
+  const id = props.id || generatedId
   const errorId = error ? `${id}-error` : undefined
 
   return (
@@ -30,8 +32,22 @@ const Textarea = forwardRef(({ label, error, className = '', ...props }, ref) =>
       )}
     </div>
   )
-})
+}))
 
 Textarea.displayName = 'Textarea'
+
+Textarea.propTypes = {
+  label: PropTypes.string,
+  error: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+}
+
+Textarea.defaultProps = {
+  label: null,
+  error: null,
+  className: '',
+  id: null,
+}
 
 export default Textarea

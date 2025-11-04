@@ -2,7 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
 import ErrorBoundary from './ErrorBoundary.jsx'
+import { initI18n } from './i18n'
 import './index.css'
+
+// Initialize i18n
+initI18n()
 
 const rootElement = document.getElementById('app')
 

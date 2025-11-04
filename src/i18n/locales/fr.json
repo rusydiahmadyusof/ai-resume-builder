@@ -1,0 +1,69 @@
+{
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "remove": "Retirer",
+    "submit": "Soumettre",
+    "close": "Fermer",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès"
+  },
+  "nav": {
+    "home": "Accueil",
+    "builder": "Créer un CV",
+    "preview": "Aperçu"
+  },
+  "home": {
+    "title": "Générateur de CV IA",
+    "subtitle": "Créez des CV professionnels et personnalisés avec l'IA",
+    "getStarted": "Commencer",
+    "features": {
+      "ai": "Contenu avec IA",
+      "templates": "20 Modèles Professionnels",
+      "pdf": "Export PDF",
+      "ats": "Optimisation ATS"
+    }
+  },
+  "builder": {
+    "title": "Créer Votre CV",
+    "personalInfo": "Informations Personnelles",
+    "workExperience": "Expérience Professionnelle",
+    "education": "Formation",
+    "skills": "Compétences",
+    "certifications": "Certifications",
+    "languages": "Langues",
+    "jobApplication": "Candidature"
+  },
+  "preview": {
+    "title": "Aperçu du CV",
+    "generate": "Générer un CV avec IA",
+    "download": "Télécharger PDF",
+    "selectTemplate": "Sélectionner un Modèle"
+  },
+  "ats": {
+    "title": "Analyse ATS",
+    "score": "Score ATS",
+    "excellent": "Excellent",
+    "good": "Bon",
+    "fair": "Moyen",
+    "needsImprovement": "À Améliorer"
+  },
+  "coverLetter": {
+    "title": "Lettre de Motivation",
+    "generate": "Générer une Lettre de Motivation",
+    "tone": "Ton",
+    "length": "Longueur",
+    "style": "Style"
+  },
+  "comparison": {
+    "title": "Comparer les Versions",
+    "merge": "Fusionner les Versions",
+    "differences": "Différences Trouvées",
+    "changes": "changement(s)"
+  }
+}
+
