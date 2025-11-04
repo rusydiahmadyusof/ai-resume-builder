@@ -289,6 +289,8 @@ function Preview() {
             duration={5000}
           />
         )}
+
+        <KeyboardShortcuts shortcuts={shortcutList} />
       </div>
     </div>
   )
