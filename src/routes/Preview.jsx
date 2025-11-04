@@ -246,17 +246,17 @@ function Preview() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 py-4 sm:py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
       <div className="max-w-6xl mx-auto px-4">
         <Breadcrumbs
           items={[
@@ -270,10 +270,10 @@ function Preview() {
         <div className="mb-6 space-y-4">
           <div className="flex items-start justify-between flex-col sm:flex-row gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Resume Preview
               </h1>
-              <p className="text-sm sm:text-base text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 Review your AI-generated resume and choose a template
               </p>
             </div>
@@ -354,10 +354,10 @@ function Preview() {
 
             <Card>
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                   Generate AI Resume
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   Use AI to tailor your resume content to the job description.
                 </p>
                 <Button
@@ -401,7 +401,7 @@ function Preview() {
               zoomLevel={zoomLevel}
             />
             <div
-              className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 overflow-x-auto transition-transform duration-200"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-xl p-4 sm:p-6 lg:p-8 overflow-x-auto transition-transform duration-200"
               ref={resumeRef}
               style={{
                 transform: `scale(${zoomLevel})`,

@@ -48,8 +48,8 @@ function Navbar() {
                 px-3 py-2 rounded-md text-sm font-medium transition-colors
                 ${
                   isActive('/builder')
-                    ? 'text-indigo-600 bg-indigo-50'
-                    : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50'
+                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }
               `}
             >
@@ -61,8 +61,8 @@ function Navbar() {
                 px-3 py-2 rounded-md text-sm font-medium transition-colors
                 ${
                   isActive('/preview')
-                    ? 'text-indigo-600 bg-indigo-50'
-                    : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50'
+                    ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }
               `}
             >
@@ -73,7 +73,7 @@ function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-md text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
+            className="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
@@ -105,8 +105,8 @@ function Navbar() {
                   px-3 py-2 rounded-md text-sm font-medium transition-colors
                   ${
                     isActive('/')
-                      ? 'text-indigo-600 bg-indigo-50'
-                      : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50'
+                      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }
                 `}
               >
@@ -119,8 +119,8 @@ function Navbar() {
                   px-3 py-2 rounded-md text-sm font-medium transition-colors
                   ${
                     isActive('/builder')
-                      ? 'text-indigo-600 bg-indigo-50'
-                      : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50'
+                      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }
                 `}
               >
@@ -133,8 +133,8 @@ function Navbar() {
                   px-3 py-2 rounded-md text-sm font-medium transition-colors
                   ${
                     isActive('/preview')
-                      ? 'text-indigo-600 bg-indigo-50'
-                      : 'text-gray-600 hover:text-indigo-600 hover:bg-gray-50'
+                      ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20'
+                      : 'text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }
                 `}
               >
