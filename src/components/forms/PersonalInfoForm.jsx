@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
+import Toast from '../ui/Toast'
 import { pdfParserService } from '../../services/pdfParserService'
 import { groqService } from '../../services/groqService'
 
@@ -10,6 +11,7 @@ function PersonalInfoForm({ data, onUpdate }) {
   const [photoPreview, setPhotoPreview] = useState(data?.photo || '')
   const [isParsingPDF, setIsParsingPDF] = useState(false)
   const [pdfError, setPdfError] = useState(null)
+  const [toast, setToast] = useState(null)
 
   useEffect(() => {
     if (data?.photo) {
@@ -32,13 +34,13 @@ function PersonalInfoForm({ data, onUpdate }) {
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file')
+      setToast({ message: 'Please select an image file', type: 'error' })
       return
     }
 
     // Validate file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
-      alert('Image size should be less than 2MB')
+      setToast({ message: 'Image size should be less than 2MB', type: 'error' })
       return
     }
 
@@ -108,7 +110,7 @@ function PersonalInfoForm({ data, onUpdate }) {
         }
 
         // Show success message
-        alert('Personal information extracted successfully! Please review and update the fields.')
+        setToast({ message: 'Personal information extracted successfully! Please review and update the fields.', type: 'success' })
       } else {
         setPdfError(result.error || 'Failed to extract information from PDF')
       }
@@ -264,6 +266,15 @@ function PersonalInfoForm({ data, onUpdate }) {
           Save Personal Information
         </button>
       </form>
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+          duration={5000}
+        />
+      )}
     </Card>
   )
 }
