@@ -1,6 +1,6 @@
-/* Academic Resume Template */
+/* Academic Resume Template - 2025 Trendy Version */
 .resume-academic {
-  font-family: 'Times New Roman', 'Georgia', serif;
+  font-family: 'Inter', 'Georgia', serif;
   max-width: 210mm;
   margin: 0 auto;
   background: #ffffff;
@@ -9,7 +9,7 @@
 }
 
 .resume-academic .resume-header {
-  border-bottom: 3px solid #2c3e50;
+  border-bottom: 3px solid #1e293b;
   padding: 2.5rem 2rem;
   text-align: center;
 }
@@ -26,11 +26,11 @@
 }
 
 .resume-academic .resume-header h1 {
-  font-size: 2.5rem;
-  font-weight: 400;
+  font-size: 2.25rem;
+  font-weight: 500;
   margin: 0 0 1rem 0;
-  color: #2c3e50;
-  font-style: italic;
+  color: #1e293b;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-academic .resume-photo {
@@ -42,7 +42,7 @@
   height: 110px;
   border-radius: 4px;
   object-fit: cover;
-  border: 2px solid #2c3e50;
+  border: 2px solid #1e293b;
 }
 
 .resume-academic .resume-header .contact-info {
@@ -50,13 +50,18 @@
   justify-content: center;
   gap: 1.5rem;
   flex-wrap: wrap;
-  font-size: 0.95rem;
-  color: #555;
+  font-size: 0.9rem;
+  color: #64748b;
 }
 
 .resume-academic .resume-header .contact-info a {
-  color: #2c3e50;
+  color: #1e293b;
   text-decoration: none;
+  transition: color 0.2s;
+}
+
+.resume-academic .resume-header .contact-info a:hover {
+  color: #334155;
 }
 
 .resume-academic .resume-body {
@@ -68,23 +73,23 @@
 }
 
 .resume-academic .section-title {
-  font-size: 1.4rem;
-  font-weight: 400;
-  color: #2c3e50;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
   margin-bottom: 1.25rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #bdc3c7;
+  border-bottom: 2px solid #e2e8f0;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  font-style: italic;
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-academic .summary {
   font-size: 1rem;
-  line-height: 2;
-  color: #34495e;
-  text-align: justify;
-  font-style: italic;
+  line-height: 1.85;
+  color: #475569;
+  font-family: 'Georgia', serif;
 }
 
 .resume-academic .experience-item,
@@ -95,34 +100,36 @@
 
 .resume-academic .experience-item h3,
 .resume-academic .education-item h3 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #1e293b;
   margin: 0 0 0.25rem 0;
-  font-style: italic;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-academic .experience-item .company,
 .resume-academic .education-item .institution {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #34495e;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #475569;
   margin-bottom: 0.25rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-academic .experience-item .date,
 .resume-academic .education-item .date {
-  font-size: 0.9rem;
-  color: #7f8c8d;
+  font-size: 0.875rem;
+  color: #64748b;
   margin-bottom: 0.75rem;
   font-style: italic;
 }
 
 .resume-academic .experience-item .responsibilities {
-  color: #34495e;
+  color: #475569;
   margin-top: 0.75rem;
   white-space: pre-line;
-  line-height: 1.9;
+  line-height: 1.85;
+  font-family: 'Georgia', serif;
 }
 
 .resume-academic .skills-list {
@@ -132,26 +139,27 @@
 }
 
 .resume-academic .skill-tag {
-  background: #ecf0f1;
-  color: #2c3e50;
-  padding: 0.4rem 0.9rem;
-  border-radius: 3px;
-  font-size: 0.9rem;
-  border: 1px solid #bdc3c7;
-  font-style: italic;
+  background: #f1f5f9;
+  color: #1e293b;
+  padding: 0.375rem 0.875rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-academic .certification-item,
 .resume-academic .language-item {
   margin-bottom: 0.75rem;
   padding: 0.5rem 0;
-  border-left: 3px solid #bdc3c7;
+  border-left: 2px solid #e2e8f0;
   padding-left: 1rem;
 }
 
 .resume-academic .certification-item strong,
 .resume-academic .language-item strong {
-  color: #2c3e50;
+  color: #1e293b;
 }
 
 @media print {
@@ -159,4 +167,3 @@
     max-width: 100%;
   }
 }
-

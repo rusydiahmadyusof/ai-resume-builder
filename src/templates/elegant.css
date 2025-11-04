@@ -1,19 +1,19 @@
-/* Elegant Resume Template */
+/* Elegant Resume Template - 2025 Trendy Version */
 .resume-elegant {
-  font-family: 'Garamond', 'Georgia', serif;
+  font-family: 'Inter', 'Georgia', serif;
   max-width: 210mm;
   margin: 0 auto;
-  background: #fafafa;
-  color: #2c2c2c;
+  background: #ffffff;
+  color: #1a1a1a;
   line-height: 1.8;
 }
 
 .resume-elegant .resume-header {
   background: #ffffff;
-  color: #2c2c2c;
+  color: #1a1a1a;
   padding: 3rem 2.5rem;
   text-align: center;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .resume-elegant .resume-header-content {
@@ -28,12 +28,12 @@
 }
 
 .resume-elegant .resume-header h1 {
-  font-size: 2.75rem;
+  font-size: 2.5rem;
   font-weight: 400;
   margin: 0 0 0.75rem 0;
-  color: #2c2c2c;
-  letter-spacing: 4px;
-  font-variant: small-caps;
+  color: #1a1a1a;
+  letter-spacing: 0.05em;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-elegant .resume-photo {
@@ -45,7 +45,7 @@
   height: 120px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #2c2c2c;
+  border: 3px solid #1a1a1a;
 }
 
 .resume-elegant .resume-header .contact-info {
@@ -54,14 +54,18 @@
   gap: 2rem;
   flex-wrap: wrap;
   margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #666;
-  font-style: italic;
+  font-size: 0.9rem;
+  color: #6b7280;
 }
 
 .resume-elegant .resume-header .contact-info a {
-  color: #666;
+  color: #6b7280;
   text-decoration: none;
+  transition: color 0.2s;
+}
+
+.resume-elegant .resume-header .contact-info a:hover {
+  color: #1a1a1a;
 }
 
 .resume-elegant .resume-body {
@@ -73,23 +77,23 @@
 }
 
 .resume-elegant .section-title {
-  font-size: 1.3rem;
-  font-weight: 400;
-  color: #2c2c2c;
-  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 1.25rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #d0d0d0;
+  border-bottom: 1px solid #e5e7eb;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  letter-spacing: 3px;
-  font-variant: small-caps;
+  font-size: 0.8rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-elegant .summary {
   font-size: 1.05rem;
-  line-height: 2;
-  color: #444;
-  text-align: justify;
-  font-style: italic;
+  line-height: 1.85;
+  color: #4b5563;
+  font-family: 'Georgia', serif;
 }
 
 .resume-elegant .experience-item,
@@ -100,35 +104,36 @@
 
 .resume-elegant .experience-item h3,
 .resume-elegant .education-item h3 {
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: #2c2c2c;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: #1a1a1a;
   margin: 0 0 0.5rem 0;
-  font-variant: small-caps;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-elegant .experience-item .company,
 .resume-elegant .education-item .institution {
   font-size: 1.05rem;
-  font-weight: 600;
-  color: #666;
+  font-weight: 500;
+  color: #6b7280;
   margin-bottom: 0.5rem;
   font-style: italic;
 }
 
 .resume-elegant .experience-item .date,
 .resume-elegant .education-item .date {
-  font-size: 0.9rem;
-  color: #999;
+  font-size: 0.875rem;
+  color: #9ca3af;
   margin-bottom: 0.75rem;
   font-style: italic;
 }
 
 .resume-elegant .experience-item .responsibilities {
-  color: #444;
+  color: #4b5563;
   margin-top: 0.75rem;
   white-space: pre-line;
-  line-height: 1.9;
+  line-height: 1.85;
+  font-family: 'Georgia', serif;
 }
 
 .resume-elegant .skills-list {
@@ -139,25 +144,26 @@
 
 .resume-elegant .skill-tag {
   background: #ffffff;
-  color: #666;
-  padding: 0.4rem 0.9rem;
-  border-radius: 2px;
-  font-size: 0.9rem;
-  border: 1px solid #e0e0e0;
-  font-style: italic;
+  color: #6b7280;
+  padding: 0.375rem 0.875rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 400;
+  border: 1px solid #e5e7eb;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-elegant .certification-item,
 .resume-elegant .language-item {
   margin-bottom: 0.75rem;
   padding: 0.5rem 0;
-  border-left: 2px solid #e0e0e0;
+  border-left: 2px solid #e5e7eb;
   padding-left: 1rem;
 }
 
 .resume-elegant .certification-item strong,
 .resume-elegant .language-item strong {
-  color: #2c2c2c;
+  color: #1a1a1a;
   font-weight: 600;
 }
 
@@ -167,4 +173,3 @@
     background: #ffffff;
   }
 }
-

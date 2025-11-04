@@ -1,19 +1,19 @@
-/* Two Column Resume Template */
+/* Two Column Resume Template - 2025 Trendy Version */
 .resume-twocolumn {
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   max-width: 210mm;
   margin: 0 auto;
   background: #ffffff;
   color: #1a1a1a;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .resume-twocolumn .resume-header {
-  background: #f8f9fa;
+  background: #ffffff;
   color: #1a1a1a;
   padding: 2.5rem 2rem;
   text-align: center;
-  border-bottom: 3px solid #495057;
+  border-bottom: 2px solid #e5e7eb;
 }
 
 .resume-twocolumn .resume-header-content {
@@ -28,9 +28,29 @@
 }
 
 .resume-twocolumn .resume-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 600;
   margin: 0 0 0.75rem 0;
+  letter-spacing: -0.01em;
+}
+
+.resume-twocolumn .resume-header .contact-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.resume-twocolumn .resume-header .contact-info a {
+  color: #6b7280;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.resume-twocolumn .resume-header .contact-info a:hover {
+  color: #1a1a1a;
 }
 
 .resume-twocolumn .resume-photo {
@@ -42,21 +62,7 @@
   height: 110px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #495057;
-}
-
-.resume-twocolumn .resume-header .contact-info {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.resume-twocolumn .resume-header .contact-info a {
-  color: #495057;
-  text-decoration: none;
+  border: 2px solid #e5e7eb;
 }
 
 .resume-twocolumn .resume-body {
@@ -71,20 +77,20 @@
 }
 
 .resume-twocolumn .section-title {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #495057;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #495057;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  border-bottom: 1px solid #e5e7eb;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 .resume-twocolumn .summary {
   font-size: 1rem;
-  line-height: 1.7;
-  color: #333;
+  line-height: 1.75;
+  color: #4b5563;
   grid-column: 1 / -1;
 }
 
@@ -96,7 +102,7 @@
 .resume-twocolumn .experience-item h3,
 .resume-twocolumn .education-item h3 {
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   color: #1a1a1a;
   margin: 0 0 0.25rem 0;
 }
@@ -104,23 +110,25 @@
 .resume-twocolumn .experience-item .company,
 .resume-twocolumn .education-item .institution {
   font-size: 1rem;
-  font-weight: 600;
-  color: #495057;
+  font-weight: 500;
+  color: #6b7280;
   margin-bottom: 0.25rem;
 }
 
 .resume-twocolumn .experience-item .date,
 .resume-twocolumn .education-item .date {
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 0.875rem;
+  color: #9ca3af;
   margin-bottom: 0.5rem;
+  font-style: normal;
 }
 
 .resume-twocolumn .experience-item .responsibilities {
-  color: #333;
+  color: #4b5563;
   margin-top: 0.5rem;
   white-space: pre-line;
   font-size: 0.95rem;
+  line-height: 1.7;
 }
 
 .resume-twocolumn .skills-list {
@@ -130,11 +138,13 @@
 }
 
 .resume-twocolumn .skill-tag {
-  background: #e9ecef;
-  color: #495057;
-  padding: 0.4rem 0.9rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
+  background: #f3f4f6;
+  color: #1a1a1a;
+  padding: 0.375rem 0.875rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
 }
 
 .resume-twocolumn .certification-item,
@@ -159,4 +169,3 @@
     grid-template-columns: 1fr;
   }
 }
-

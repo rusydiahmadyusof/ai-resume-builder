@@ -1,15 +1,15 @@
-/* Traditional Resume Template */
+/* Traditional Resume Template - 2025 Trendy Version */
 .resume-traditional {
-  font-family: 'Times New Roman', serif;
+  font-family: 'Inter', 'Times New Roman', serif;
   max-width: 210mm;
   margin: 0 auto;
   background: #ffffff;
-  color: #000000;
-  line-height: 1.8;
+  color: #1a1a1a;
+  line-height: 1.7;
 }
 
 .resume-traditional .resume-header {
-  border-bottom: 2px solid #000000;
+  border-bottom: 2px solid #1a1a1a;
   padding: 2rem;
   text-align: center;
 }
@@ -27,11 +27,11 @@
 
 .resume-traditional .resume-header h1 {
   font-size: 2.25rem;
-  font-weight: 400;
+  font-weight: 500;
   margin: 0 0 1rem 0;
-  color: #000000;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  color: #1a1a1a;
+  letter-spacing: 0.02em;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-traditional .resume-photo {
@@ -43,7 +43,7 @@
   height: 110px;
   border-radius: 4px;
   object-fit: cover;
-  border: 2px solid #000000;
+  border: 2px solid #1a1a1a;
 }
 
 .resume-traditional .resume-header .contact-info {
@@ -51,13 +51,18 @@
   justify-content: center;
   gap: 1.5rem;
   flex-wrap: wrap;
-  font-size: 0.95rem;
-  color: #333;
+  font-size: 0.9rem;
+  color: #4b5563;
 }
 
 .resume-traditional .resume-header .contact-info a {
-  color: #000000;
+  color: #1a1a1a;
   text-decoration: none;
+  transition: color 0.2s;
+}
+
+.resume-traditional .resume-header .contact-info a:hover {
+  color: #374151;
 }
 
 .resume-traditional .resume-body {
@@ -69,21 +74,22 @@
 }
 
 .resume-traditional .section-title {
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #000000;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #000000;
+  border-bottom: 1px solid #1a1a1a;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-traditional .summary {
   font-size: 1rem;
-  line-height: 2;
-  color: #000000;
-  text-align: justify;
+  line-height: 1.75;
+  color: #374151;
 }
 
 .resume-traditional .experience-item,
@@ -95,30 +101,34 @@
 .resume-traditional .experience-item h3,
 .resume-traditional .education-item h3 {
   font-size: 1.15rem;
-  font-weight: 700;
-  color: #000000;
+  font-weight: 600;
+  color: #1a1a1a;
   margin: 0 0 0.25rem 0;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-traditional .experience-item .company,
 .resume-traditional .education-item .institution {
   font-size: 1rem;
-  font-weight: 700;
-  color: #000000;
+  font-weight: 500;
+  color: #374151;
   margin-bottom: 0.25rem;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-traditional .experience-item .date,
 .resume-traditional .education-item .date {
-  font-size: 0.9rem;
-  color: #333;
+  font-size: 0.875rem;
+  color: #6b7280;
   margin-bottom: 0.5rem;
+  font-style: normal;
 }
 
 .resume-traditional .experience-item .responsibilities {
-  color: #000000;
+  color: #374151;
   margin-top: 0.5rem;
   white-space: pre-line;
+  line-height: 1.7;
 }
 
 .resume-traditional .skills-list {
@@ -129,25 +139,27 @@
 
 .resume-traditional .skill-tag {
   background: #ffffff;
-  color: #000000;
-  padding: 0.4rem 0.9rem;
-  border-radius: 0;
-  font-size: 0.9rem;
-  border: 1px solid #000000;
+  color: #1a1a1a;
+  padding: 0.375rem 0.875rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #1a1a1a;
+  font-family: 'Inter', sans-serif;
 }
 
 .resume-traditional .certification-item,
 .resume-traditional .language-item {
   margin-bottom: 0.75rem;
   padding: 0.5rem 0;
-  border-left: 2px solid #000000;
+  border-left: 2px solid #1a1a1a;
   padding-left: 1rem;
 }
 
 .resume-traditional .certification-item strong,
 .resume-traditional .language-item strong {
-  color: #000000;
-  font-weight: 700;
+  color: #1a1a1a;
+  font-weight: 600;
 }
 
 @media print {
@@ -155,4 +167,3 @@
     max-width: 100%;
   }
 }
-
