@@ -31,6 +31,8 @@ function Builder() {
   const {
     resumeData,
     isLoaded,
+    saveStatus,
+    lastSaved,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
@@ -170,13 +172,16 @@ function Builder() {
         
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-2">
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 Build Your Resume
               </h1>
-              <p className="text-sm sm:text-base text-gray-600">
-                Fill in your details step by step. Your progress is automatically saved.
-              </p>
+              <div className="flex items-center gap-4 flex-wrap">
+                <p className="text-sm sm:text-base text-gray-600">
+                  Fill in your details step by step. Your progress is automatically saved.
+                </p>
+                <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
+              </div>
             </div>
             <Button
               variant="secondary"
