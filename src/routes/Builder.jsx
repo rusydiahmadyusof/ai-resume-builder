@@ -4,6 +4,8 @@ import { useResumeData } from '../hooks/useResumeData'
 import Stepper from '../components/ui/Stepper'
 import Button from '../components/ui/Button'
 import Toast from '../components/ui/Toast'
+import Breadcrumbs from '../components/ui/Breadcrumbs'
+import WorkflowProgress from '../components/ui/WorkflowProgress'
 import PersonalInfoForm from '../components/forms/PersonalInfoForm'
 import WorkExperienceForm from '../components/forms/WorkExperienceForm'
 import EducationForm from '../components/forms/EducationForm'
@@ -156,15 +158,34 @@ function Builder() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 py-4 sm:py-8">
       <div className="max-w-4xl mx-auto px-4">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', path: '/' },
+            { label: 'Build Resume', path: null },
+          ]}
+        />
+        <WorkflowProgress />
+        
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            Build Your Resume
-          </h1>
-          <p className="text-sm sm:text-base text-gray-600">
-            Fill in your details step by step. Your progress is automatically saved.
-          </p>
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                Build Your Resume
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600">
+                Fill in your details step by step. Your progress is automatically saved.
+              </p>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/')}
+              className="hidden sm:flex"
+            >
+              ← Home
+            </Button>
+          </div>
         </div>
 
         <Stepper

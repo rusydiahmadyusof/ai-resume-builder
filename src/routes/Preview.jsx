@@ -9,6 +9,8 @@ import TemplateSelector from '../components/resume/TemplateSelector'
 import Button from '../components/ui/Button'
 import Card from '../components/ui/Card'
 import Toast from '../components/ui/Toast'
+import Breadcrumbs from '../components/ui/Breadcrumbs'
+import WorkflowProgress from '../components/ui/WorkflowProgress'
 
 function Preview() {
   const navigate = useNavigate()
@@ -107,32 +109,43 @@ function Preview() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 py-4 sm:py-8">
       <div className="max-w-6xl mx-auto px-4">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', path: '/' },
+            { label: 'Build Resume', path: '/builder' },
+            { label: 'Preview', path: null },
+          ]}
+        />
+        <WorkflowProgress />
+        
         <div className="mb-6 space-y-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-              Resume Preview
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600">
-              Review your AI-generated resume and choose a template
-            </p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
-            <Button 
-              variant="secondary" 
-              onClick={() => navigate('/builder')}
-              className="w-full sm:w-auto"
-            >
-              Edit Resume
-            </Button>
-            <Button 
-              onClick={handleDownloadPDF} 
-              disabled={isGeneratingPDF}
-              className="w-full sm:w-auto"
-            >
-              {isGeneratingPDF ? 'Generating PDF...' : 'Download PDF'}
-            </Button>
+          <div className="flex items-start justify-between flex-col sm:flex-row gap-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+                Resume Preview
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600">
+                Review your AI-generated resume and choose a template
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+              <Button 
+                variant="secondary" 
+                onClick={() => navigate('/builder')}
+                className="w-full sm:w-auto"
+              >
+                ← Edit Resume
+              </Button>
+              <Button 
+                onClick={handleDownloadPDF} 
+                disabled={isGeneratingPDF}
+                className="w-full sm:w-auto"
+              >
+                {isGeneratingPDF ? 'Generating PDF...' : 'Download PDF'}
+              </Button>
+            </div>
           </div>
         </div>
 
