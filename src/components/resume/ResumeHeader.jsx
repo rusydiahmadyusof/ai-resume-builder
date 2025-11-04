@@ -47,14 +47,23 @@ function ResumeHeader({ personalInfo }) {
 
   return (
     <div className="resume-header">
-      <h1>{personalInfo.name || 'Your Name'}</h1>
-      {contactItems.length > 0 && (
-        <div className="contact-info">
-          {contactItems.map((item, index) => (
-            <span key={index}>{item}</span>
-          ))}
+      <div className="resume-header-content">
+        <div className="resume-header-text">
+          <h1>{personalInfo.name || 'Your Name'}</h1>
+          {contactItems.length > 0 && (
+            <div className="contact-info">
+              {contactItems.map((item, index) => (
+                <span key={index}>{item}</span>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+        {personalInfo.photo && (
+          <div className="resume-photo">
+            <img src={personalInfo.photo} alt={personalInfo.name || 'Profile'} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

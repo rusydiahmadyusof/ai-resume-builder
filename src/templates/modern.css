@@ -15,11 +15,35 @@
   text-align: center;
 }
 
+.resume-modern .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.resume-modern .resume-header-text {
+  flex: 1;
+}
+
 .resume-modern .resume-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0 0 0.5rem 0;
   letter-spacing: -0.5px;
+}
+
+.resume-modern .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-modern .resume-photo img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .resume-modern .resume-header .contact-info {

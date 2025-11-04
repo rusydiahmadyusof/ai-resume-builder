@@ -15,12 +15,35 @@
   border-bottom: 4px solid #3498db;
 }
 
+.resume-professional .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+}
+
+.resume-professional .resume-header-text {
+  flex: 1;
+}
+
 .resume-professional .resume-header h1 {
   font-size: 2.25rem;
   font-weight: 600;
   margin: 0 0 0.75rem 0;
   text-transform: uppercase;
   letter-spacing: 1px;
+}
+
+.resume-professional .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-professional .resume-photo img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3498db;
 }
 
 .resume-professional .resume-header .contact-info {

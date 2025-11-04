@@ -39,6 +39,19 @@
   100% { transform: translate(50px, 50px); }
 }
 
+.resume-bold .resume-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.resume-bold .resume-header-text {
+  flex: 1;
+}
+
 .resume-bold .resume-header h1 {
   font-size: 3rem;
   font-weight: 900;
@@ -48,6 +61,21 @@
   position: relative;
   z-index: 1;
   text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.2);
+}
+
+.resume-bold .resume-photo {
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.resume-bold .resume-photo img {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid white;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .resume-bold .resume-header .contact-info {

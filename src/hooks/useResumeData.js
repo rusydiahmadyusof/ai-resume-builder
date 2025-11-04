@@ -11,6 +11,7 @@ const initialResumeData = {
     linkedin: '',
     github: '',
     portfolio: '',
+    photo: '',
   },
   workExperience: [
     {
