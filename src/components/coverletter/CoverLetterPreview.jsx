@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Button from '../ui/Button'
 import Card from '../ui/Card'
 import { pdfService } from '../../services/pdfService'
 
 function CoverLetterPreview({ coverLetter, personalInfo, jobTitle }) {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
-  const coverLetterRef = useState(null)
+  const coverLetterRef = useRef(null)
 
   const handleDownloadPDF = async () => {
     if (!coverLetterRef.current) {
