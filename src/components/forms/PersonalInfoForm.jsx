@@ -142,7 +142,13 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
 
         // Show success message with details
         const extractedFields = Object.entries(extractedData)
-          .filter(([_, value]) => value && value.trim())
+          .filter(([key, value]) => {
+            // Exclude workExperience array and only check string fields
+            if (key === 'workExperience' || Array.isArray(value) || typeof value !== 'string') {
+              return false
+            }
+            return value && value.trim().length > 0
+          })
           .map(([key]) => key)
           .join(', ')
         

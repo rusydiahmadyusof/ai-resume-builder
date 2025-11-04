@@ -32,10 +32,12 @@ function ResumeComparison({ versions, resumeData, selectedTemplate, onMerge }) {
   const version2 = versions.find(v => v.id === selectedVersions[1])
 
   const handleVersionSelect = useCallback((index, versionId) => {
-    const newSelected = [...selectedVersions]
-    newSelected[index] = versionId
-    setSelectedVersions(newSelected)
-  }, [selectedVersions])
+    setSelectedVersions(prev => {
+      const newSelected = [...prev]
+      newSelected[index] = versionId
+      return newSelected
+    })
+  }, [])
 
   // Calculate differences
   const differences = useMemo(() => {

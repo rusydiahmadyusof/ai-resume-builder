@@ -114,17 +114,61 @@ export const useResumeData = () => {
   }
 
   // Add work experience
-  const addWorkExperience = () => {
-    const newExp = {
-      id: Date.now(),
-      company: '',
-      position: '',
-      startDate: '',
-      endDate: '',
-      current: false,
-      responsibilities: '',
-    }
-    updateResumeData('workExperience', [...resumeData.workExperience, newExp])
+  const addWorkExperience = (initialData = null) => {
+    setResumeData((prev) => {
+      // Generate unique ID using timestamp + random suffix to avoid collisions
+      const uniqueId = Date.now() + Math.random().toString(36).substr(2, 9)
+      
+      const newExp = {
+        id: uniqueId,
+        company: initialData?.company || '',
+        position: initialData?.position || '',
+        startDate: initialData?.startDate || '',
+        endDate: initialData?.endDate || '',
+        current: initialData?.current || false,
+        responsibilities: initialData?.responsibilities || '',
+      }
+      
+      const updated = {
+        ...prev,
+        workExperience: [...prev.workExperience, newExp],
+      }
+      
+      // Save to localStorage
+      try {
+        localStorage.setItem('resumeData', JSON.stringify(updated))
+        setSaveStatus('saved')
+        setLastSaved(Date.now())
+        setStorageError(null)
+        setTimeout(() => {
+          setSaveStatus((status) => (status === 'saved' ? 'idle' : status))
+        }, 3000)
+      } catch (error) {
+        console.error('Error saving resume data:', error)
+        setSaveStatus('error')
+        if (error.name === 'QuotaExceededError') {
+          setStorageError({
+            type: 'QUOTA_EXCEEDED',
+            message: 'Storage quota exceeded. Please clear some data.',
+            suggestions: [
+              'Clear browser storage',
+              'Export and delete old versions',
+              'Remove unused resume data',
+            ],
+          })
+        } else {
+          setStorageError({
+            type: 'UNKNOWN',
+            message: error.message || 'Failed to save data',
+          })
+        }
+        setTimeout(() => {
+          setSaveStatus((status) => (status === 'error' ? 'idle' : status))
+        }, 5000)
+      }
+      
+      return updated
+    })
   }
 
   // Update work experience
