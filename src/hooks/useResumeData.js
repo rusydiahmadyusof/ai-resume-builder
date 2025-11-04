@@ -47,6 +47,8 @@ const initialResumeData = {
 export const useResumeData = () => {
   const [resumeData, setResumeData] = useState(initialResumeData)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [saveStatus, setSaveStatus] = useState('idle') // 'idle', 'saving', 'saved', 'error'
+  const [lastSaved, setLastSaved] = useState(null)
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -64,7 +66,29 @@ export const useResumeData = () => {
         ...prev,
         [section]: data,
       }
-      storageService.saveResumeData(updated)
+      
+      // Set saving status
+      setSaveStatus('saving')
+      
+      // Save to localStorage
+      const success = storageService.saveResumeData(updated)
+      
+      // Update status based on result
+      if (success) {
+        setSaveStatus('saved')
+        setLastSaved(Date.now())
+        // Clear saved status after 3 seconds
+        setTimeout(() => {
+          setSaveStatus((prev) => (prev === 'saved' ? 'idle' : prev))
+        }, 3000)
+      } else {
+        setSaveStatus('error')
+        // Clear error status after 5 seconds
+        setTimeout(() => {
+          setSaveStatus((prev) => (prev === 'error' ? 'idle' : prev))
+        }, 5000)
+      }
+      
       return updated
     })
   }
@@ -199,6 +223,8 @@ export const useResumeData = () => {
   return {
     resumeData,
     isLoaded,
+    saveStatus,
+    lastSaved,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
