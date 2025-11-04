@@ -3,9 +3,13 @@ import { useState, useEffect } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
+import { pdfParserService } from '../../services/pdfParserService'
+import { groqService } from '../../services/groqService'
 
 function PersonalInfoForm({ data, onUpdate }) {
   const [photoPreview, setPhotoPreview] = useState(data?.photo || '')
+  const [isParsingPDF, setIsParsingPDF] = useState(false)
+  const [pdfError, setPdfError] = useState(null)
 
   useEffect(() => {
     if (data?.photo) {
@@ -52,6 +56,72 @@ function PersonalInfoForm({ data, onUpdate }) {
     setValue('photo', '')
   }
 
+  const handlePDFUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    // Validate PDF
+    const validation = pdfParserService.validatePDF(file)
+    if (!validation.valid) {
+      setPdfError(validation.error)
+      return
+    }
+
+    setIsParsingPDF(true)
+    setPdfError(null)
+
+    try {
+      // Extract text from PDF
+      const pdfText = await pdfParserService.extractTextFromPDF(file)
+      
+      // Use AI to extract personal information
+      const result = await groqService.extractPersonalInfoFromPDF(pdfText)
+
+      if (result.success && result.data) {
+        // Pre-fill form with extracted data
+        const extractedData = result.data
+        
+        // Only update fields that are not empty and not already filled
+        if (extractedData.name && !watch('name')) {
+          setValue('name', extractedData.name)
+        }
+        if (extractedData.email && !watch('email')) {
+          setValue('email', extractedData.email)
+        }
+        if (extractedData.phone && !watch('phone')) {
+          setValue('phone', extractedData.phone)
+        }
+        if (extractedData.address && !watch('address')) {
+          setValue('address', extractedData.address)
+        }
+        if (extractedData.linkedin && !watch('linkedin')) {
+          setValue('linkedin', extractedData.linkedin)
+        }
+        if (extractedData.github && !watch('github')) {
+          setValue('github', extractedData.github)
+        }
+        if (extractedData.portfolio && !watch('portfolio')) {
+          setValue('portfolio', extractedData.portfolio)
+        }
+        if (extractedData.summary && !watch('summary')) {
+          setValue('summary', extractedData.summary)
+        }
+
+        // Show success message
+        alert('Personal information extracted successfully! Please review and update the fields.')
+      } else {
+        setPdfError(result.error || 'Failed to extract information from PDF')
+      }
+    } catch (error) {
+      console.error('Error parsing PDF:', error)
+      setPdfError(error.message || 'Failed to process PDF')
+    } finally {
+      setIsParsingPDF(false)
+      // Reset file input
+      e.target.value = ''
+    }
+  }
+
   const onSubmit = (formData) => {
     onUpdate(formData)
   }
@@ -59,6 +129,36 @@ function PersonalInfoForm({ data, onUpdate }) {
   return (
     <Card title="Personal Information">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* PDF Upload Section */}
+        <div className="space-y-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <label className="block text-sm font-medium text-gray-700">
+            Upload Existing Resume (PDF) - Optional
+          </label>
+          <p className="text-xs text-gray-600 mb-2">
+            Upload your existing resume PDF to automatically extract and fill in your personal information.
+          </p>
+          <div className="flex items-center gap-2">
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={handlePDFUpload}
+              disabled={isParsingPDF}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 file:cursor-pointer disabled:opacity-50"
+            />
+          </div>
+          {isParsingPDF && (
+            <div className="flex items-center gap-2 text-sm text-blue-600">
+              <span className="animate-spin">⏳</span>
+              <span>Extracting information from PDF...</span>
+            </div>
+          )}
+          {pdfError && (
+            <div className="text-sm text-red-600 bg-red-50 p-2 rounded">
+              {pdfError}
+            </div>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Full Name *"

@@ -135,6 +135,97 @@ Make it concise, impactful, and tailored to the job requirements.`
       }
     }
   },
+
+  /**
+   * Extract personal information from resume PDF text using AI
+   * @param {string} pdfText - Extracted text from PDF
+   * @returns {Promise<Object>} Extracted personal information
+   */
+  extractPersonalInfoFromPDF: async (pdfText) => {
+    try {
+      if (!import.meta.env.VITE_GROQ_API_KEY) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      // Limit text to avoid token limits
+      const limitedText = pdfText.substring(0, 3000)
+
+      const prompt = `Extract personal information from the following resume text. Return ONLY a valid JSON object with this exact structure:
+
+{
+  "name": "full name or empty string",
+  "email": "email address or empty string",
+  "phone": "phone number or empty string",
+  "address": "address or empty string",
+  "linkedin": "LinkedIn URL or empty string",
+  "github": "GitHub URL or empty string",
+  "portfolio": "portfolio website URL or empty string",
+  "summary": "professional summary or empty string"
+}
+
+Resume text:
+${limitedText}
+
+Important:
+- Extract only the information that is clearly present in the text
+- If a field is not found, return an empty string for that field
+- For email, phone, and URLs, extract the exact values
+- For summary, extract the professional summary/objective section if available
+- Return ONLY valid JSON, no additional text or explanation`
+
+      const completion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert at extracting structured data from resume text. Always return valid JSON only, no additional text.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.3, // Lower temperature for more accurate extraction
+        max_tokens: 500,
+      })
+
+      const content = completion.choices[0]?.message?.content || ''
+      
+      // Extract JSON from response
+      let extractedData
+      try {
+        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || 
+                         content.match(/```\n([\s\S]*?)\n```/) ||
+                         content.match(/\{[\s\S]*\}/)
+        const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : content
+        extractedData = JSON.parse(jsonString)
+      } catch (parseError) {
+        console.warn('Failed to parse AI response as JSON, using fallback:', parseError)
+        // Fallback: try basic regex extraction
+        extractedData = {
+          name: extractField(pdfText, 'name'),
+          email: extractEmail(pdfText),
+          phone: extractPhone(pdfText),
+          address: '',
+          linkedin: extractLinkedIn(pdfText),
+          github: extractGitHub(pdfText),
+          portfolio: '',
+          summary: '',
+        }
+      }
+
+      return {
+        success: true,
+        data: extractedData,
+      }
+    } catch (error) {
+      console.error('Error extracting personal info from PDF:', error)
+      return {
+        success: false,
+        error: error.message || 'Failed to extract information from PDF',
+      }
+    }
+  },
 }
 
 /**
@@ -223,5 +314,36 @@ function formatLanguages(languages) {
     return 'No languages provided'
   }
   return languages.map((lang) => `${lang.name || 'Language'} (${lang.proficiency || 'Proficiency'})`).join(', ')
+}
+
+// Helper functions for fallback extraction
+function extractEmail(text) {
+  const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/
+  const match = text.match(emailRegex)
+  return match ? match[0] : ''
+}
+
+function extractPhone(text) {
+  const phoneRegex = /(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/
+  const match = text.match(phoneRegex)
+  return match ? match[0] : ''
+}
+
+function extractLinkedIn(text) {
+  const linkedInRegex = /(https?:\/\/)?(www\.)?linkedin\.com\/in\/[\w-]+/i
+  const match = text.match(linkedInRegex)
+  return match ? match[0] : ''
+}
+
+function extractGitHub(text) {
+  const githubRegex = /(https?:\/\/)?(www\.)?github\.com\/[\w-]+/i
+  const match = text.match(githubRegex)
+  return match ? match[0] : ''
+}
+
+function extractField(text, fieldName) {
+  // Simple extraction - look for common patterns
+  const lines = text.split('\n').slice(0, 5) // First 5 lines usually contain name
+  return lines[0]?.trim() || ''
 }
 
