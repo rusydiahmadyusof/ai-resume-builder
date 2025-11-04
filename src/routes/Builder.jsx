@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useResumeData } from '../hooks/useResumeData'
 import Stepper from '../components/ui/Stepper'
@@ -31,6 +31,8 @@ function Builder() {
   const {
     resumeData,
     isLoaded,
+    storageError,
+    clearStorageError,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
@@ -47,6 +49,17 @@ function Builder() {
     removeLanguage,
     updateJobApplication,
   } = useResumeData()
+
+  // Show storage error as toast
+  useEffect(() => {
+    if (storageError) {
+      let message = storageError.message
+      if (storageError.type === 'QUOTA_EXCEEDED' && storageError.suggestions) {
+        message += '\n\n' + storageError.suggestions.join('\n')
+      }
+      setToast({ message, type: 'error', duration: 10000 })
+    }
+  }, [storageError])
 
   if (!isLoaded) {
     return (
@@ -228,7 +241,13 @@ function Builder() {
           <Toast
             message={toast.message}
             type={toast.type}
-            onClose={() => setToast(null)}
+            onClose={() => {
+              setToast(null)
+              if (storageError) {
+                clearStorageError()
+              }
+            }}
+            duration={toast.duration || 3000}
           />
         )}
       </div>

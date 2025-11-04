@@ -47,6 +47,7 @@ const initialResumeData = {
 export const useResumeData = () => {
   const [resumeData, setResumeData] = useState(initialResumeData)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [storageError, setStorageError] = useState(null)
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -64,7 +65,14 @@ export const useResumeData = () => {
         ...prev,
         [section]: data,
       }
-      storageService.saveResumeData(updated)
+      const result = storageService.saveResumeData(updated)
+      if (!result.success && result.error) {
+        setStorageError(result.error)
+        // Clear error after 10 seconds
+        setTimeout(() => setStorageError(null), 10000)
+      } else {
+        setStorageError(null)
+      }
       return updated
     })
   }
@@ -196,9 +204,16 @@ export const useResumeData = () => {
     storageService.clearResumeData()
   }
 
+  // Clear storage error manually
+  const clearStorageError = () => {
+    setStorageError(null)
+  }
+
   return {
     resumeData,
     isLoaded,
+    storageError,
+    clearStorageError,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
