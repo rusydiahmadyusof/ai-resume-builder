@@ -226,6 +226,94 @@ Important:
       }
     }
   },
+
+  /**
+   * Extract job information from HTML content using AI
+   * @param {string} html - HTML content from job posting page
+   * @returns {Promise<Object>} Extracted job information
+   */
+  extractJobInfoFromHTML: async (html) => {
+    try {
+      if (!import.meta.env.VITE_GROQ_API_KEY) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      // Limit HTML size to avoid token limits
+      const limitedHTML = html.length > 8000 ? html.substring(0, 8000) + '...' : html
+
+      const prompt = `Extract job information from the following HTML content of a job posting page. Return ONLY a valid JSON object with this exact structure:
+
+{
+  "jobTitle": "job title or empty string",
+  "jobDescription": "full job description or empty string"
+}
+
+HTML content:
+${limitedHTML}
+
+Important:
+- Extract the job title from headings (h1, h2), meta tags, or title elements
+- Extract the complete job description from the main content area
+- Remove HTML tags from the extracted text
+- If a field is not found, return an empty string for that field
+- For job description, include all relevant details: requirements, responsibilities, qualifications, etc.
+- Return ONLY valid JSON, no additional text or explanation`
+
+      const completion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert at extracting structured data from job posting HTML. Always return valid JSON only, no additional text. Extract job title and full job description accurately.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.3, // Lower temperature for more accurate extraction
+        max_tokens: 1500,
+      })
+
+      const content = completion.choices[0]?.message?.content || ''
+      
+      // Extract JSON from response
+      let extractedData
+      try {
+        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || 
+                         content.match(/```\n([\s\S]*?)\n```/) ||
+                         content.match(/\{[\s\S]*\}/)
+        const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : content
+        extractedData = JSON.parse(jsonString)
+      } catch (parseError) {
+        console.warn('Failed to parse AI response as JSON, using fallback:', parseError)
+        // Fallback: try basic regex extraction
+        extractedData = {
+          jobTitle: extractJobTitleFromHTML(html),
+          jobDescription: extractJobDescriptionFromHTML(html),
+        }
+      }
+
+      // Validate extracted data
+      if (!extractedData.jobTitle && !extractedData.jobDescription) {
+        return {
+          success: false,
+          error: 'Could not extract job information. The page may not be a valid job posting or the content is not accessible.',
+        }
+      }
+
+      return {
+        success: true,
+        data: extractedData,
+      }
+    } catch (error) {
+      console.error('Error extracting job info from HTML:', error)
+      return {
+        success: false,
+        error: error.message || 'Failed to extract job information',
+      }
+    }
+  },
 }
 
 /**
@@ -345,5 +433,55 @@ function extractField(text, fieldName) {
   // Simple extraction - look for common patterns
   const lines = text.split('\n').slice(0, 5) // First 5 lines usually contain name
   return lines[0]?.trim() || ''
+}
+
+// Helper functions for fallback job extraction
+function extractJobTitleFromHTML(html) {
+  // Try to find job title in common patterns
+  const titleMatch = html.match(/<h1[^>]*>([^<]+)<\/h1>/i) ||
+                    html.match(/<title>([^<]+)<\/title>/i) ||
+                    html.match(/<meta[^>]*property=["']og:title["'][^>]*content=["']([^"']+)["']/i) ||
+                    html.match(/<h2[^>]*>([^<]+)<\/h2>/i)
+  
+  if (titleMatch) {
+    return titleMatch[1].trim().replace(/&[^;]+;/g, '')
+  }
+  
+  // Try meta description
+  const metaMatch = html.match(/<meta[^>]*name=["']title["'][^>]*content=["']([^"']+)["']/i)
+  if (metaMatch) {
+    return metaMatch[1].trim()
+  }
+  
+  return ''
+}
+
+function extractJobDescriptionFromHTML(html) {
+  // Try to find job description in common content areas
+  // Look for divs/sections with common job description classes
+  const descriptionPatterns = [
+    /<div[^>]*class=["'][^"']*job-description[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
+    /<div[^>]*class=["'][^"']*description[^"']*["'][^>]*>([\s\S]*?)<\/div>/i,
+    /<section[^>]*class=["'][^"']*job-details[^"']*["'][^>]*>([\s\S]*?)<\/section>/i,
+    /<article[^>]*>([\s\S]{500,})<\/article>/i,
+  ]
+  
+  for (const pattern of descriptionPatterns) {
+    const match = html.match(pattern)
+    if (match && match[1]) {
+      // Remove HTML tags and clean up
+      let text = match[1]
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&[^;]+;/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+      
+      if (text.length > 100) {
+        return text.substring(0, 2000) // Limit length
+      }
+    }
+  }
+  
+  return ''
 }
 
