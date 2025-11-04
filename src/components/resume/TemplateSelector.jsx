@@ -5,7 +5,7 @@ function TemplateSelector({ selectedTemplate, onSelect, recommendedTemplate }) {
 
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
         Choose a Template
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -18,21 +18,24 @@ function TemplateSelector({ selectedTemplate, onSelect, recommendedTemplate }) {
               key={template.id}
               type="button"
               onClick={() => onSelect(template.id)}
+              aria-label={`Select ${template.name} template${isRecommended ? ' (Recommended)' : ''}`}
+              aria-pressed={isSelected}
               className={`
                 p-4 border-2 rounded-lg text-left transition-all touch-manipulation active:scale-[0.98] relative
+                focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2
                 ${
                   isSelected
-                    ? 'border-indigo-600 bg-indigo-50'
+                    ? 'border-indigo-600 dark:border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20'
                     : isRecommended
-                    ? 'border-yellow-400 bg-yellow-50 hover:border-yellow-500'
-                    : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50 active:bg-gray-100'
+                    ? 'border-yellow-400 dark:border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20 hover:border-yellow-500 dark:hover:border-yellow-400'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 hover:bg-gray-50 dark:hover:bg-gray-700/50 active:bg-gray-100 dark:active:bg-gray-700'
                 }
               `}
             >
               {isRecommended && (
                 <div className="absolute top-2 right-2">
                   <svg
-                    className="w-5 h-5 text-yellow-500"
+                    className="w-5 h-5 text-yellow-500 dark:text-yellow-400"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                   >
@@ -43,21 +46,21 @@ function TemplateSelector({ selectedTemplate, onSelect, recommendedTemplate }) {
               <div className="flex items-start justify-between">
                 <div className="flex-1 pr-2">
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
-                    <h4 className="font-semibold text-gray-900">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100">
                       {template.name}
                     </h4>
                     {isRecommended && (
-                      <span className="text-xs text-yellow-700 font-medium bg-yellow-200 px-2 py-0.5 rounded">
+                      <span className="text-xs text-yellow-700 dark:text-yellow-300 font-medium bg-yellow-200 dark:bg-yellow-900/30 px-2 py-0.5 rounded">
                         Recommended
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-gray-600">{template.description}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{template.description}</p>
                 </div>
                 {isSelected && (
                   <div className="ml-2 flex-shrink-0">
                     <svg
-                      className="w-5 h-5 text-indigo-600"
+                      className="w-5 h-5 text-indigo-600 dark:text-indigo-400"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >

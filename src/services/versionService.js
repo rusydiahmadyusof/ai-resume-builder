@@ -23,6 +23,7 @@ export const versionService = {
         name: versionName || `Version ${new Date(timestamp).toLocaleString()}`,
         data: JSON.parse(JSON.stringify(resumeData)), // Deep copy
         createdAt: timestamp,
+        savedAt: timestamp, // Alias for compatibility
         isCurrent: false,
       }
 

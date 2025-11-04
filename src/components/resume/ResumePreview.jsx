@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import ResumeHeader from './ResumeHeader'
 import ResumeSection from './ResumeSection'
 
@@ -18,7 +18,7 @@ import '../../templates/professional.css'
 
 function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedContent }) {
   // Dynamically load template CSS if not already loaded
-  React.useEffect(() => {
+  useEffect(() => {
     const templateMap = {
       modern: () => import('../../templates/modern.css'),
       classic: () => import('../../templates/classic.css'),

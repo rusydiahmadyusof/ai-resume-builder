@@ -60,7 +60,7 @@ function ExportImport({ resumeData, onImport }) {
       <Card title="Export / Import Resume">
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-semibold text-gray-900 mb-2">Export</h4>
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">Export</h4>
             <div className="space-y-2">
               <Button
                 onClick={handleExportJSON}
@@ -80,8 +80,8 @@ function ExportImport({ resumeData, onImport }) {
           </div>
 
           <div className="border-t border-gray-200 pt-4">
-            <h4 className="text-sm font-semibold text-gray-900 mb-2">Import</h4>
-            <p className="text-xs text-gray-600 mb-2">
+            <h4 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-2">Import</h4>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
               Import resume data from a previously exported JSON file.
             </p>
             <label className="block">
@@ -90,16 +90,16 @@ function ExportImport({ resumeData, onImport }) {
                 accept=".json"
                 onChange={handleImport}
                 disabled={isImporting}
-                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 file:cursor-pointer disabled:opacity-50"
+                className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 dark:file:bg-indigo-900/20 file:text-indigo-700 dark:file:text-indigo-300 hover:file:bg-indigo-100 dark:hover:file:bg-indigo-900/30 file:cursor-pointer disabled:opacity-50"
               />
             </label>
             {isImporting && (
-              <p className="text-xs text-indigo-600 mt-2">Importing...</p>
+              <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-2">Importing...</p>
             )}
           </div>
 
-          <div className="border-t border-gray-200 pt-4">
-            <p className="text-xs text-gray-500">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               💡 Tip: Export your resume data regularly as a backup. You can import it later to restore your data.
             </p>
           </div>

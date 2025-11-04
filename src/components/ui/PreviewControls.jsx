@@ -5,12 +5,12 @@ function PreviewControls({ onPrint, onFullScreen, onZoomIn, onZoomOut, onResetZo
   const [showControls, setShowControls] = useState(true)
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-md p-4 mb-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold text-gray-900">Preview Controls</h3>
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">Preview Controls</h3>
         <button
           onClick={() => setShowControls(!showControls)}
-          className="text-gray-500 hover:text-gray-700 text-sm"
+          className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 text-sm"
         >
           {showControls ? 'Hide' : 'Show'}
         </button>
@@ -43,7 +43,7 @@ function PreviewControls({ onPrint, onFullScreen, onZoomIn, onZoomOut, onResetZo
             >
               −
             </Button>
-            <span className="text-xs text-gray-600 min-w-[50px] text-center">
+            <span className="text-xs text-gray-600 dark:text-gray-400 min-w-[50px] text-center">
               {Math.round(zoomLevel * 100)}%
             </span>
             <Button

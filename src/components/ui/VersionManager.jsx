@@ -82,8 +82,8 @@ function VersionManager({ resumeData, onRestore }) {
         </Button>
 
         {showSaveDialog && (
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-700">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Version Name (optional)
             </label>
             <input
@@ -91,7 +91,7 @@ function VersionManager({ resumeData, onRestore }) {
               value={newVersionName}
               onChange={(e) => setNewVersionName(e.target.value)}
               placeholder="e.g., Software Engineer Resume"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             />
             <div className="flex gap-2">
               <Button
@@ -115,7 +115,7 @@ function VersionManager({ resumeData, onRestore }) {
         )}
 
         {versions.length === 0 ? (
-          <p className="text-sm text-gray-500 text-center py-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-4">
             No saved versions yet. Save your current resume to create a version.
           </p>
         ) : (
@@ -123,7 +123,7 @@ function VersionManager({ resumeData, onRestore }) {
             {versions.map((version) => (
               <div
                 key={version.id}
-                className="p-3 bg-gray-50 rounded-lg border border-gray-200 hover:border-indigo-300 transition-colors"
+                className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 hover:border-indigo-300 dark:hover:border-indigo-500 transition-colors"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
@@ -137,10 +137,10 @@ function VersionManager({ resumeData, onRestore }) {
                       />
                     ) : (
                       <div>
-                        <h4 className="font-medium text-gray-900 text-sm truncate">
+                        <h4 className="font-medium text-gray-900 dark:text-gray-100 text-sm truncate">
                           {version.name}
                         </h4>
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                           {formatDate(version.createdAt)}
                         </p>
                       </div>
@@ -160,7 +160,7 @@ function VersionManager({ resumeData, onRestore }) {
                         </button>
                         <button
                           onClick={handleCancelRename}
-                          className="p-1 text-gray-600 hover:text-gray-700"
+                          className="p-1 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                           title="Cancel"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +179,7 @@ function VersionManager({ resumeData, onRestore }) {
                         </button>
                         <button
                           onClick={() => handleStartRename(version)}
-                          className="p-1 text-gray-600 hover:text-gray-700"
+                          className="p-1 text-gray-600 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                           title="Rename"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

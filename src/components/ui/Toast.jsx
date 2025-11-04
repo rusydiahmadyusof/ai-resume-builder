@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import PropTypes from 'prop-types'
 
 function Toast({ message, type = 'success', onClose, duration = 3000 }) {
   useEffect(() => {
@@ -11,10 +12,10 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
   }, [duration, onClose])
 
   const bgColors = {
-    success: 'bg-green-50 border-green-200 text-green-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
-    warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
+    success: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300',
+    error: 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-300',
+    info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-300',
+    warning: 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800 text-yellow-800 dark:text-yellow-300',
   }
 
   return (
@@ -25,7 +26,7 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
         <p className="text-sm font-medium flex-1">{message}</p>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 active:scale-95 touch-manipulation flex-shrink-0 w-6 h-6 flex items-center justify-center"
+          className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 active:scale-95 touch-manipulation flex-shrink-0 w-6 h-6 flex items-center justify-center"
           aria-label="Close"
         >
           ×
@@ -33,6 +34,18 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
       </div>
     </div>
   )
+}
+
+Toast.propTypes = {
+  message: PropTypes.string.isRequired,
+  type: PropTypes.oneOf(['success', 'error', 'info', 'warning']),
+  onClose: PropTypes.func.isRequired,
+  duration: PropTypes.number,
+}
+
+Toast.defaultProps = {
+  type: 'success',
+  duration: 3000,
 }
 
 export default Toast

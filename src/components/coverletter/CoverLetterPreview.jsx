@@ -39,7 +39,7 @@ function CoverLetterPreview({ coverLetter, personalInfo, jobTitle }) {
   return (
     <Card>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Cover Letter Preview</h3>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Cover Letter Preview</h3>
         <Button
           onClick={handleDownloadPDF}
           disabled={isGeneratingPDF}
@@ -52,7 +52,7 @@ function CoverLetterPreview({ coverLetter, personalInfo, jobTitle }) {
 
       <div
         ref={coverLetterRef}
-        className="bg-white p-6 border border-gray-200 rounded-lg prose prose-sm max-w-none"
+        className="bg-white dark:bg-gray-800 p-6 border border-gray-200 dark:border-gray-700 rounded-lg prose prose-sm dark:prose-invert max-w-none"
         style={{
           fontFamily: 'Georgia, serif',
           lineHeight: '1.8',
@@ -64,7 +64,7 @@ function CoverLetterPreview({ coverLetter, personalInfo, jobTitle }) {
             <div className="font-semibold">{personalInfo.name}</div>
           )}
           {(personalInfo?.email || personalInfo?.phone || personalInfo?.address) && (
-            <div className="text-sm text-gray-600 mt-1">
+            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               {personalInfo.email && <span>{personalInfo.email}</span>}
               {personalInfo.email && personalInfo.phone && <span> • </span>}
               {personalInfo.phone && <span>{personalInfo.phone}</span>}
@@ -78,7 +78,7 @@ function CoverLetterPreview({ coverLetter, personalInfo, jobTitle }) {
           )}
         </div>
 
-        <div className="whitespace-pre-wrap text-gray-800">{coverLetter}</div>
+        <div className="whitespace-pre-wrap text-gray-800 dark:text-gray-200">{coverLetter}</div>
       </div>
     </Card>
   )

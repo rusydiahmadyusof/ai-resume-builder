@@ -1,7 +1,9 @@
-import { forwardRef } from 'react'
+import { forwardRef, useId, memo } from 'react'
+import PropTypes from 'prop-types'
 
-const Input = forwardRef(({ label, error, className = '', ...props }, ref) => {
-  const id = props.id || `input-${Math.random().toString(36).substr(2, 9)}`
+const Input = memo(forwardRef(({ label, error, className = '', ...props }, ref) => {
+  const generatedId = useId()
+  const id = props.id || generatedId
   const errorId = error ? `${id}-error` : undefined
   const baseClasses = 'w-full px-3 py-2.5 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base sm:text-sm text-gray-900 dark:text-gray-100'
 
@@ -31,8 +33,22 @@ const Input = forwardRef(({ label, error, className = '', ...props }, ref) => {
       )}
     </div>
   )
-})
+}))
 
 Input.displayName = 'Input'
+
+Input.propTypes = {
+  label: PropTypes.string,
+  error: PropTypes.string,
+  className: PropTypes.string,
+  id: PropTypes.string,
+}
+
+Input.defaultProps = {
+  label: null,
+  error: null,
+  className: '',
+  id: null,
+}
 
 export default Input

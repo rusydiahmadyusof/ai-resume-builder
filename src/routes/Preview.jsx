@@ -344,6 +344,11 @@ function Preview() {
                 versions={savedVersions}
                 resumeData={resumeData}
                 selectedTemplate={selectedTemplate}
+                onMerge={(mergedData) => {
+                  // Reload versions after merge
+                  const versions = versionService.getAllVersions()
+                  setSavedVersions(versions)
+                }}
               />
             )}
 

@@ -14,7 +14,7 @@ function AutoSaveIndicator({ status, lastSaved }) {
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
           ),
-          className: 'text-blue-600',
+          className: 'text-blue-600 dark:text-blue-400',
         }
       case 'saved':
         return {
@@ -24,7 +24,7 @@ function AutoSaveIndicator({ status, lastSaved }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           ),
-          className: 'text-green-600',
+          className: 'text-green-600 dark:text-green-400',
         }
       case 'error':
         return {
@@ -34,7 +34,7 @@ function AutoSaveIndicator({ status, lastSaved }) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           ),
-          className: 'text-red-600',
+          className: 'text-red-600 dark:text-red-400',
         }
       default:
         return null

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, memo } from 'react'
 import Card from './Card'
 import { atsService } from '../../services/atsService'
 
@@ -46,7 +46,7 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
   if (!analytics) {
     return (
       <Card title="Analytics Dashboard">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Enter a job description to view resume analytics.
         </p>
       </Card>
@@ -57,13 +57,13 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
     <Card title="Resume Analytics">
       <div className="space-y-4">
         {/* Tabs */}
-        <div className="flex border-b border-gray-200">
+        <div className="flex border-b border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setActiveTab('overview')}
             className={`px-4 py-2 text-sm font-medium ${
               activeTab === 'overview'
-                ? 'text-indigo-600 border-b-2 border-indigo-600'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             Overview
@@ -72,8 +72,8 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
             onClick={() => setActiveTab('keywords')}
             className={`px-4 py-2 text-sm font-medium ${
               activeTab === 'keywords'
-                ? 'text-indigo-600 border-b-2 border-indigo-600'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             Keywords
@@ -82,8 +82,8 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
             onClick={() => setActiveTab('sections')}
             className={`px-4 py-2 text-sm font-medium ${
               activeTab === 'sections'
-                ? 'text-indigo-600 border-b-2 border-indigo-600'
-                : 'text-gray-600 hover:text-gray-900'
+                ? 'text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400'
+                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
             }`}
           >
             Sections
@@ -94,33 +94,33 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
         {activeTab === 'overview' && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {analytics.ats.score}
                 </div>
-                <div className="text-sm text-gray-600">ATS Score</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">ATS Score</div>
               </div>
-              <div className="bg-green-50 p-4 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">
+              <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                   {analytics.completeness.percentage}%
                 </div>
-                <div className="text-sm text-gray-600">Completeness</div>
+                <div className="text-sm text-gray-600 dark:text-gray-400">Completeness</div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Score Breakdown</h4>
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Score Breakdown</h4>
               {Object.entries(analytics.ats.sections).map(([key, section]) => (
                 <div key={key} className="mb-2">
                   <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-600 capitalize">
+                    <span className="text-gray-600 dark:text-gray-400 capitalize">
                       {key.replace(/([A-Z])/g, ' $1').trim()}:
                     </span>
                     <span className="font-medium">
                       {section.score}/{section.maxScore}
                     </span>
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
                       className="bg-indigo-600 h-2 rounded-full"
                       style={{
@@ -138,20 +138,20 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
         {activeTab === 'keywords' && (
           <div className="space-y-4">
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 Keyword Density: {analytics.keywordDensity.percentage.toFixed(1)}%
               </h4>
-              <div className="text-xs text-gray-600 mb-2">
+              <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                 Ideal range: 2-5%
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`h-2 rounded-full ${
                     analytics.keywordDensity.percentage >= 2 && analytics.keywordDensity.percentage <= 5
-                      ? 'bg-green-600'
+                      ? 'bg-green-600 dark:bg-green-500'
                       : analytics.keywordDensity.percentage > 5
-                      ? 'bg-yellow-600'
-                      : 'bg-red-600'
+                      ? 'bg-yellow-600 dark:bg-yellow-500'
+                      : 'bg-red-600 dark:bg-red-500'
                   }`}
                   style={{
                     width: `${Math.min(100, (analytics.keywordDensity.percentage / 5) * 100)}%`,
@@ -161,14 +161,14 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
             </div>
 
             <div>
-              <h4 className="font-semibold text-gray-900 mb-2">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
                 Top Keywords Found ({analytics.keywordDensity.matched.length})
               </h4>
               <div className="flex flex-wrap gap-1">
                 {analytics.keywordDensity.matched.slice(0, 15).map((keyword, idx) => (
                   <span
                     key={idx}
-                    className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs"
+                    className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs"
                   >
                     {keyword}
                   </span>
@@ -190,26 +190,26 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
                 : 'long'
 
               return (
-                <div key={section} className="border border-gray-200 rounded-lg p-3">
+                <div key={section} className="border border-gray-200 dark:border-gray-700 rounded-lg p-3">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium text-gray-900 capitalize">
+                    <span className="font-medium text-gray-900 dark:text-gray-100 capitalize">
                       {section.replace(/([A-Z])/g, ' $1').trim()}
                     </span>
                     <span className={`text-sm font-medium ${
-                      status === 'good' ? 'text-green-600' :
-                      status === 'short' ? 'text-yellow-600' : 'text-red-600'
+                      status === 'good' ? 'text-green-600 dark:text-green-400' :
+                      status === 'short' ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'
                     }`}>
                       {length} chars
                     </span>
                   </div>
-                  <div className="text-xs text-gray-600 mb-2">
+                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
                     Ideal: {benchmark.ideal}-{benchmark.max} characters
                   </div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
                     <div
                       className={`h-1.5 rounded-full ${
-                        status === 'good' ? 'bg-green-600' :
-                        status === 'short' ? 'bg-yellow-600' : 'bg-red-600'
+                        status === 'good' ? 'bg-green-600 dark:bg-green-500' :
+                        status === 'short' ? 'bg-yellow-600 dark:bg-yellow-500' : 'bg-red-600 dark:bg-red-500'
                       }`}
                       style={{
                         width: `${Math.min(100, (length / benchmark.max) * 100)}%`,
@@ -315,5 +315,5 @@ function calculateCompleteness(resumeData) {
   }
 }
 
-export default AnalyticsDashboard
+export default memo(AnalyticsDashboard)
 

@@ -26,7 +26,7 @@ function ATSAnalysis({ resumeData, jobData }) {
   if (!jobData?.jobDescription) {
     return (
       <Card title="ATS Analysis">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
           Enter a job description to analyze your resume's ATS compatibility.
         </p>
       </Card>
@@ -38,7 +38,7 @@ function ATSAnalysis({ resumeData, jobData }) {
       <Card title="ATS Analysis">
         <div className="flex items-center justify-center py-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-          <span className="ml-3 text-gray-600">Analyzing resume...</span>
+          <span className="ml-3 text-gray-600 dark:text-gray-400">Analyzing resume...</span>
         </div>
       </Card>
     )
@@ -68,16 +68,16 @@ function ATSAnalysis({ resumeData, jobData }) {
           <div className={`text-lg font-semibold ${scoreColor}`}>
             {scoreLabel}
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-4">
+          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mt-4">
             <div
               className={`h-2 rounded-full ${
                 analysis.score >= 80
-                  ? 'bg-green-600'
+                  ? 'bg-green-600 dark:bg-green-500'
                   : analysis.score >= 60
-                  ? 'bg-yellow-600'
+                  ? 'bg-yellow-600 dark:bg-yellow-500'
                   : analysis.score >= 40
-                  ? 'bg-orange-600'
-                  : 'bg-red-600'
+                  ? 'bg-orange-600 dark:bg-orange-500'
+                  : 'bg-red-600 dark:bg-red-500'
               }`}
               style={{ width: `${analysis.score}%` }}
             ></div>
@@ -86,17 +86,17 @@ function ATSAnalysis({ resumeData, jobData }) {
 
         {/* Section Scores */}
         <div className="space-y-3">
-          <h4 className="font-semibold text-gray-900">Score Breakdown</h4>
+          <h4 className="font-semibold text-gray-900 dark:text-gray-100">Score Breakdown</h4>
           {Object.entries(analysis.sections).map(([key, section]) => (
             <div key={key} className="flex items-center justify-between">
-              <span className="text-sm text-gray-600 capitalize">
+              <span className="text-sm text-gray-600 dark:text-gray-400 capitalize">
                 {key.replace(/([A-Z])/g, ' $1').trim()}:
               </span>
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium">
                   {section.score}/{section.maxScore}
                 </span>
-                <div className="w-24 bg-gray-200 rounded-full h-1.5">
+                <div className="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
                   <div
                     className="bg-indigo-600 h-1.5 rounded-full"
                     style={{
@@ -112,10 +112,10 @@ function ATSAnalysis({ resumeData, jobData }) {
         {/* Keyword Match */}
         {analysis.keywordMatch && analysis.keywordMatch.matchedKeywords && (
           <div>
-            <h4 className="font-semibold text-gray-900 mb-2">
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
               Keyword Match ({analysis.keywordMatch.matchPercentage}%)
             </h4>
-            <div className="text-xs text-gray-600 mb-2">
+            <div className="text-xs text-gray-600 dark:text-gray-400 mb-2">
               Matched: {analysis.keywordMatch.matched} of {analysis.keywordMatch.totalKeywords}
             </div>
             {analysis.keywordMatch.matchedKeywords.length > 0 && (
@@ -123,7 +123,7 @@ function ATSAnalysis({ resumeData, jobData }) {
                 {analysis.keywordMatch.matchedKeywords.map((keyword, idx) => (
                   <span
                     key={idx}
-                    className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs"
+                    className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs"
                   >
                     {keyword}
                   </span>
@@ -133,12 +133,12 @@ function ATSAnalysis({ resumeData, jobData }) {
             {analysis.keywordMatch.missingKeywords &&
               analysis.keywordMatch.missingKeywords.length > 0 && (
                 <div>
-                  <div className="text-xs text-gray-600 mb-1">Missing keywords:</div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400 mb-1">Missing keywords:</div>
                   <div className="flex flex-wrap gap-1">
                     {analysis.keywordMatch.missingKeywords.slice(0, 5).map((keyword, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs"
+                        className="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded text-xs"
                       >
                         {keyword}
                       </span>
@@ -152,19 +152,19 @@ function ATSAnalysis({ resumeData, jobData }) {
         {/* Suggestions */}
         {analysis.suggestions && analysis.suggestions.length > 0 && (
           <div>
-            <h4 className="font-semibold text-gray-900 mb-2">Improvement Suggestions</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Improvement Suggestions</h4>
             <div className="space-y-2">
               {analysis.suggestions.map((suggestion, idx) => (
                 <div
                   key={idx}
                   className={`p-3 rounded-lg text-sm ${
                     suggestion.priority === 'high'
-                      ? 'bg-red-50 border border-red-200'
-                      : 'bg-yellow-50 border border-yellow-200'
+                      ? 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800'
+                      : 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800'
                   }`}
                 >
                   <div className="font-medium mb-1 capitalize">{suggestion.category}</div>
-                  <div className="text-gray-700">{suggestion.message}</div>
+                  <div className="text-gray-700 dark:text-gray-300">{suggestion.message}</div>
                 </div>
               ))}
             </div>
@@ -174,12 +174,12 @@ function ATSAnalysis({ resumeData, jobData }) {
         {/* Missing Skills */}
         {analysis.missingSkills && analysis.missingSkills.length > 0 && (
           <div>
-            <h4 className="font-semibold text-gray-900 mb-2">Consider Adding These Skills</h4>
+            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">Consider Adding These Skills</h4>
             <div className="flex flex-wrap gap-1">
               {analysis.missingSkills.slice(0, 8).map((skill, idx) => (
                 <span
                   key={idx}
-                  className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs"
+                  className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs"
                 >
                   {skill}
                 </span>
