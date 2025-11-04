@@ -3,7 +3,7 @@ import { forwardRef } from 'react'
 const Input = forwardRef(({ label, error, className = '', ...props }, ref) => {
   const id = props.id || `input-${Math.random().toString(36).substr(2, 9)}`
   const errorId = error ? `${id}-error` : undefined
-  const baseClasses = 'w-full px-3 py-2.5 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base sm:text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+  const baseClasses = 'w-full px-3 py-2.5 sm:py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-base sm:text-sm text-gray-900 dark:text-gray-100'
 
   return (
     <div className="w-full">

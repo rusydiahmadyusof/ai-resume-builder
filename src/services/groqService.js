@@ -150,7 +150,7 @@ Make it concise, impactful, and tailored to the job requirements.`
       // Limit text to avoid token limits
       const limitedText = pdfText.substring(0, 3000)
 
-      const prompt = `Extract personal information from the following resume text. Return ONLY a valid JSON object with this exact structure:
+      const prompt = `Extract personal information and work experience from the following resume text. Return ONLY a valid JSON object with this exact structure:
 
 {
   "name": "full name or empty string",
@@ -160,7 +160,16 @@ Make it concise, impactful, and tailored to the job requirements.`
   "linkedin": "LinkedIn URL or empty string",
   "github": "GitHub URL or empty string",
   "portfolio": "portfolio website URL or empty string",
-  "summary": "professional summary or empty string"
+  "summary": "professional summary or empty string",
+  "workExperience": [
+    {
+      "company": "company name",
+      "position": "job title/position",
+      "startDate": "start date (MM/YYYY format)",
+      "endDate": "end date (MM/YYYY format) or 'Present'",
+      "responsibilities": "job description and key responsibilities"
+    }
+  ]
 }
 
 Resume text:
@@ -168,9 +177,12 @@ ${limitedText}
 
 Important:
 - Extract only the information that is clearly present in the text
-- If a field is not found, return an empty string for that field
+- If a field is not found, return an empty string for that field (or empty array for workExperience)
 - For email, phone, and URLs, extract the exact values
 - For summary, extract the professional summary/objective section if available
+- For workExperience, extract all work experience entries with company, position, dates, and responsibilities
+- Dates should be in MM/YYYY format (e.g., "01/2020" or "Present")
+- If dates are not available, use empty strings
 - Return ONLY valid JSON, no additional text or explanation`
 
       const completion = await groq.chat.completions.create({
@@ -186,7 +198,7 @@ Important:
         ],
         model: 'llama-3.3-70b-versatile',
         temperature: 0.3, // Lower temperature for more accurate extraction
-        max_tokens: 500,
+        max_tokens: 2000, // Increased for work experience extraction
       })
 
       const content = completion.choices[0]?.message?.content || ''
@@ -220,6 +232,15 @@ Important:
           github: (extractedData.github || '').trim(),
           portfolio: (extractedData.portfolio || '').trim(),
           summary: (extractedData.summary || '').trim(),
+          workExperience: Array.isArray(extractedData.workExperience) 
+            ? extractedData.workExperience.map(exp => ({
+                company: (exp.company || '').trim(),
+                position: (exp.position || '').trim(),
+                startDate: (exp.startDate || '').trim(),
+                endDate: (exp.endDate || '').trim(),
+                responsibilities: (exp.responsibilities || '').trim(),
+              })).filter(exp => exp.company || exp.position) // Only include entries with at least company or position
+            : [],
         }
         
         console.log('Parsed extracted data:', extractedData)

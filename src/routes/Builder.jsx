@@ -123,6 +123,18 @@ function Builder() {
           <PersonalInfoForm
             data={resumeData.personalInfo}
             onUpdate={updatePersonalInfo}
+            onWorkExperienceExtracted={(workExp) => {
+              // Add extracted work experience entries
+              workExp.forEach((exp) => {
+                addWorkExperience(exp)
+              })
+              if (workExp.length > 0) {
+                setToast({ 
+                  message: `Extracted ${workExp.length} work experience ${workExp.length === 1 ? 'entry' : 'entries'}. Check the Work Experience section.`, 
+                  type: 'success' 
+                })
+              }
+            }}
           />
         )
       case 2:

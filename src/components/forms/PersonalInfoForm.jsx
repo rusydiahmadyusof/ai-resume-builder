@@ -8,7 +8,7 @@ import { pdfParserService } from '../../services/pdfParserService'
 import { groqService } from '../../services/groqService'
 import { validateEmail, validatePhone, validateURL, validateName, validateSummary } from '../../utils/validation'
 
-function PersonalInfoForm({ data, onUpdate }) {
+function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
   const [photoPreview, setPhotoPreview] = useState(data?.photo || '')
   const [isParsingPDF, setIsParsingPDF] = useState(false)
   const [pdfError, setPdfError] = useState(null)
@@ -132,6 +132,12 @@ function PersonalInfoForm({ data, onUpdate }) {
         
         // Also trigger form update to save to localStorage
         onUpdate(updatedData)
+
+        // If work experience was extracted, notify parent component
+        if (extractedData.workExperience && extractedData.workExperience.length > 0 && onWorkExperienceExtracted) {
+          console.log('Extracted work experience:', extractedData.workExperience)
+          onWorkExperienceExtracted(extractedData.workExperience)
+        }
 
         // Show success message with details
         const extractedFields = Object.entries(extractedData)
