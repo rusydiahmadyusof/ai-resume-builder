@@ -20,6 +20,7 @@ import CoverLetterOptions from '../components/coverletter/CoverLetterOptions'
 import CoverLetterPreview from '../components/coverletter/CoverLetterPreview'
 import ResumeComparison from '../components/ui/ResumeComparison'
 import AnalyticsDashboard from '../components/ui/AnalyticsDashboard'
+import ShareButton from '../components/ui/ShareButton'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 import { versionService } from '../services/versionService'
 
@@ -312,6 +313,11 @@ function Preview() {
             <PDFOptions
               onDownload={handleDownloadPDF}
               isGenerating={isGeneratingPDF}
+            />
+
+            <ShareButton
+              resumeUrl={window.location.href}
+              resumeTitle={`${resumeData.personalInfo?.name || 'Resume'} - ${resumeData.jobApplication?.jobTitle || 'Resume'}`}
             />
 
             <CoverLetterOptions

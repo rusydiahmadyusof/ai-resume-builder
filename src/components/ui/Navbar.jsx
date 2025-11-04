@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
+import DarkModeToggle from './DarkModeToggle'
 
 function Navbar() {
   const location = useLocation()
@@ -25,6 +26,7 @@ function Navbar() {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-4">
+            <DarkModeToggle />
             <Link
               to="/"
               className={`
@@ -89,6 +91,9 @@ function Navbar() {
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div id="mobile-menu" className="md:hidden py-4 border-t border-gray-200" role="menu">
+            <div className="flex items-center justify-end mb-2">
+              <DarkModeToggle />
+            </div>
             <div className="flex flex-col space-y-2">
               <Link
                 to="/"
