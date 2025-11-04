@@ -1,9 +1,11 @@
 import * as pdfjsLib from 'pdfjs-dist'
+// Import worker as a URL using Vite's ?url suffix
+import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
-// Set worker source for pdf.js using CDN
-// Alternative: use local worker if CDN doesn't work
+// Set worker source for pdf.js
 if (typeof window !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
+  // Use the worker URL that Vite bundles
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker
 }
 
 export const pdfParserService = {

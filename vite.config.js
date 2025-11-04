@@ -19,6 +19,10 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom', 'react-hook-form'],
+    exclude: ['pdfjs-dist'],
+  },
+  worker: {
+    format: 'es',
   },
 })
 
