@@ -191,16 +191,40 @@ Important:
 
       const content = completion.choices[0]?.message?.content || ''
       
+      console.log('AI response content:', content)
+      
       // Extract JSON from response
       let extractedData
       try {
-        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || 
-                         content.match(/```\n([\s\S]*?)\n```/) ||
-                         content.match(/\{[\s\S]*\}/)
-        const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : content
+        // Try to find JSON in the response
+        let jsonString = content.trim()
+        
+        // Remove markdown code blocks if present
+        jsonString = jsonString.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim()
+        
+        // Try to extract JSON object
+        const jsonMatch = jsonString.match(/\{[\s\S]*\}/)
+        if (jsonMatch) {
+          jsonString = jsonMatch[0]
+        }
+        
         extractedData = JSON.parse(jsonString)
+        
+        // Validate and clean extracted data
+        extractedData = {
+          name: (extractedData.name || '').trim(),
+          email: (extractedData.email || '').trim(),
+          phone: (extractedData.phone || '').trim(),
+          address: (extractedData.address || '').trim(),
+          linkedin: (extractedData.linkedin || '').trim(),
+          github: (extractedData.github || '').trim(),
+          portfolio: (extractedData.portfolio || '').trim(),
+          summary: (extractedData.summary || '').trim(),
+        }
+        
+        console.log('Parsed extracted data:', extractedData)
       } catch (parseError) {
-        console.warn('Failed to parse AI response as JSON, using fallback:', parseError)
+        console.warn('Failed to parse AI response as JSON, using fallback:', parseError, 'Content:', content)
         // Fallback: try basic regex extraction
         extractedData = {
           name: extractField(pdfText, 'name'),
@@ -212,6 +236,7 @@ Important:
           portfolio: '',
           summary: '',
         }
+        console.log('Fallback extracted data:', extractedData)
       }
 
       return {

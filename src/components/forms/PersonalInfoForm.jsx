@@ -77,41 +77,60 @@ function PersonalInfoForm({ data, onUpdate }) {
       // Extract text from PDF
       const pdfText = await pdfParserService.extractTextFromPDF(file)
       
+      if (!pdfText || pdfText.trim().length === 0) {
+        setPdfError('No text could be extracted from the PDF. The PDF might be image-based or corrupted.')
+        return
+      }
+      
+      console.log('Extracted PDF text length:', pdfText.length)
+      
       // Use AI to extract personal information
       const result = await groqService.extractPersonalInfoFromPDF(pdfText)
+      
+      console.log('AI extraction result:', result)
 
       if (result.success && result.data) {
         // Pre-fill form with extracted data
         const extractedData = result.data
+        const currentValues = watch()
         
-        // Only update fields that are not empty and not already filled
-        if (extractedData.name && !watch('name')) {
-          setValue('name', extractedData.name)
+        // Build updated form data - merge extracted data with current values
+        const updatedData = {
+          ...currentValues,
+          // Only update fields that are not empty in extracted data
+          // Override existing values if they're empty, otherwise keep existing
+          name: extractedData.name && extractedData.name.trim() ? extractedData.name : (currentValues.name || ''),
+          email: extractedData.email && extractedData.email.trim() ? extractedData.email : (currentValues.email || ''),
+          phone: extractedData.phone && extractedData.phone.trim() ? extractedData.phone : (currentValues.phone || ''),
+          address: extractedData.address && extractedData.address.trim() ? extractedData.address : (currentValues.address || ''),
+          linkedin: extractedData.linkedin && extractedData.linkedin.trim() ? extractedData.linkedin : (currentValues.linkedin || ''),
+          github: extractedData.github && extractedData.github.trim() ? extractedData.github : (currentValues.github || ''),
+          portfolio: extractedData.portfolio && extractedData.portfolio.trim() ? extractedData.portfolio : (currentValues.portfolio || ''),
+          summary: extractedData.summary && extractedData.summary.trim() ? extractedData.summary : (currentValues.summary || ''),
         }
-        if (extractedData.email && !watch('email')) {
-          setValue('email', extractedData.email)
-        }
-        if (extractedData.phone && !watch('phone')) {
-          setValue('phone', extractedData.phone)
-        }
-        if (extractedData.address && !watch('address')) {
-          setValue('address', extractedData.address)
-        }
-        if (extractedData.linkedin && !watch('linkedin')) {
-          setValue('linkedin', extractedData.linkedin)
-        }
-        if (extractedData.github && !watch('github')) {
-          setValue('github', extractedData.github)
-        }
-        if (extractedData.portfolio && !watch('portfolio')) {
-          setValue('portfolio', extractedData.portfolio)
-        }
-        if (extractedData.summary && !watch('summary')) {
-          setValue('summary', extractedData.summary)
-        }
+        
+        // Set all values at once
+        Object.keys(updatedData).forEach(key => {
+          if (updatedData[key] !== undefined) {
+            setValue(key, updatedData[key], { shouldValidate: false, shouldDirty: true })
+          }
+        })
+        
+        // Trigger form update to save to localStorage
+        onUpdate(updatedData)
 
-        // Show success message
-        setToast({ message: 'Personal information extracted successfully! Please review and update the fields.', type: 'success' })
+        // Show success message with details
+        const extractedFields = Object.entries(extractedData)
+          .filter(([_, value]) => value && value.trim())
+          .map(([key]) => key)
+          .join(', ')
+        
+        setToast({ 
+          message: extractedFields 
+            ? `Extracted information: ${extractedFields}. Please review and update the fields.`
+            : 'Personal information extracted successfully! Please review and update the fields.', 
+          type: 'success' 
+        })
       } else {
         setPdfError(result.error || 'Failed to extract information from PDF')
       }
