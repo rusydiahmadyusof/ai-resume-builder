@@ -24,10 +24,18 @@ function PersonalInfoForm({ data, onUpdate }) {
     handleSubmit,
     formState: { errors },
     setValue,
+    reset,
     watch,
   } = useForm({
     defaultValues: data,
   })
+
+  // Update form when data prop changes
+  useEffect(() => {
+    if (data) {
+      reset(data)
+    }
+  }, [data, reset])
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0]
@@ -94,29 +102,35 @@ function PersonalInfoForm({ data, onUpdate }) {
         const extractedData = result.data
         const currentValues = watch()
         
+        console.log('Current form values:', currentValues)
+        console.log('Extracted data:', extractedData)
+        
         // Build updated form data - merge extracted data with current values
+        // Prefer extracted data if it exists, otherwise keep current values
         const updatedData = {
           ...currentValues,
-          // Only update fields that are not empty in extracted data
-          // Override existing values if they're empty, otherwise keep existing
-          name: extractedData.name && extractedData.name.trim() ? extractedData.name : (currentValues.name || ''),
-          email: extractedData.email && extractedData.email.trim() ? extractedData.email : (currentValues.email || ''),
-          phone: extractedData.phone && extractedData.phone.trim() ? extractedData.phone : (currentValues.phone || ''),
-          address: extractedData.address && extractedData.address.trim() ? extractedData.address : (currentValues.address || ''),
-          linkedin: extractedData.linkedin && extractedData.linkedin.trim() ? extractedData.linkedin : (currentValues.linkedin || ''),
-          github: extractedData.github && extractedData.github.trim() ? extractedData.github : (currentValues.github || ''),
-          portfolio: extractedData.portfolio && extractedData.portfolio.trim() ? extractedData.portfolio : (currentValues.portfolio || ''),
-          summary: extractedData.summary && extractedData.summary.trim() ? extractedData.summary : (currentValues.summary || ''),
+          name: (extractedData.name && extractedData.name.trim()) ? extractedData.name : (currentValues.name || ''),
+          email: (extractedData.email && extractedData.email.trim()) ? extractedData.email : (currentValues.email || ''),
+          phone: (extractedData.phone && extractedData.phone.trim()) ? extractedData.phone : (currentValues.phone || ''),
+          address: (extractedData.address && extractedData.address.trim()) ? extractedData.address : (currentValues.address || ''),
+          linkedin: (extractedData.linkedin && extractedData.linkedin.trim()) ? extractedData.linkedin : (currentValues.linkedin || ''),
+          github: (extractedData.github && extractedData.github.trim()) ? extractedData.github : (currentValues.github || ''),
+          portfolio: (extractedData.portfolio && extractedData.portfolio.trim()) ? extractedData.portfolio : (currentValues.portfolio || ''),
+          summary: (extractedData.summary && extractedData.summary.trim()) ? extractedData.summary : (currentValues.summary || ''),
+          // Preserve photo if it exists
+          photo: currentValues.photo || '',
         }
         
-        // Set all values at once
-        Object.keys(updatedData).forEach(key => {
-          if (updatedData[key] !== undefined) {
-            setValue(key, updatedData[key], { shouldValidate: false, shouldDirty: true })
-          }
+        console.log('Updated data to set:', updatedData)
+        
+        // Use reset() to update all form values at once - this triggers re-render
+        reset(updatedData, { 
+          keepDefaultValues: false,
+          keepDirty: false,
+          keepErrors: false,
         })
         
-        // Trigger form update to save to localStorage
+        // Also trigger form update to save to localStorage
         onUpdate(updatedData)
 
         // Show success message with details
