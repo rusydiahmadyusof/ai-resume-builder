@@ -71,10 +71,10 @@ function Builder() {
 
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
     )
@@ -259,7 +259,7 @@ function Builder() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 py-4 sm:py-8">
+    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
       <div className="max-w-4xl mx-auto px-4">
         <Breadcrumbs
           items={[
@@ -272,11 +272,11 @@ function Builder() {
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-2">
             <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Build Your Resume
               </h1>
               <div className="flex items-center gap-4 flex-wrap">
-                <p className="text-sm sm:text-base text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                   Fill in your details step by step. Your progress is automatically saved.
                 </p>
                 <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
@@ -314,7 +314,7 @@ function Builder() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white rounded-lg shadow-md p-4 sticky bottom-0 sm:relative z-10">
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg p-4 sticky bottom-0 sm:relative z-10">
           <Button
             variant="secondary"
             onClick={handlePrevious}
