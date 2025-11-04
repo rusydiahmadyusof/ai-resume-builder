@@ -11,6 +11,12 @@ import Card from '../components/ui/Card'
 import Toast from '../components/ui/Toast'
 import Breadcrumbs from '../components/ui/Breadcrumbs'
 import WorkflowProgress from '../components/ui/WorkflowProgress'
+import PreviewControls from '../components/ui/PreviewControls'
+import PreviewStats from '../components/ui/PreviewStats'
+import PDFOptions from '../components/ui/PDFOptions'
+import KeyboardShortcuts from '../components/ui/KeyboardShortcuts'
+import ATSAnalysis from '../components/ui/ATSAnalysis'
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 
 function Preview() {
   const navigate = useNavigate()
@@ -78,7 +84,7 @@ function Preview() {
     }
   }
 
-  const handleDownloadPDF = async () => {
+  const handleDownloadPDF = async (options = {}) => {
     if (!resumeRef.current) {
       setError('Resume element not found')
       return
@@ -89,9 +95,23 @@ function Preview() {
 
     try {
       const personalName = resumeData.personalInfo.name || 'Resume'
-      const filename = `${personalName.replace(/\s+/g, '_')}_Resume.pdf`
+      const jobTitle = resumeData.jobApplication?.jobTitle || ''
+      const filename = jobTitle
+        ? `${personalName.replace(/\s+/g, '_')}_${jobTitle.replace(/\s+/g, '_')}_Resume.pdf`
+        : `${personalName.replace(/\s+/g, '_')}_Resume.pdf`
       
-      await pdfService.generatePDF(resumeRef.current, filename)
+      const pdfOptions = {
+        quality: options.quality || 2,
+        format: options.format || 'a4',
+        orientation: options.orientation || 'portrait',
+        metadata: {
+          title: `${personalName} - Resume`,
+          author: personalName,
+          subject: jobTitle || 'Resume',
+        },
+      }
+      
+      await pdfService.generatePDF(resumeRef.current, filename, pdfOptions)
     } catch (err) {
       setError(err.message || 'Failed to generate PDF')
     } finally {
@@ -154,6 +174,31 @@ function Preview() {
     }
   }, [])
 
+  // Keyboard shortcuts for Preview page
+  const shortcuts = {
+    'ctrl+p': () => handlePrint(),
+    'ctrl+f': () => handleFullScreen(),
+    'ctrl+=': () => handleZoomIn(),
+    'ctrl+-': () => handleZoomOut(),
+    'ctrl+0': () => handleResetZoom(),
+    'ctrl+d': () => handleDownloadPDF(),
+    'ctrl+?': () => {
+      // Toggle shortcuts help - handled by KeyboardShortcuts component
+    },
+  }
+
+  useKeyboardShortcuts(shortcuts, [zoomLevel, isFullScreen])
+
+  const shortcutList = [
+    { keys: 'Ctrl+P', description: 'Print Preview', context: 'Open print dialog' },
+    { keys: 'Ctrl+F', description: 'Toggle Fullscreen', context: 'Enter/exit fullscreen mode' },
+    { keys: 'Ctrl++', description: 'Zoom In', context: 'Increase preview zoom' },
+    { keys: 'Ctrl+-', description: 'Zoom Out', context: 'Decrease preview zoom' },
+    { keys: 'Ctrl+0', description: 'Reset Zoom', context: 'Reset zoom to 100%' },
+    { keys: 'Ctrl+D', description: 'Download PDF', context: 'Generate and download PDF' },
+    { keys: 'Ctrl+?', description: 'Show Shortcuts', context: 'Open keyboard shortcuts help' },
+  ]
+
   if (!isLoaded) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -213,6 +258,16 @@ function Preview() {
             <PreviewStats
               resumeData={resumeData}
               generatedContent={generatedContent}
+            />
+
+            <ATSAnalysis
+              resumeData={resumeData}
+              jobData={resumeData.jobApplication}
+            />
+
+            <PDFOptions
+              onDownload={handleDownloadPDF}
+              isGenerating={isGeneratingPDF}
             />
 
             <Card>
