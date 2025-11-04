@@ -220,10 +220,14 @@ function Builder() {
           <div className="lg:col-span-2">
             {renderStepContent()}
           </div>
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-4">
             <VersionManager
               resumeData={resumeData}
               onRestore={restoreResumeData}
+            />
+            <ExportImport
+              resumeData={resumeData}
+              onImport={restoreResumeData}
             />
           </div>
         </div>
