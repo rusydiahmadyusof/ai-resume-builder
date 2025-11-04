@@ -16,6 +16,8 @@ import PreviewStats from '../components/ui/PreviewStats'
 import PDFOptions from '../components/ui/PDFOptions'
 import KeyboardShortcuts from '../components/ui/KeyboardShortcuts'
 import ATSAnalysis from '../components/ui/ATSAnalysis'
+import CoverLetterOptions from '../components/coverletter/CoverLetterOptions'
+import CoverLetterPreview from '../components/coverletter/CoverLetterPreview'
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts'
 
 function Preview() {
@@ -29,6 +31,8 @@ function Preview() {
   const [error, setError] = useState(null)
   const [zoomLevel, setZoomLevel] = useState(1)
   const [isFullScreen, setIsFullScreen] = useState(false)
+  const [coverLetter, setCoverLetter] = useState(null)
+  const [isGeneratingCoverLetter, setIsGeneratingCoverLetter] = useState(false)
 
   // Calculate recommended template based on job title and description
   const recommendedTemplate = useMemo(() => {
@@ -159,6 +163,34 @@ function Preview() {
     setZoomLevel(1)
   }
 
+  const handleGenerateCoverLetter = async (options) => {
+    if (!resumeData.jobApplication.jobTitle || !resumeData.jobApplication.jobDescription) {
+      setError('Please provide job title and description to generate a cover letter.')
+      return
+    }
+
+    setIsGeneratingCoverLetter(true)
+    setError(null)
+
+    try {
+      const result = await groqService.generateCoverLetter(
+        resumeData.personalInfo,
+        resumeData.jobApplication,
+        options
+      )
+
+      if (result.success) {
+        setCoverLetter(result.data.coverLetter)
+      } else {
+        setError(result.error || 'Failed to generate cover letter')
+      }
+    } catch (err) {
+      setError(err.message || 'An error occurred while generating the cover letter')
+    } finally {
+      setIsGeneratingCoverLetter(false)
+    }
+  }
+
   // Listen for fullscreen changes
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -269,6 +301,19 @@ function Preview() {
               onDownload={handleDownloadPDF}
               isGenerating={isGeneratingPDF}
             />
+
+            <CoverLetterOptions
+              onGenerate={handleGenerateCoverLetter}
+              isGenerating={isGeneratingCoverLetter}
+            />
+
+            {coverLetter && (
+              <CoverLetterPreview
+                coverLetter={coverLetter}
+                personalInfo={resumeData.personalInfo}
+                jobTitle={resumeData.jobApplication?.jobTitle}
+              />
+            )}
 
             <Card>
               <div className="space-y-4">

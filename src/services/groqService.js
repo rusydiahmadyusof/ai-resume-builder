@@ -314,6 +314,143 @@ Important:
       }
     }
   },
+
+  /**
+   * Generate cover letter using Groq API
+   * @param {Object} personalData - User's personal information
+   * @param {Object} jobData - Job application details
+   * @param {Object} options - Cover letter options (tone, length, style)
+   * @returns {Promise<Object>} Generated cover letter
+   */
+  generateCoverLetter: async (personalData, jobData, options = {}) => {
+    try {
+      if (!import.meta.env.VITE_GROQ_API_KEY) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      const {
+        tone = 'professional', // professional, friendly, formal, enthusiastic
+        length = 'medium', // short, medium, long
+        style = 'standard', // standard, narrative, bullet-points
+      } = options
+
+      const toneInstructions = {
+        professional: 'Use a professional, confident tone',
+        friendly: 'Use a warm, approachable tone while remaining professional',
+        formal: 'Use a formal, traditional business tone',
+        enthusiastic: 'Use an enthusiastic, energetic tone that shows passion',
+      }
+
+      const lengthGuidelines = {
+        short: 'Keep it concise (200-300 words, 3-4 paragraphs)',
+        medium: 'Use moderate length (300-500 words, 4-5 paragraphs)',
+        long: 'Provide comprehensive detail (500-700 words, 5-6 paragraphs)',
+      }
+
+      const styleInstructions = {
+        standard: 'Write in standard paragraph format',
+        narrative: 'Tell a compelling story about your career journey',
+        'bullet-points': 'Use bullet points to highlight key achievements',
+      }
+
+      const prompt = `Write a compelling cover letter for the following candidate applying to this position.
+
+CANDIDATE INFORMATION:
+Name: ${personalData.name || 'Not provided'}
+Email: ${personalData.email || 'Not provided'}
+Phone: ${personalData.phone || 'Not provided'}
+
+Professional Summary:
+${personalData.summary || 'No summary provided'}
+
+Work Experience:
+${formatWorkExperience(personalData.workExperience)}
+
+Education:
+${formatEducation(personalData.education)}
+
+Skills: ${personalData.skills?.join(', ') || 'Not provided'}
+
+Certifications:
+${formatCertifications(personalData.certifications)}
+
+JOB APPLICATION:
+Job Title: ${jobData.jobTitle || 'Not specified'}
+
+Job Description:
+${jobData.jobDescription || 'No job description provided'}
+
+INSTRUCTIONS:
+1. ${toneInstructions[tone]}
+2. ${lengthGuidelines[length]}
+3. ${styleInstructions[style]}
+4. Address the hiring manager professionally (use "Dear Hiring Manager" if name not provided)
+5. Start with a strong opening that captures attention
+6. Explain why you're interested in this specific position and company
+7. Highlight 2-3 key achievements or experiences that match the job requirements
+8. Show knowledge of the company/role if possible
+9. End with a confident closing that invites further discussion
+10. Include a professional closing (Sincerely, Best regards, etc.)
+11. Make it personal and tailored to this specific job - avoid generic phrases
+12. Use keywords from the job description naturally
+13. Quantify achievements where possible
+
+Return ONLY the cover letter text, no additional explanations or formatting. Start directly with the greeting.`
+
+      const completion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: `You are an expert cover letter writer and career counselor. Your task is to create a compelling, personalized cover letter that:
+- Stands out to hiring managers
+- Clearly demonstrates why the candidate is a perfect fit
+- Shows genuine interest in the position
+- Uses the right tone and length as specified
+- Incorporates keywords naturally
+- Tells a compelling story
+
+Always return only the cover letter text, properly formatted with paragraphs.`,
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.8, // Higher for more creative writing
+        max_tokens: 1500,
+      })
+
+      const coverLetter = completion.choices[0]?.message?.content || ''
+
+      if (!coverLetter.trim()) {
+        return {
+          success: false,
+          error: 'Failed to generate cover letter. Please try again.',
+        }
+      }
+
+      return {
+        success: true,
+        data: {
+          coverLetter: coverLetter.trim(),
+          metadata: {
+            tone,
+            length,
+            style,
+            wordCount: coverLetter.split(/\s+/).length,
+            generatedAt: new Date().toISOString(),
+          },
+        },
+      }
+    } catch (error) {
+      console.error('Error generating cover letter:', error)
+      return {
+        success: false,
+        error: error.message || 'Failed to generate cover letter',
+      }
+    }
+  },
 }
 
 /**
