@@ -6,6 +6,7 @@ import Card from '../ui/Card'
 import Toast from '../ui/Toast'
 import { pdfParserService } from '../../services/pdfParserService'
 import { groqService } from '../../services/groqService'
+import { validateEmail, validatePhone, validateURL, validateName, validateSummary } from '../../utils/validation'
 
 function PersonalInfoForm({ data, onUpdate }) {
   const [photoPreview, setPhotoPreview] = useState(data?.photo || '')
@@ -164,7 +165,13 @@ function PersonalInfoForm({ data, onUpdate }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Full Name *"
-            {...register('name', { required: 'Name is required' })}
+            {...register('name', {
+              required: 'Name is required',
+              validate: (value) => {
+                const result = validateName(value)
+                return result.valid || result.error
+              },
+            })}
             error={errors.name?.message}
           />
           <Input
@@ -172,9 +179,9 @@ function PersonalInfoForm({ data, onUpdate }) {
             type="email"
             {...register('email', {
               required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Invalid email address',
+              validate: (value) => {
+                const result = validateEmail(value)
+                return result.valid || result.error
               },
             })}
             error={errors.email?.message}
@@ -185,11 +192,25 @@ function PersonalInfoForm({ data, onUpdate }) {
           <Input
             label="Phone"
             type="tel"
-            {...register('phone')}
+            {...register('phone', {
+              validate: (value) => {
+                if (!value) return true
+                const result = validatePhone(value)
+                return result.valid || result.error
+              },
+            })}
+            error={errors.phone?.message}
+            placeholder="+1 (555) 123-4567"
           />
           <Input
             label="Address"
-            {...register('address')}
+            {...register('address', {
+              maxLength: {
+                value: 200,
+                message: 'Address must not exceed 200 characters',
+              },
+            })}
+            error={errors.address?.message}
           />
         </div>
 
@@ -198,19 +219,40 @@ function PersonalInfoForm({ data, onUpdate }) {
             label="LinkedIn"
             type="url"
             placeholder="https://linkedin.com/in/yourprofile"
-            {...register('linkedin')}
+            {...register('linkedin', {
+              validate: (value) => {
+                if (!value) return true
+                const result = validateURL(value, 'LinkedIn URL')
+                return result.valid || result.error
+              },
+            })}
+            error={errors.linkedin?.message}
           />
           <Input
             label="GitHub"
             type="url"
             placeholder="https://github.com/username"
-            {...register('github')}
+            {...register('github', {
+              validate: (value) => {
+                if (!value) return true
+                const result = validateURL(value, 'GitHub URL')
+                return result.valid || result.error
+              },
+            })}
+            error={errors.github?.message}
           />
           <Input
             label="Portfolio"
             type="url"
             placeholder="https://yourportfolio.com"
-            {...register('portfolio')}
+            {...register('portfolio', {
+              validate: (value) => {
+                if (!value) return true
+                const result = validateURL(value, 'Portfolio URL')
+                return result.valid || result.error
+              },
+            })}
+            error={errors.portfolio?.message}
           />
         </div>
 
@@ -218,7 +260,18 @@ function PersonalInfoForm({ data, onUpdate }) {
           label="Professional Summary"
           rows={4}
           placeholder="Brief summary of your professional background and key achievements..."
-          {...register('summary')}
+          {...register('summary', {
+            validate: (value) => {
+              if (!value) return true
+              const result = validateSummary(value)
+              return result.valid || result.error
+            },
+            maxLength: {
+              value: 500,
+              message: 'Summary must not exceed 500 characters',
+            },
+          })}
+          error={errors.summary?.message}
         />
 
         {/* Photo Upload Section */}
