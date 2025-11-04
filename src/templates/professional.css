@@ -1,18 +1,18 @@
-/* Professional Resume Template */
+/* Professional Resume Template - 2025 Trendy Version */
 .resume-professional {
-  font-family: 'Calibri', 'Arial', sans-serif;
+  font-family: 'Inter', 'Calibri', 'Arial', sans-serif;
   max-width: 210mm;
   margin: 0 auto;
   background: #ffffff;
   color: #1a1a1a;
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .resume-professional .resume-header {
-  background: #2c3e50;
+  background: #1e293b;
   color: white;
   padding: 2.5rem 2rem;
-  border-bottom: 4px solid #3498db;
+  border-bottom: 3px solid #3b82f6;
 }
 
 .resume-professional .resume-header-content {
@@ -30,20 +30,7 @@
   font-size: 2.25rem;
   font-weight: 600;
   margin: 0 0 0.75rem 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.resume-professional .resume-photo {
-  flex-shrink: 0;
-}
-
-.resume-professional .resume-photo img {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #3498db;
+  letter-spacing: -0.01em;
 }
 
 .resume-professional .resume-header .contact-info {
@@ -58,6 +45,23 @@
 .resume-professional .resume-header .contact-info a {
   color: white;
   text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.resume-professional .resume-header .contact-info a:hover {
+  opacity: 1;
+}
+
+.resume-professional .resume-photo {
+  flex-shrink: 0;
+}
+
+.resume-professional .resume-photo img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3b82f6;
 }
 
 .resume-professional .resume-body {
@@ -69,57 +73,58 @@
 }
 
 .resume-professional .section-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #1e293b;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #ecf0f1;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e2e8f0;
+  letter-spacing: 0.02em;
+  text-transform: none;
 }
 
 .resume-professional .summary {
   font-size: 1rem;
   line-height: 1.7;
-  color: #34495e;
+  color: #475569;
 }
 
 .resume-professional .experience-item,
 .resume-professional .education-item {
   margin-bottom: 1.5rem;
   padding-left: 1rem;
-  border-left: 3px solid #3498db;
+  border-left: 3px solid #3b82f6;
 }
 
 .resume-professional .experience-item h3,
 .resume-professional .education-item h3 {
   font-size: 1.15rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #1e293b;
   margin: 0 0 0.25rem 0;
 }
 
 .resume-professional .experience-item .company,
 .resume-professional .education-item .institution {
   font-size: 1rem;
-  font-weight: 600;
-  color: #3498db;
+  font-weight: 500;
+  color: #3b82f6;
   margin-bottom: 0.25rem;
 }
 
 .resume-professional .experience-item .date,
 .resume-professional .education-item .date {
-  font-size: 0.9rem;
-  color: #7f8c8d;
+  font-size: 0.875rem;
+  color: #64748b;
   margin-bottom: 0.5rem;
-  font-style: italic;
+  font-style: normal;
 }
 
 .resume-professional .experience-item .responsibilities {
-  color: #34495e;
+  color: #475569;
   margin-top: 0.5rem;
   white-space: pre-line;
+  line-height: 1.7;
 }
 
 .resume-professional .skills-list {
@@ -129,30 +134,37 @@
 }
 
 .resume-professional .skill-tag {
-  background: #ecf0f1;
-  color: #2c3e50;
-  padding: 0.4rem 0.9rem;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  border-left: 3px solid #3498db;
+  background: #f1f5f9;
+  color: #1e293b;
+  padding: 0.375rem 0.875rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
 }
 
 .resume-professional .certification-item,
 .resume-professional .language-item {
   margin-bottom: 0.75rem;
-  padding: 0.5rem 0;
-  border-left: 3px solid #ecf0f1;
-  padding-left: 1rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 2px solid #e2e8f0;
 }
 
 .resume-professional .certification-item strong,
 .resume-professional .language-item strong {
-  color: #2c3e50;
+  color: #1e293b;
 }
 
 @media print {
   .resume-professional {
     max-width: 100%;
   }
+  
+  .resume-professional .resume-header {
+    background: #1e293b !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
-
