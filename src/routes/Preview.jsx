@@ -138,13 +138,6 @@ function Preview() {
               >
                 ← Edit Resume
               </Button>
-              <Button 
-                onClick={handleDownloadPDF} 
-                disabled={isGeneratingPDF}
-                className="w-full sm:w-auto"
-              >
-                {isGeneratingPDF ? 'Generating PDF...' : 'Download PDF'}
-              </Button>
             </div>
           </div>
         </div>
