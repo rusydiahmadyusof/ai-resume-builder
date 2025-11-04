@@ -21,6 +21,8 @@ function Preview() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
   const [error, setError] = useState(null)
+  const [zoomLevel, setZoomLevel] = useState(1)
+  const [isFullScreen, setIsFullScreen] = useState(false)
 
   // Calculate recommended template based on job title and description
   const recommendedTemplate = useMemo(() => {
@@ -97,6 +99,61 @@ function Preview() {
     }
   }
 
+  const handlePrint = () => {
+    window.print()
+  }
+
+  const handleFullScreen = () => {
+    if (!resumeRef.current) return
+
+    if (!isFullScreen) {
+      if (resumeRef.current.requestFullscreen) {
+        resumeRef.current.requestFullscreen()
+      } else if (resumeRef.current.webkitRequestFullscreen) {
+        resumeRef.current.webkitRequestFullscreen()
+      } else if (resumeRef.current.msRequestFullscreen) {
+        resumeRef.current.msRequestFullscreen()
+      }
+      setIsFullScreen(true)
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen()
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen()
+      } else if (document.msExitFullscreen) {
+        document.msExitFullscreen()
+      }
+      setIsFullScreen(false)
+    }
+  }
+
+  const handleZoomIn = () => {
+    setZoomLevel((prev) => Math.min(prev + 0.1, 2))
+  }
+
+  const handleZoomOut = () => {
+    setZoomLevel((prev) => Math.max(prev - 0.1, 0.5))
+  }
+
+  const handleResetZoom = () => {
+    setZoomLevel(1)
+  }
+
+  // Listen for fullscreen changes
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement)
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    document.addEventListener('msfullscreenchange', handleFullscreenChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('msfullscreenchange', handleFullscreenChange)
+    }
+  }, [])
+
   if (!isLoaded) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -160,6 +217,11 @@ function Preview() {
               />
             </Card>
 
+            <PreviewStats
+              resumeData={resumeData}
+              generatedContent={generatedContent}
+            />
+
             <Card>
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-gray-900">
@@ -200,7 +262,23 @@ function Preview() {
 
           {/* Resume Preview */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 overflow-x-auto" ref={resumeRef}>
+            <PreviewControls
+              onPrint={handlePrint}
+              onFullScreen={handleFullScreen}
+              onZoomIn={handleZoomIn}
+              onZoomOut={handleZoomOut}
+              onResetZoom={handleResetZoom}
+              zoomLevel={zoomLevel}
+            />
+            <div
+              className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8 overflow-x-auto transition-transform duration-200"
+              ref={resumeRef}
+              style={{
+                transform: `scale(${zoomLevel})`,
+                transformOrigin: 'top left',
+                width: `${100 / zoomLevel}%`,
+              }}
+            >
               <ResumePreview
                 resumeData={resumeData}
                 selectedTemplate={selectedTemplate}
