@@ -4,6 +4,7 @@ import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
 import { validateDateRange, validateDateNotFuture, validateDateNotTooOld } from '../../utils/dateValidation'
+import { validateWorkExperience } from '../../utils/validation'
 
 function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
   const [dateErrors, setDateErrors] = useState({})

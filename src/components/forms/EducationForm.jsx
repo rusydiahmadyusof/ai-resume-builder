@@ -3,6 +3,7 @@ import Input from '../ui/Input'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
 import { validateDateRange, validateDateNotFuture, validateDateNotTooOld } from '../../utils/dateValidation'
+import { validateEducation } from '../../utils/validation'
 
 function EducationForm({ education, onAdd, onUpdate, onRemove }) {
   const [dateErrors, setDateErrors] = useState({})
@@ -109,12 +110,20 @@ function EducationForm({ education, onAdd, onUpdate, onRemove }) {
                 value={edu.institution}
                 onChange={(e) => handleUpdate(edu.id, 'institution', e.target.value)}
                 placeholder="University/School Name"
+                error={(() => {
+                  const validation = validateEducation(edu)
+                  return validation.errors.institution
+                })()}
               />
               <Input
                 label="Degree *"
                 value={edu.degree}
                 onChange={(e) => handleUpdate(edu.id, 'degree', e.target.value)}
                 placeholder="Bachelor's, Master's, etc."
+                error={(() => {
+                  const validation = validateEducation(edu)
+                  return validation.errors.degree
+                })()}
               />
             </div>
 
