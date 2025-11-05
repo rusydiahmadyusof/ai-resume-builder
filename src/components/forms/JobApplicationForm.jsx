@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
@@ -20,9 +20,29 @@ function JobApplicationForm({ data, onUpdate }) {
     handleSubmit,
     formState: { errors },
     setValue,
+    watch,
   } = useForm({
     defaultValues: data,
   })
+
+  // Watch form values and auto-save on change
+  const jobTitle = watch('jobTitle')
+  const jobDescription = watch('jobDescription')
+  
+  // Auto-save when values change (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if ((jobTitle && jobTitle.trim()) || (jobDescription && jobDescription.trim())) {
+        onUpdate({
+          jobTitle: jobTitle || '',
+          jobDescription: jobDescription || '',
+        })
+      }
+    }, 500) // Debounce for 500ms
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobTitle, jobDescription])
 
   const handleExtractFromURL = async () => {
     // Validate URL

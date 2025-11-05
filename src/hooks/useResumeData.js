@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { storageService } from '../services/storageService'
+import { cleanEmptyEntries, hasResumeData } from '../utils/resumeHelpers'
 
 const initialResumeData = {
   personalInfo: {
@@ -55,7 +56,13 @@ export const useResumeData = () => {
   useEffect(() => {
     const savedData = storageService.loadResumeData()
     if (savedData) {
-      setResumeData(savedData)
+      // Clean empty entries when loading
+      const cleanedData = cleanEmptyEntries(savedData)
+      setResumeData(cleanedData)
+      // Save cleaned data back if it was modified
+      if (hasResumeData(cleanedData)) {
+        storageService.saveResumeData(cleanedData)
+      }
     }
     setIsLoaded(true)
   }, [])
@@ -68,11 +75,14 @@ export const useResumeData = () => {
         [section]: data,
       }
       
+      // Clean empty entries if we have meaningful data
+      const cleaned = hasResumeData(updated) ? cleanEmptyEntries(updated) : updated
+      
       // Set saving status
       setSaveStatus('saving')
       
       // Save to localStorage
-      const result = storageService.saveResumeData(updated)
+      const result = storageService.saveResumeData(cleaned)
       
       // Handle result (could be boolean or object with success/error)
       const success = typeof result === 'boolean' ? result : (result.success !== false)
@@ -104,7 +114,7 @@ export const useResumeData = () => {
         }
       }
       
-      return updated
+      return cleaned
     })
   }
 
@@ -134,9 +144,12 @@ export const useResumeData = () => {
         workExperience: [...prev.workExperience, newExp],
       }
       
+      // Clean empty entries if we have meaningful data
+      const cleaned = hasResumeData(updated) ? cleanEmptyEntries(updated) : updated
+      
       // Save to localStorage
       try {
-        localStorage.setItem('resumeData', JSON.stringify(updated))
+        localStorage.setItem('resumeData', JSON.stringify(cleaned))
         setSaveStatus('saved')
         setLastSaved(Date.now())
         setStorageError(null)
@@ -167,7 +180,7 @@ export const useResumeData = () => {
         }, 5000)
       }
       
-      return updated
+      return cleaned
     })
   }
 
