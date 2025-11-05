@@ -257,7 +257,7 @@ function Preview() {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <Breadcrumbs
           items={[
             { label: 'Home', path: '/' },
@@ -267,13 +267,13 @@ function Preview() {
         />
         <WorkflowProgress />
         
-        <div className="mb-6 space-y-4">
-          <div className="flex items-start justify-between flex-col sm:flex-row gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-4 sm:mb-6 space-y-4">
+          <div className="flex items-start justify-between flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Resume Preview
               </h1>
-              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">
                 Review your AI-generated resume and choose a template
               </p>
             </div>
@@ -284,7 +284,7 @@ function Preview() {
                   // Navigate to builder, which will restore last step from localStorage
                   navigate('/builder')
                 }}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto min-h-[44px] touch-manipulation"
               >
                 ← Edit Resume
               </Button>
@@ -292,9 +292,9 @@ function Preview() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-1 space-y-3 sm:space-y-4 order-2 lg:order-1">
             <Card>
               <TemplateSelector
                 selectedTemplate={selectedTemplate}
@@ -394,7 +394,7 @@ function Preview() {
           </div>
 
           {/* Resume Preview */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 order-1 lg:order-2">
             <PreviewControls
               onPrint={handlePrint}
               onFullScreen={handleFullScreen}
@@ -404,7 +404,7 @@ function Preview() {
               zoomLevel={zoomLevel}
             />
             <div
-              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-xl p-4 sm:p-6 lg:p-8 overflow-x-auto transition-transform duration-200"
+              className="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-xl p-3 sm:p-4 md:p-6 lg:p-8 overflow-x-auto transition-transform duration-200"
               ref={resumeRef}
               style={{
                 transform: `scale(${zoomLevel})`,

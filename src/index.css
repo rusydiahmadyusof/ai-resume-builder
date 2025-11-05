@@ -65,6 +65,17 @@ body {
   input, textarea, select {
     font-size: 16px !important; /* Prevents zoom on iOS */
   }
+  
+  /* Better spacing on mobile */
+  body {
+    padding: 0;
+  }
+  
+  /* Ensure minimum touch target size */
+  button, a, input[type="button"], input[type="submit"], input[type="file"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* Touch optimizations */
@@ -77,6 +88,41 @@ body {
 @media (max-width: 768px) {
   body {
     -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Improve readability on mobile */
+  p, li {
+    line-height: 1.6;
+  }
+  
+  /* Better spacing for mobile */
+  section, article {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Optimize grid layouts for tablets */
+  .grid-responsive {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 375px) {
+  /* Reduce font sizes for very small screens */
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  
+  h3 {
+    font-size: 1.25rem !important;
   }
 }
 
@@ -116,5 +162,47 @@ body {
   transition-property: all;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+/* Responsive container utilities */
+.container-responsive {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-responsive {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Safe area for mobile devices with notches */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .safe-area-left {
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+  
+  .safe-area-right {
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
 }
 

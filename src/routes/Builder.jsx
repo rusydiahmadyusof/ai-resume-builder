@@ -289,8 +289,8 @@ function Builder() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 py-4 sm:py-6 md:py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <Breadcrumbs
           items={[
             { label: 'Home', path: '/' },
@@ -299,14 +299,14 @@ function Builder() {
         />
         <WorkflowProgress />
         
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-2">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Build Your Resume
               </h1>
-              <div className="flex items-center gap-4 flex-wrap">
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-wrap">
+                <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">
                   Fill in your details step by step. Your progress is automatically saved.
                 </p>
                 <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
@@ -315,7 +315,7 @@ function Builder() {
             <Button
               variant="secondary"
               onClick={() => navigate('/')}
-              className="hidden sm:flex"
+              className="hidden sm:flex whitespace-nowrap"
             >
               ← Home
             </Button>
@@ -328,11 +328,11 @@ function Builder() {
           onStepClick={handleStepClick}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
+          <div className="lg:col-span-2 order-2 lg:order-1">
             {renderStepContent()}
           </div>
-          <div className="lg:col-span-1 space-y-4">
+          <div className="lg:col-span-1 space-y-4 order-1 lg:order-2">
             <VersionManager
               resumeData={resumeData}
               onRestore={restoreResumeData}
@@ -344,29 +344,29 @@ function Builder() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg p-4 sticky bottom-0 sm:relative z-10">
+        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg p-3 sm:p-4 sticky bottom-0 sm:relative z-10 -mx-4 sm:mx-0 safe-area-bottom">
           <Button
             variant="secondary"
             onClick={handlePrevious}
             disabled={currentStep === 1}
-            className="w-full sm:w-auto order-2 sm:order-1"
+            className="w-full sm:w-auto order-2 sm:order-1 min-h-[44px] touch-manipulation"
           >
-            Previous
+            ← Previous
           </Button>
 
           {currentStep < steps.length ? (
             <Button 
               onClick={handleNext}
-              className="w-full sm:w-auto order-1 sm:order-2"
+              className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
               disabled={isNavigating}
             >
-              Next
+              Next →
             </Button>
           ) : (
             <Button 
               onClick={handleGenerateResume} 
               variant="primary"
-              className="w-full sm:w-auto order-1 sm:order-2"
+              className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
               disabled={isNavigating}
             >
               {isNavigating ? 'Generating...' : 'Generate Resume'}
