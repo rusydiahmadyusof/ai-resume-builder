@@ -6,11 +6,15 @@ import Button from '../ui/Button'
 import { validateDateRange, validateDateNotFuture, validateDateNotTooOld } from '../../utils/dateValidation'
 import { validateWorkExperience } from '../../utils/validation'
 
-function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
+function WorkExperienceForm({ experiences = [], onAdd, onUpdate, onRemove }) {
   const [dateErrors, setDateErrors] = useState({})
 
   const handleAdd = () => {
-    onAdd()
+    if (typeof onAdd === 'function') {
+      onAdd()
+    } else {
+      console.error('onAdd is not a function:', onAdd)
+    }
   }
 
   const validateDates = (id, startDate, endDate, current) => {

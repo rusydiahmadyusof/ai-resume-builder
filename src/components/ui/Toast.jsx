@@ -3,13 +3,17 @@ import PropTypes from 'prop-types'
 
 function Toast({ message, type = 'success', onClose, duration = 3000 }) {
   useEffect(() => {
-    if (duration > 0) {
+    if (message && duration > 0) {
       const timer = setTimeout(() => {
         onClose()
       }, duration)
       return () => clearTimeout(timer)
     }
-  }, [duration, onClose])
+  }, [message, duration, onClose])
+
+  if (!message) {
+    return null
+  }
 
   const bgColors = {
     success: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300',
@@ -37,7 +41,7 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
 }
 
 Toast.propTypes = {
-  message: PropTypes.string.isRequired,
+  message: PropTypes.string,
   type: PropTypes.oneOf(['success', 'error', 'info', 'warning']),
   onClose: PropTypes.func.isRequired,
   duration: PropTypes.number,

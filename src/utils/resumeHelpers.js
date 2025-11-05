@@ -84,8 +84,7 @@ export const hasResumeData = (resumeData) => {
     resumeData.personalInfo &&
     (resumeData.personalInfo.name?.trim() ||
       resumeData.personalInfo.email?.trim() ||
-      resumeData.personalInfo.phone?.trim() ||
-      resumeData.personalInfo.summary?.trim())
+      resumeData.personalInfo.phone?.trim())
   ) {
     return true
   }

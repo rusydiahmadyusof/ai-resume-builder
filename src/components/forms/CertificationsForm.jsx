@@ -2,10 +2,14 @@ import Input from '../ui/Input';
 import Card from '../ui/Card';
 import Button from '../ui/Button';
 
-function CertificationsForm({ certifications, onAdd, onUpdate, onRemove }) {
+function CertificationsForm({ certifications = [], onAdd, onUpdate, onRemove }) {
   const handleAdd = () => {
-    onAdd();
-  };
+    if (typeof onAdd === 'function') {
+      onAdd()
+    } else {
+      console.error('onAdd is not a function:', onAdd)
+    }
+  }
 
   const handleUpdate = (id, field, value) => {
     onUpdate(id, { [field]: value });

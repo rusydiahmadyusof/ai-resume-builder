@@ -6,7 +6,6 @@ function PreviewStats({ resumeData, generatedContent }) {
     certifications: resumeData.certifications?.filter(cert => cert.name).length || 0,
     languages: resumeData.languages?.filter(lang => lang.name).length || 0,
     hasPhoto: !!resumeData.personalInfo?.photo,
-    hasSummary: !!(generatedContent?.summary || resumeData.personalInfo?.summary),
     hasGeneratedContent: !!generatedContent,
   }
 
@@ -45,9 +44,6 @@ function PreviewStats({ resumeData, generatedContent }) {
         <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-200 dark:border-gray-700">
           {stats.hasPhoto && (
             <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2 py-1 rounded">Photo</span>
-          )}
-          {stats.hasSummary && (
-            <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded">Summary</span>
           )}
           {stats.hasGeneratedContent && (
             <span className="text-xs bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-2 py-1 rounded">AI Generated</span>

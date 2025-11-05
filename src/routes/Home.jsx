@@ -38,16 +38,6 @@ function Home() {
       title: 'ATS Optimization',
       description: 'Optimize your resume to pass Applicant Tracking Systems',
     },
-    {
-      icon: '📋',
-      title: 'PDF Resume Import',
-      description: 'Upload existing resume PDF to auto-extract and pre-fill information',
-    },
-    {
-      icon: '🔗',
-      title: 'Job URL Extraction',
-      description: 'Automatically extract job details from posting URLs',
-    },
   ]
 
   const advancedFeatures = [
@@ -55,16 +45,6 @@ function Home() {
       icon: '📝',
       title: 'Cover Letter Generation',
       description: 'AI-generated cover letters tailored to your job applications',
-    },
-    {
-      icon: '💾',
-      title: 'Resume Versioning',
-      description: 'Save and restore multiple versions of your resume',
-    },
-    {
-      icon: '📤',
-      title: 'Export/Import',
-      description: 'Backup and restore your resume data as JSON',
     },
     {
       icon: '📊',

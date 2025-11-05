@@ -20,7 +20,6 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
 
     // Calculate section lengths
     const sectionLengths = {
-      summary: resumeData.personalInfo?.summary?.length || 0,
       workExperience: resumeData.workExperience?.reduce((sum, exp) => 
         sum + (exp.responsibilities?.length || 0), 0) || 0,
       education: resumeData.education?.reduce((sum, edu) => 
@@ -29,7 +28,6 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
 
     // Industry benchmarks
     const benchmarks = {
-      summary: { ideal: 150, max: 300 },
       workExperience: { ideal: 200, max: 500 },
       education: { ideal: 50, max: 150 },
     }
@@ -229,10 +227,6 @@ function AnalyticsDashboard({ resumeData, jobData, generatedContent }) {
 function buildResumeText(resumeData, generatedContent) {
   const parts = []
 
-  if (generatedContent?.summary || resumeData.personalInfo?.summary) {
-    parts.push(generatedContent?.summary || resumeData.personalInfo.summary)
-  }
-
   if (generatedContent?.workExperience || resumeData.workExperience) {
     const workExp = generatedContent?.workExperience || resumeData.workExperience
     workExp.forEach(exp => {
@@ -298,11 +292,10 @@ function calculateKeywordDensity(resumeText, keywords) {
 
 function calculateCompleteness(resumeData) {
   let completed = 0
-  const total = 7
+  const total = 6
 
   if (resumeData.personalInfo?.name) completed++
   if (resumeData.personalInfo?.email) completed++
-  if (resumeData.personalInfo?.summary) completed++
   if (resumeData.workExperience && resumeData.workExperience.length > 0) completed++
   if (resumeData.education && resumeData.education.length > 0) completed++
   if (resumeData.skills && resumeData.skills.length > 0) completed++

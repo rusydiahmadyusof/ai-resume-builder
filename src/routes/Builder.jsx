@@ -8,8 +8,6 @@ import Breadcrumbs from '../components/ui/Breadcrumbs'
 import WorkflowProgress from '../components/ui/WorkflowProgress'
 import KeyboardShortcuts from '../components/ui/KeyboardShortcuts'
 import AutoSaveIndicator from '../components/ui/AutoSaveIndicator'
-import VersionManager from '../components/ui/VersionManager'
-import ExportImport from '../components/ui/ExportImport'
 import PersonalInfoForm from '../components/forms/PersonalInfoForm'
 import WorkExperienceForm from '../components/forms/WorkExperienceForm'
 import EducationForm from '../components/forms/EducationForm'
@@ -17,7 +15,6 @@ import SkillsForm from '../components/forms/SkillsForm'
 import CertificationsForm from '../components/forms/CertificationsForm'
 import LanguagesForm from '../components/forms/LanguagesForm'
 import JobApplicationForm from '../components/forms/JobApplicationForm'
-import { formatDateToMonth } from '../utils/dateFormat'
 
 const steps = [
   'Personal Info',
@@ -154,92 +151,12 @@ function Builder() {
           <PersonalInfoForm
             data={resumeData.personalInfo}
             onUpdate={updatePersonalInfo}
-            onWorkExperienceExtracted={(workExp) => {
-              console.log('Raw extracted work experience:', workExp)
-              
-              // Filter out empty work experience entries and add extracted ones
-              const validWorkExp = workExp.filter(exp => {
-                if (!exp || typeof exp !== 'object') return false
-                // Include if has at least company, position, or meaningful responsibilities
-                const hasCompany = exp.company && exp.company.trim().length > 0
-                const hasPosition = exp.position && exp.position.trim().length > 0
-                const hasResponsibilities = exp.responsibilities && exp.responsibilities.trim().length > 10
-                return hasCompany || hasPosition || hasResponsibilities
-              })
-              
-              console.log('Valid work experience entries:', validWorkExp)
-              
-              if (validWorkExp.length === 0) {
-                setToast({ 
-                  message: 'No valid work experience found in PDF. Please add manually.', 
-                  type: 'info',
-                  duration: 4000
-                })
-                return
-              }
-              
-              // Check if first work experience entry is empty
-              const firstExp = resumeData.workExperience[0]
-              const firstIsEmpty = firstExp && 
-                !firstExp.company?.trim() && 
-                !firstExp.position?.trim() && 
-                !firstExp.responsibilities?.trim()
-              
-              // Process extracted entries
-              validWorkExp.forEach((exp, index) => {
-                setTimeout(() => {
-                  // Determine if current based on endDate
-                  const endDateStr = (exp.endDate || '').trim()
-                  const isCurrent = !endDateStr || 
-                    endDateStr.toLowerCase() === 'present' || 
-                    endDateStr.toLowerCase() === 'current' ||
-                    endDateStr.toLowerCase() === 'now' ||
-                    endDateStr.toLowerCase() === 'till date'
-                  
-                  // Format dates to yyyy-MM format (required for HTML5 month input)
-                  const formattedStartDate = formatDateToMonth(exp.startDate || '')
-                  const formattedEndDate = isCurrent ? '' : formatDateToMonth(endDateStr)
-                  
-                  // Format the extracted data to match expected structure
-                  const formattedExp = {
-                    company: (exp.company || '').trim(),
-                    position: (exp.position || '').trim(),
-                    startDate: formattedStartDate,
-                    endDate: formattedEndDate,
-                    current: isCurrent,
-                    responsibilities: (exp.responsibilities || '').trim(),
-                  }
-                  
-                  console.log(`Processing work experience ${index + 1}:`, formattedExp)
-                  
-                  // If first entry is empty and this is the first extracted entry, update it instead of adding
-                  if (index === 0 && firstIsEmpty && firstExp) {
-                    console.log('Updating first empty work experience entry')
-                    updateWorkExperience(firstExp.id, formattedExp)
-                  } else {
-                    // Add new entry for subsequent ones
-                    console.log('Adding new work experience entry')
-                    addWorkExperience(formattedExp)
-                  }
-                }, index * 100) // Stagger updates to avoid conflicts
-              })
-              
-              // Automatically navigate to Work Experience section after a short delay
-              setTimeout(() => {
-                setCurrentStep(2)
-                setToast({ 
-                  message: `Extracted ${validWorkExp.length} work experience ${validWorkExp.length === 1 ? 'entry' : 'entries'}. Review and update if needed.`, 
-                  type: 'success',
-                  duration: 5000
-                })
-              }, validWorkExp.length * 100 + 200)
-            }}
           />
         )
       case 2:
         return (
           <WorkExperienceForm
-            experiences={resumeData.workExperience}
+            experiences={resumeData.workExperience || []}
             onAdd={addWorkExperience}
             onUpdate={updateWorkExperience}
             onRemove={removeWorkExperience}
@@ -256,12 +173,16 @@ function Builder() {
         )
       case 4:
         return (
-          <SkillsForm skills={resumeData.skills} onUpdate={updateSkills} />
+          <SkillsForm 
+            skills={resumeData.skills} 
+            onUpdate={updateSkills}
+            workExperience={resumeData.workExperience}
+          />
         )
       case 5:
         return (
           <CertificationsForm
-            certifications={resumeData.certifications}
+            certifications={resumeData.certifications || []}
             onAdd={addCertification}
             onUpdate={updateCertification}
             onRemove={removeCertification}
@@ -270,7 +191,7 @@ function Builder() {
       case 6:
         return (
           <LanguagesForm
-            languages={resumeData.languages}
+            languages={resumeData.languages || []}
             onAdd={addLanguage}
             onUpdate={updateLanguage}
             onRemove={removeLanguage}
@@ -328,50 +249,43 @@ function Builder() {
           onStepClick={handleStepClick}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-4 sm:mb-6">
-          <div className="lg:col-span-2 order-2 lg:order-1">
-            {renderStepContent()}
-          </div>
-          <div className="lg:col-span-1 space-y-4 order-1 lg:order-2">
-            <VersionManager
-              resumeData={resumeData}
-              onRestore={restoreResumeData}
-            />
-            <ExportImport
-              resumeData={resumeData}
-              onImport={restoreResumeData}
-            />
-          </div>
+        <div className="max-w-3xl mx-auto mb-24 sm:mb-20 pb-4">
+          {renderStepContent()}
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-lg p-3 sm:p-4 sticky bottom-0 sm:relative z-10 -mx-4 sm:mx-0 safe-area-bottom">
-          <Button
-            variant="secondary"
-            onClick={handlePrevious}
-            disabled={currentStep === 1}
-            className="w-full sm:w-auto order-2 sm:order-1 min-h-[44px] touch-manipulation"
-          >
-            ← Previous
-          </Button>
+        {/* Floating Navigation Bar */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg safe-area-bottom">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 py-3 sm:py-4">
+              <Button
+                variant="secondary"
+                onClick={handlePrevious}
+                disabled={currentStep === 1}
+                className="w-full sm:w-auto order-2 sm:order-1 min-h-[44px] touch-manipulation"
+              >
+                ← Previous
+              </Button>
 
-          {currentStep < steps.length ? (
-            <Button 
-              onClick={handleNext}
-              className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
-              disabled={isNavigating}
-            >
-              Next →
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleGenerateResume} 
-              variant="primary"
-              className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
-              disabled={isNavigating}
-            >
-              {isNavigating ? 'Generating...' : 'Generate Resume'}
-            </Button>
-          )}
+              {currentStep < steps.length ? (
+                <Button 
+                  onClick={handleNext}
+                  className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
+                  disabled={isNavigating}
+                >
+                  Next →
+                </Button>
+              ) : (
+                <Button 
+                  onClick={handleGenerateResume} 
+                  variant="primary"
+                  className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
+                  disabled={isNavigating}
+                >
+                  {isNavigating ? 'Generating...' : 'Generate Resume'}
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
 
         {toast && (

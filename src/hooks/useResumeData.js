@@ -8,10 +8,14 @@ const initialResumeData = {
     email: '',
     phone: '',
     address: '',
-    summary: '',
     linkedin: '',
     github: '',
     portfolio: '',
+    twitter: '',
+    instagram: '',
+    facebook: '',
+    youtube: '',
+    website: '',
     photo: '',
   },
   workExperience: [
@@ -139,13 +143,17 @@ export const useResumeData = () => {
         responsibilities: initialData?.responsibilities || '',
       }
       
+      // Ensure workExperience is an array
+      const currentWorkExperience = Array.isArray(prev.workExperience) ? prev.workExperience : []
+      
       const updated = {
         ...prev,
-        workExperience: [...prev.workExperience, newExp],
+        workExperience: [...currentWorkExperience, newExp],
       }
       
-      // Clean empty entries if we have meaningful data
-      const cleaned = hasResumeData(updated) ? cleanEmptyEntries(updated) : updated
+      // Don't clean empty entries when adding a new entry - allow user to fill it in
+      // The cleaning will happen on next save/update
+      const cleaned = updated
       
       // Save to localStorage
       try {
@@ -233,19 +241,71 @@ export const useResumeData = () => {
 
   // Add certification
   const addCertification = () => {
-    const newCert = {
-      id: Date.now(),
-      name: '',
-      issuer: '',
-      date: '',
-      url: '',
-    }
-    updateResumeData('certifications', [...resumeData.certifications, newCert])
+    setResumeData((prev) => {
+      // Generate unique ID using timestamp + random suffix to avoid collisions
+      const uniqueId = Date.now() + Math.random().toString(36).substr(2, 9)
+      
+      const newCert = {
+        id: uniqueId,
+        name: '',
+        issuer: '',
+        date: '',
+        url: '',
+      }
+      
+      // Ensure certifications is an array
+      const currentCertifications = Array.isArray(prev.certifications) ? prev.certifications : []
+      
+      const updated = {
+        ...prev,
+        certifications: [...currentCertifications, newCert],
+      }
+      
+      // Don't clean empty entries when adding a new entry - allow user to fill it in
+      // The cleaning will happen on next save/update
+      const cleaned = updated
+      
+      // Save to localStorage
+      try {
+        localStorage.setItem('resumeData', JSON.stringify(cleaned))
+        setSaveStatus('saved')
+        setLastSaved(Date.now())
+        setStorageError(null)
+        setTimeout(() => {
+          setSaveStatus((status) => (status === 'saved' ? 'idle' : status))
+        }, 3000)
+      } catch (error) {
+        console.error('Error saving resume data:', error)
+        setSaveStatus('error')
+        if (error.name === 'QuotaExceededError') {
+          setStorageError({
+            type: 'QUOTA_EXCEEDED',
+            message: 'Storage quota exceeded. Please clear some data.',
+            suggestions: [
+              'Clear browser storage',
+              'Export and delete old versions',
+              'Remove unused resume data',
+            ],
+          })
+        } else {
+          setStorageError({
+            type: 'UNKNOWN',
+            message: error.message || 'Failed to save data',
+          })
+        }
+        setTimeout(() => {
+          setSaveStatus((status) => (status === 'error' ? 'idle' : status))
+        }, 5000)
+      }
+      
+      return cleaned
+    })
   }
 
   // Update certification
   const updateCertification = (id, data) => {
-    const updated = resumeData.certifications.map((cert) =>
+    const currentCertifications = Array.isArray(resumeData.certifications) ? resumeData.certifications : []
+    const updated = currentCertifications.map((cert) =>
       cert.id === id ? { ...cert, ...data } : cert
     )
     updateResumeData('certifications', updated)
@@ -253,23 +313,76 @@ export const useResumeData = () => {
 
   // Remove certification
   const removeCertification = (id) => {
-    const updated = resumeData.certifications.filter((cert) => cert.id !== id)
+    const currentCertifications = Array.isArray(resumeData.certifications) ? resumeData.certifications : []
+    const updated = currentCertifications.filter((cert) => cert.id !== id)
     updateResumeData('certifications', updated)
   }
 
   // Add language
   const addLanguage = () => {
-    const newLang = {
-      id: Date.now(),
-      name: '',
-      proficiency: 'Native',
-    }
-    updateResumeData('languages', [...resumeData.languages, newLang])
+    setResumeData((prev) => {
+      // Generate unique ID using timestamp + random suffix to avoid collisions
+      const uniqueId = Date.now() + Math.random().toString(36).substr(2, 9)
+      
+      const newLang = {
+        id: uniqueId,
+        name: '',
+        proficiency: 'Native',
+      }
+      
+      // Ensure languages is an array
+      const currentLanguages = Array.isArray(prev.languages) ? prev.languages : []
+      
+      const updated = {
+        ...prev,
+        languages: [...currentLanguages, newLang],
+      }
+      
+      // Don't clean empty entries when adding a new entry - allow user to fill it in
+      // The cleaning will happen on next save/update
+      const cleaned = updated
+      
+      // Save to localStorage
+      try {
+        localStorage.setItem('resumeData', JSON.stringify(cleaned))
+        setSaveStatus('saved')
+        setLastSaved(Date.now())
+        setStorageError(null)
+        setTimeout(() => {
+          setSaveStatus((status) => (status === 'saved' ? 'idle' : status))
+        }, 3000)
+      } catch (error) {
+        console.error('Error saving resume data:', error)
+        setSaveStatus('error')
+        if (error.name === 'QuotaExceededError') {
+          setStorageError({
+            type: 'QUOTA_EXCEEDED',
+            message: 'Storage quota exceeded. Please clear some data.',
+            suggestions: [
+              'Clear browser storage',
+              'Export and delete old versions',
+              'Remove unused resume data',
+            ],
+          })
+        } else {
+          setStorageError({
+            type: 'UNKNOWN',
+            message: error.message || 'Failed to save data',
+          })
+        }
+        setTimeout(() => {
+          setSaveStatus((status) => (status === 'error' ? 'idle' : status))
+        }, 5000)
+      }
+      
+      return cleaned
+    })
   }
 
   // Update language
   const updateLanguage = (id, data) => {
-    const updated = resumeData.languages.map((lang) =>
+    const currentLanguages = Array.isArray(resumeData.languages) ? resumeData.languages : []
+    const updated = currentLanguages.map((lang) =>
       lang.id === id ? { ...lang, ...data } : lang
     )
     updateResumeData('languages', updated)
@@ -277,7 +390,8 @@ export const useResumeData = () => {
 
   // Remove language
   const removeLanguage = (id) => {
-    const updated = resumeData.languages.filter((lang) => lang.id !== id)
+    const currentLanguages = Array.isArray(resumeData.languages) ? resumeData.languages : []
+    const updated = currentLanguages.filter((lang) => lang.id !== id)
     updateResumeData('languages', updated)
   }
 
