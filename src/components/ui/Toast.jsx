@@ -27,7 +27,9 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
       className={`fixed top-4 right-4 left-4 sm:left-auto sm:max-w-md z-50 p-4 rounded-lg border shadow-lg animate-slide-in ${bgColors[type]}`}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-medium flex-1">{message}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium whitespace-pre-line break-words">{message}</p>
+        </div>
         <button
           onClick={onClose}
           className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 active:scale-95 touch-manipulation flex-shrink-0 w-6 h-6 flex items-center justify-center"

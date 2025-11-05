@@ -29,6 +29,7 @@ function Preview() {
   const [coverLetter, setCoverLetter] = useState(null)
   const [isGeneratingCoverLetter, setIsGeneratingCoverLetter] = useState(false)
   const [showTemplateSidebar, setShowTemplateSidebar] = useState(false)
+  const [successToast, setSuccessToast] = useState(null)
 
   // Calculate recommended template based on job title and description
   const recommendedTemplate = useMemo(() => {
@@ -140,6 +141,13 @@ function Preview() {
         }
         
         setGeneratedContent(generatedContent)
+        
+        // Show floating success toast (short message only)
+        setSuccessToast({
+          message: '✓ Resume generated successfully!',
+          type: 'success',
+          duration: 3000
+        })
       } else {
         setError(result.error || 'Failed to generate resume content')
       }
@@ -508,36 +516,32 @@ function Preview() {
               </div>
             </div>
 
-            {/* Status Messages */}
+            {/* Error Messages */}
             {error && (
               <div className="mt-4 p-3 sm:p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
               </div>
             )}
-            {generatedContent && !error && (
-              <div className="mt-4 p-3 sm:p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                <p className="text-sm font-semibold text-green-700 dark:text-green-300 mb-2">
-                  ✓ Resume generated successfully!
-                </p>
-                {generatedContent.summary && (
-                  <div className="mt-2 pt-2 border-t border-green-200 dark:border-green-800">
-                    <p className="text-xs font-semibold text-green-700 dark:text-green-300 mb-1">Professional Summary:</p>
-                    <p className="text-sm text-green-600 dark:text-green-400 line-clamp-3">
-                      {generatedContent.summary}
-                    </p>
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
-        <Toast
-          message={error}
-          type="error"
-          onClose={() => setError(null)}
-          duration={5000}
-        />
+        {/* Floating Toast Notifications */}
+        {error && (
+          <Toast
+            message={error}
+            type="error"
+            onClose={() => setError(null)}
+            duration={5000}
+          />
+        )}
+        {successToast && (
+          <Toast
+            message={successToast.message}
+            type={successToast.type}
+            onClose={() => setSuccessToast(null)}
+            duration={successToast.duration || 5000}
+          />
+        )}
 
         <KeyboardShortcuts shortcuts={shortcutList} />
       </div>

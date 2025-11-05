@@ -36,10 +36,11 @@ export const groqService = {
             content: `You are an expert resume writer and career counselor. Your task is to create a professional, tailored resume that highlights the candidate's experience and skills relevant to the job they're applying for. Focus on:
 1. Creating a compelling professional summary (1-2 sentences, max 50 words) that analyzes work experience and matches it to job requirements
 2. Rewriting work experience descriptions to match job requirements
-3. Highlighting relevant skills and achievements
-4. Using industry-standard keywords
-5. Quantifying achievements where possible
-6. Making the resume ATS-friendly
+3. Formatting responsibilities as bullet points (use "- " prefix for each bullet)
+4. Highlighting relevant skills and achievements
+5. Using industry-standard keywords
+6. Quantifying achievements where possible
+7. Making the resume ATS-friendly
 
 Return the response as a JSON object with the following structure:
 {
@@ -50,7 +51,7 @@ Return the response as a JSON object with the following structure:
       "position": "position title",
       "startDate": "start date",
       "endDate": "end date or 'Present'",
-      "responsibilities": "tailored responsibilities and achievements"
+      "responsibilities": "tailored responsibilities and achievements formatted as bullet points, each on a new line starting with '- '"
     }
   ],
   "skills": ["relevant skill 1", "relevant skill 2", ...]
@@ -79,6 +80,45 @@ Return the response as a JSON object with the following structure:
         // Limit skills to maximum 10
         if (generatedContent.skills && Array.isArray(generatedContent.skills)) {
           generatedContent.skills = generatedContent.skills.slice(0, 10)
+        }
+        
+        // Ensure work experience responsibilities are formatted as bullet points
+        if (generatedContent.workExperience && Array.isArray(generatedContent.workExperience)) {
+          generatedContent.workExperience = generatedContent.workExperience.map(exp => {
+            if (exp.responsibilities && typeof exp.responsibilities === 'string') {
+              // Split by newlines or periods followed by space (for paragraph text)
+              let lines = exp.responsibilities.split('\n').filter(line => line.trim())
+              
+              // If it's a single paragraph without line breaks, split by sentences
+              if (lines.length === 1 && lines[0].length > 50) {
+                // Split by periods or semicolons followed by space
+                lines = lines[0].split(/[.;]\s+/).filter(line => line.trim().length > 10)
+              }
+              
+              // Convert to bullet points if not already formatted
+              if (lines.length > 0) {
+                const hasBullets = lines.some(line => line.trim().match(/^[-•*]\s/))
+                if (!hasBullets) {
+                  exp.responsibilities = lines.map(line => {
+                    const trimmed = line.trim()
+                    // Remove trailing period if present (will be added by bullet formatting)
+                    const cleaned = trimmed.replace(/\.$/, '')
+                    return `- ${cleaned}`
+                  }).join('\n')
+                } else {
+                  // Already has bullets, just ensure format is consistent
+                  exp.responsibilities = lines.map(line => {
+                    const trimmed = line.trim()
+                    if (trimmed.match(/^[-•*]\s/)) {
+                      return trimmed
+                    }
+                    return `- ${trimmed.replace(/^[-•*]\s*/, '')}`
+                  }).join('\n')
+                }
+              }
+            }
+            return exp
+          })
         }
       } catch (parseError) {
         // If JSON parsing fails, create a fallback structure
@@ -773,6 +813,109 @@ Return ONLY the improved text, no additional commentary or explanation.`
       }
     }
   },
+
+  /**
+   * Improve and format responsibilities/achievements as compact bullet points
+   * Makes the text short, compact, and formatted as bullet points
+   * Adjusts length based on available space in resume template
+   * @param {string} responsibilities - Original responsibilities/achievements text
+   * @param {string} position - Job position/title (optional, for context)
+   * @param {string} company - Company name (optional, for context)
+   * @param {number} maxLength - Maximum approximate length in characters (for space optimization)
+   * @returns {Promise<Object>} Improved text as bullet points
+   */
+  improveResponsibilitiesCompact: async (responsibilities, position = '', company = '', maxLength = 500) => {
+    try {
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      if (!responsibilities || !responsibilities.trim()) {
+        return {
+          success: false,
+          error: 'Please provide responsibilities/achievements text to improve.',
+        }
+      }
+
+      const contextInfo = []
+      if (position) contextInfo.push(`Position: ${position}`)
+      if (company) contextInfo.push(`Company: ${company}`)
+
+      const prompt = `Improve and format the following job responsibilities and achievements text as compact, professional bullet points optimized for resume space.
+
+${contextInfo.length > 0 ? `Context:\n${contextInfo.join('\n')}\n\n` : ''}Original Text:
+${responsibilities}
+
+INSTRUCTIONS:
+1. Keep ALL key information and achievements from the original text - do NOT remove any important points
+2. Format as bullet points (use "- " or "• " prefix)
+3. Make it SHORT and COMPACT - optimize for resume space (target approximately ${maxLength} characters or less)
+4. Use strong action verbs (e.g., "Led", "Developed", "Implemented", "Optimized", "Managed")
+5. Quantify achievements with numbers, percentages, or metrics where possible
+6. Each bullet point should be concise (ideally 1 line, max 2 lines)
+7. Focus on impact and results rather than just duties
+8. Use industry-standard terminology and keywords
+9. Make it ATS-friendly (avoid special characters that might break parsing)
+10. Prioritize the most important achievements first
+11. If the text is too long, condense but keep all key points
+12. Do NOT add information that wasn't in the original text
+
+Return ONLY the improved text formatted as bullet points, no additional commentary or explanation.`
+
+      const completion = await client.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert resume writer. Format job responsibilities and achievements as compact, professional bullet points optimized for resume space. Keep all important points while making it concise.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.7,
+        max_tokens: 800,
+      })
+
+      const improvedText = completion.choices[0]?.message?.content || ''
+      let cleanedText = improvedText.trim().replace(/^["']|["']$/g, '').trim()
+
+      // Ensure it's formatted as bullet points
+      // If it doesn't start with bullet points, add them
+      if (cleanedText && !cleanedText.match(/^[-•*]/)) {
+        // Split by lines and add bullet points
+        const lines = cleanedText.split('\n').filter(line => line.trim())
+        cleanedText = lines.map(line => {
+          const trimmed = line.trim()
+          if (trimmed.match(/^[-•*]/)) {
+            return trimmed
+          }
+          return `- ${trimmed}`
+        }).join('\n')
+      }
+
+      if (!cleanedText) {
+        return {
+          success: false,
+          error: 'Failed to generate improved text. Please try again.',
+        }
+      }
+
+      return {
+        success: true,
+        data: { improvedText: cleanedText },
+        improvedText: cleanedText, // For convenience
+      }
+    } catch (error) {
+      console.error('Error improving responsibilities wording:', error)
+      return {
+        success: false,
+        error: error.message || 'Failed to improve wording. Please try again.',
+      }
+    }
+  },
 }
 
 /**
@@ -808,11 +951,13 @@ ${jobData.jobDescription || 'No job description provided'}
 INSTRUCTIONS:
 1. Create a concise professional summary (1-2 sentences, max 50 words) by analyzing the candidate's work experience and matching it to the job requirements. Highlight key expertise and relevant achievements using industry keywords.
 2. Rewrite each work experience entry to emphasize achievements and responsibilities that match the job requirements
-3. Use action verbs and quantify achievements where possible
-4. Highlight skills that are most relevant to the job
-5. Use keywords from the job description naturally
-6. Make the resume ATS-friendly and professional
-7. Ensure all dates and company names are preserved exactly as provided
+3. Format responsibilities as bullet points - each responsibility/achievement must start with "- " and be on a new line
+4. Use action verbs and quantify achievements where possible
+5. Highlight skills that are most relevant to the job
+6. Use keywords from the job description naturally
+7. Make the resume ATS-friendly and professional
+8. Ensure all dates and company names are preserved exactly as provided
+9. Keep responsibilities concise and impactful (3-6 bullet points per position)
 
 Return ONLY a valid JSON object with the structure specified in the system message.`
 }

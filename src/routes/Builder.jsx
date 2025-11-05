@@ -16,7 +16,18 @@ import CertificationsForm from '../components/forms/CertificationsForm'
 import LanguagesForm from '../components/forms/LanguagesForm'
 import JobApplicationForm from '../components/forms/JobApplicationForm'
 
-const steps = [
+// Steps for regular navigation (Job Application is optional)
+const regularSteps = [
+  'Personal Info',
+  'Work Experience',
+  'Education',
+  'Skills',
+  'Certifications',
+  'Languages',
+]
+
+// All steps including Job Application (for AI Resume generation)
+const allSteps = [
   'Personal Info',
   'Work Experience',
   'Education',
@@ -88,7 +99,14 @@ function Builder() {
   }
 
   const handleNext = () => {
-    if (currentStep < steps.length) {
+    // Use regularSteps for navigation (Job Application is optional)
+    const maxStep = regularSteps.length
+    if (currentStep < maxStep) {
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      localStorage.setItem('lastBuilderStep', nextStep.toString())
+    } else if (currentStep === maxStep && currentStep < allSteps.length) {
+      // Allow navigation to Job Application if user wants, but it's optional
       const nextStep = currentStep + 1
       setCurrentStep(nextStep)
       localStorage.setItem('lastBuilderStep', nextStep.toString())
@@ -123,14 +141,16 @@ function Builder() {
       localStorage.setItem('lastBuilderStep', '2')
       return
     }
+    // Job Application is only required for AI Resume generation
     if (!resumeData.jobApplication?.jobTitle?.trim() || !resumeData.jobApplication?.jobDescription?.trim()) {
       setToast({ 
-        message: 'Please fill in job application details. Both Job Title and Job Description are required.', 
+        message: 'Job Title and Job Description are required for AI Resume generation. Please fill them in.', 
         type: 'error',
         duration: 5000
       })
-      setCurrentStep(7)
-      localStorage.setItem('lastBuilderStep', '7')
+      // Navigate to Job Application step (step 7)
+      setCurrentStep(allSteps.length)
+      localStorage.setItem('lastBuilderStep', allSteps.length.toString())
       return
     }
     
@@ -244,9 +264,14 @@ function Builder() {
         </div>
 
         <Stepper
-          steps={steps}
-          currentStep={currentStep}
-          onStepClick={handleStepClick}
+          steps={regularSteps}
+          currentStep={currentStep <= regularSteps.length ? currentStep : regularSteps.length}
+          onStepClick={(stepNumber) => {
+            // Only allow clicking on regular steps
+            if (stepNumber <= regularSteps.length) {
+              handleStepClick(stepNumber)
+            }
+          }}
         />
 
         <div className="max-w-3xl mx-auto mb-24 sm:mb-20 pb-4">
@@ -255,35 +280,84 @@ function Builder() {
 
         {/* Floating Navigation Bar */}
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg safe-area-bottom">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6">
-            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 py-3 sm:py-4">
+          <div className="max-w-3xl mx-auto px-3 sm:px-4 md:px-6">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 py-2.5 sm:py-3">
+              {/* Previous Button */}
               <Button
                 variant="secondary"
                 onClick={handlePrevious}
                 disabled={currentStep === 1}
-                className="w-full sm:w-auto order-2 sm:order-1 min-h-[44px] touch-manipulation"
+                className="w-full sm:w-auto sm:flex-shrink-0 order-2 sm:order-1 min-h-[44px] sm:min-h-[40px] text-sm sm:text-base px-4 sm:px-4 py-2 touch-manipulation"
               >
                 ← Previous
               </Button>
 
-              {currentStep < steps.length ? (
-                <Button 
-                  onClick={handleNext}
-                  className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
-                  disabled={isNavigating}
-                >
-                  Next →
-                </Button>
-              ) : (
-                <Button 
-                  onClick={handleGenerateResume} 
-                  variant="primary"
-                  className="w-full sm:w-auto order-1 sm:order-2 min-h-[44px] touch-manipulation"
-                  disabled={isNavigating}
-                >
-                  {isNavigating ? 'Generating...' : 'Generate Resume'}
-                </Button>
-              )}
+              {/* Right Side Actions */}
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:flex-shrink-0 order-1 sm:order-2">
+                {currentStep < regularSteps.length ? (
+                  <Button 
+                    onClick={handleNext}
+                    className="w-full sm:w-auto min-h-[44px] sm:min-h-[40px] text-sm sm:text-base px-4 sm:px-4 py-2 touch-manipulation"
+                    disabled={isNavigating}
+                  >
+                    Next →
+                  </Button>
+                ) : currentStep === regularSteps.length ? (
+                  // Show both options at the last regular step
+                  <>
+                    <Button 
+                      onClick={handleNext}
+                      variant="outline"
+                      className="w-full sm:w-auto sm:flex-1 min-h-[44px] sm:min-h-[40px] text-xs sm:text-sm px-3 sm:px-4 py-2 touch-manipulation"
+                      disabled={isNavigating}
+                    >
+                      <span className="hidden sm:inline">Add Job Details</span>
+                      <span className="sm:hidden">Job Details</span>
+                      <span className="hidden md:inline"> →</span>
+                    </Button>
+                    <Button 
+                      onClick={handleGenerateResume} 
+                      variant="primary"
+                      className="w-full sm:w-auto sm:flex-1 min-h-[44px] sm:min-h-[40px] text-xs sm:text-sm px-3 sm:px-4 py-2 touch-manipulation"
+                      disabled={isNavigating}
+                    >
+                      {isNavigating ? (
+                        <>
+                          <span className="animate-spin inline-block mr-1">⏳</span>
+                          <span className="hidden sm:inline">Generating...</span>
+                          <span className="sm:hidden">Generating</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="hidden sm:inline">Generate Resume</span>
+                          <span className="sm:hidden">Generate</span>
+                        </>
+                      )}
+                    </Button>
+                  </>
+                ) : (
+                  // At Job Application step, only show Generate Resume
+                  <Button 
+                    onClick={handleGenerateResume} 
+                    variant="primary"
+                    className="w-full sm:w-auto min-h-[44px] sm:min-h-[40px] text-sm sm:text-base px-4 sm:px-4 py-2 touch-manipulation"
+                    disabled={isNavigating}
+                  >
+                    {isNavigating ? (
+                      <>
+                        <span className="animate-spin inline-block mr-1">⏳</span>
+                        <span className="hidden sm:inline">Generating...</span>
+                        <span className="sm:hidden">Generating</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="hidden sm:inline">Generate Resume</span>
+                        <span className="sm:hidden">Generate</span>
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </div>
