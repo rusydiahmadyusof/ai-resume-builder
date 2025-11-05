@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useResumeData } from '../hooks/useResumeData'
 import Stepper from '../components/ui/Stepper'
 import Button from '../components/ui/Button'
@@ -39,6 +39,7 @@ const allSteps = [
 
 function Builder() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [currentStep, setCurrentStep] = useState(() => {
     // Load last step from localStorage
     const savedStep = localStorage.getItem('lastBuilderStep')
@@ -54,6 +55,7 @@ function Builder() {
     storageError,
     clearStorageError,
     restoreResumeData,
+    resetResumeData,
     updatePersonalInfo,
     addWorkExperience,
     updateWorkExperience,
@@ -70,6 +72,19 @@ function Builder() {
     removeLanguage,
     updateJobApplication,
   } = useResumeData()
+
+  // Handle "new=true" query parameter to start a fresh application
+  useEffect(() => {
+    if (isLoaded && searchParams.get('new') === 'true') {
+      resetResumeData()
+      setCurrentStep(1)
+      localStorage.setItem('lastBuilderStep', '1')
+      // Remove the query parameter from URL
+      setSearchParams({}, { replace: true })
+      setToast({ message: 'Starting a new application', type: 'success', duration: 2000 })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded, searchParams])
 
   // Show storage error as toast
   useEffect(() => {

@@ -110,19 +110,17 @@ function Home() {
             {hasData ? (
               <>
                 <Link
-                  to="/builder"
+                  to="/builder?new=true"
                   className="inline-block bg-indigo-600 dark:bg-indigo-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-center min-h-[44px] flex items-center justify-center touch-manipulation"
                 >
-                  {isComplete ? 'Edit Resume' : 'Continue Building'}
+                  ➕ Create New Application
                 </Link>
-                {isComplete && (
-                  <Link
-                    to="/preview"
-                    className="inline-block bg-green-600 dark:bg-green-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-green-700 dark:hover:bg-green-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-center min-h-[44px] flex items-center justify-center touch-manipulation"
-                  >
-                    View My Resume
-                  </Link>
-                )}
+                <Link
+                  to="/builder"
+                  className="inline-block bg-purple-600 dark:bg-purple-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-purple-700 dark:hover:bg-purple-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-center min-h-[44px] flex items-center justify-center touch-manipulation"
+                >
+                  📝 Edit Existing Application
+                </Link>
               </>
             ) : (
               <>
@@ -130,7 +128,7 @@ function Home() {
                   to="/builder"
                   className="inline-block bg-indigo-600 dark:bg-indigo-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95 text-center min-h-[44px] flex items-center justify-center touch-manipulation"
                 >
-                  Get Started Free
+                  Get Started
                 </Link>
                 <Link
                   to="/preview"
