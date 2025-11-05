@@ -39,10 +39,23 @@ async function loadTranslations(locale) {
 
 // Initialize
 export async function initI18n(locale = null) {
-  const savedLocale = localStorage.getItem('app_language') || locale || defaultLanguage
-  currentLanguage = savedLocale
-  await loadTranslations(currentLanguage)
-  return currentLanguage
+  try {
+    let savedLocale = defaultLanguage
+    try {
+      savedLocale = localStorage.getItem('app_language') || locale || defaultLanguage
+    } catch (e) {
+      // localStorage might not be available (e.g., in iframe, incognito mode)
+      console.warn('localStorage not available, using default language')
+      savedLocale = locale || defaultLanguage
+    }
+    currentLanguage = savedLocale
+    await loadTranslations(currentLanguage)
+    return currentLanguage
+  } catch (error) {
+    console.error('Error initializing i18n:', error)
+    currentLanguage = defaultLanguage
+    return currentLanguage
+  }
 }
 
 // Get current language
