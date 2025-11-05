@@ -1,9 +1,17 @@
 import Groq from 'groq-sdk'
 
-const groq = new Groq({
-  apiKey: import.meta.env.VITE_GROQ_API_KEY,
-  dangerouslyAllowBrowser: true, // Required for browser usage
-})
+// Lazy initialization to handle missing API keys gracefully
+let groq = null
+
+function getGroqClient() {
+  if (!groq && import.meta.env.VITE_GROQ_API_KEY) {
+    groq = new Groq({
+      apiKey: import.meta.env.VITE_GROQ_API_KEY,
+      dangerouslyAllowBrowser: true, // Required for browser usage
+    })
+  }
+  return groq
+}
 
 export const groqService = {
   /**
@@ -14,13 +22,14 @@ export const groqService = {
    */
   generateResumeContent: async (personalData, jobData) => {
     try {
-      if (!import.meta.env.VITE_GROQ_API_KEY) {
+      const client = getGroqClient()
+      if (!client) {
         throw new Error('Groq API key is not configured. Please add VITE_GROQ_API_KEY to your .env file.')
       }
 
       const prompt = createPrompt(personalData, jobData)
 
-      const completion = await groq.chat.completions.create({
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
@@ -94,6 +103,11 @@ Return the response as a JSON object with the following structure:
    */
   generateSummary: async (personalData, jobData) => {
     try {
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
       const prompt = `Create a compelling professional summary (2-3 sentences) for a resume based on:
       
 Personal Information:
@@ -107,7 +121,7 @@ Job Application:
 
 Make it concise, impactful, and tailored to the job requirements.`
 
-      const completion = await groq.chat.completions.create({
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
@@ -207,7 +221,12 @@ IMPORTANT INSTRUCTIONS:
 7. Return ONLY valid JSON, no markdown, no code blocks, no explanations
 8. Ensure workExperience is always an array, even if empty`
 
-      const completion = await groq.chat.completions.create({
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
@@ -335,7 +354,12 @@ Important:
 - For job description, include all relevant details: requirements, responsibilities, qualifications, etc.
 - Return ONLY valid JSON, no additional text or explanation`
 
-      const completion = await groq.chat.completions.create({
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
@@ -473,7 +497,12 @@ INSTRUCTIONS:
 
 Return ONLY the cover letter text, no additional explanations or formatting. Start directly with the greeting.`
 
-      const completion = await groq.chat.completions.create({
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
