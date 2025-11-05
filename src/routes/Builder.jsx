@@ -8,8 +8,6 @@ import Breadcrumbs from '../components/ui/Breadcrumbs'
 import WorkflowProgress from '../components/ui/WorkflowProgress'
 import KeyboardShortcuts from '../components/ui/KeyboardShortcuts'
 import AutoSaveIndicator from '../components/ui/AutoSaveIndicator'
-import VersionManager from '../components/ui/VersionManager'
-import ExportImport from '../components/ui/ExportImport'
 import PersonalInfoForm from '../components/forms/PersonalInfoForm'
 import WorkExperienceForm from '../components/forms/WorkExperienceForm'
 import EducationForm from '../components/forms/EducationForm'
@@ -17,9 +15,19 @@ import SkillsForm from '../components/forms/SkillsForm'
 import CertificationsForm from '../components/forms/CertificationsForm'
 import LanguagesForm from '../components/forms/LanguagesForm'
 import JobApplicationForm from '../components/forms/JobApplicationForm'
-import { formatDateToMonth } from '../utils/dateFormat'
 
-const steps = [
+// Steps for regular navigation (Job Application is optional)
+const regularSteps = [
+  'Personal Info',
+  'Work Experience',
+  'Education',
+  'Skills',
+  'Certifications',
+  'Languages',
+]
+
+// All steps including Job Application (for AI Resume generation)
+const allSteps = [
   'Personal Info',
   'Work Experience',
   'Education',
@@ -31,8 +39,13 @@ const steps = [
 
 function Builder() {
   const navigate = useNavigate()
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(() => {
+    // Load last step from localStorage
+    const savedStep = localStorage.getItem('lastBuilderStep')
+    return savedStep ? parseInt(savedStep, 10) : 1
+  })
   const [toast, setToast] = useState(null)
+  const [isNavigating, setIsNavigating] = useState(false)
   const {
     resumeData,
     isLoaded,
@@ -69,52 +82,86 @@ function Builder() {
     }
   }, [storageError])
 
+  // Save step to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('lastBuilderStep', currentStep.toString())
+  }, [currentStep])
+
   if (!isLoaded) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
     )
   }
 
   const handleNext = () => {
-    if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1)
+    // Use regularSteps for navigation (Job Application is optional)
+    const maxStep = regularSteps.length
+    if (currentStep < maxStep) {
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      localStorage.setItem('lastBuilderStep', nextStep.toString())
+    } else if (currentStep === maxStep && currentStep < allSteps.length) {
+      // Allow navigation to Job Application if user wants, but it's optional
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      localStorage.setItem('lastBuilderStep', nextStep.toString())
     }
   }
 
   const handlePrevious = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      const prevStep = currentStep - 1
+      setCurrentStep(prevStep)
+      localStorage.setItem('lastBuilderStep', prevStep.toString())
     }
   }
 
   const handleStepClick = (stepNumber) => {
     setCurrentStep(stepNumber)
+    // Save current step to localStorage
+    localStorage.setItem('lastBuilderStep', stepNumber.toString())
   }
 
-  const handleGenerateResume = () => {
+  const handleGenerateResume = async () => {
     // Basic validation
     if (!resumeData.personalInfo.name) {
       setToast({ message: 'Please fill in your name first', type: 'error' })
       setCurrentStep(1)
+      localStorage.setItem('lastBuilderStep', '1')
       return
     }
     if (resumeData.workExperience.length === 0 || !resumeData.workExperience[0].company) {
       setToast({ message: 'Please add at least one work experience', type: 'error' })
       setCurrentStep(2)
+      localStorage.setItem('lastBuilderStep', '2')
       return
     }
-    if (!resumeData.jobApplication.jobTitle || !resumeData.jobApplication.jobDescription) {
-      setToast({ message: 'Please fill in job application details', type: 'error' })
-      setCurrentStep(7)
+    // Job Application is only required for AI Resume generation
+    if (!resumeData.jobApplication?.jobTitle?.trim() || !resumeData.jobApplication?.jobDescription?.trim()) {
+      setToast({ 
+        message: 'Job Title and Job Description are required for AI Resume generation. Please fill them in.', 
+        type: 'error',
+        duration: 5000
+      })
+      // Navigate to Job Application step (step 7)
+      setCurrentStep(allSteps.length)
+      localStorage.setItem('lastBuilderStep', allSteps.length.toString())
       return
     }
-    // Navigate to preview page
-    navigate('/preview')
+    
+    // Show loading state and navigate to preview
+    setIsNavigating(true)
+    setToast({ message: 'Generating your resume...', type: 'success', duration: 2000 })
+    
+    // Small delay for smooth transition
+    setTimeout(() => {
+      navigate('/preview')
+    }, 500)
   }
 
   const renderStepContent = () => {
@@ -124,92 +171,12 @@ function Builder() {
           <PersonalInfoForm
             data={resumeData.personalInfo}
             onUpdate={updatePersonalInfo}
-            onWorkExperienceExtracted={(workExp) => {
-              console.log('Raw extracted work experience:', workExp)
-              
-              // Filter out empty work experience entries and add extracted ones
-              const validWorkExp = workExp.filter(exp => {
-                if (!exp || typeof exp !== 'object') return false
-                // Include if has at least company, position, or meaningful responsibilities
-                const hasCompany = exp.company && exp.company.trim().length > 0
-                const hasPosition = exp.position && exp.position.trim().length > 0
-                const hasResponsibilities = exp.responsibilities && exp.responsibilities.trim().length > 10
-                return hasCompany || hasPosition || hasResponsibilities
-              })
-              
-              console.log('Valid work experience entries:', validWorkExp)
-              
-              if (validWorkExp.length === 0) {
-                setToast({ 
-                  message: 'No valid work experience found in PDF. Please add manually.', 
-                  type: 'info',
-                  duration: 4000
-                })
-                return
-              }
-              
-              // Check if first work experience entry is empty
-              const firstExp = resumeData.workExperience[0]
-              const firstIsEmpty = firstExp && 
-                !firstExp.company?.trim() && 
-                !firstExp.position?.trim() && 
-                !firstExp.responsibilities?.trim()
-              
-              // Process extracted entries
-              validWorkExp.forEach((exp, index) => {
-                setTimeout(() => {
-                  // Determine if current based on endDate
-                  const endDateStr = (exp.endDate || '').trim()
-                  const isCurrent = !endDateStr || 
-                    endDateStr.toLowerCase() === 'present' || 
-                    endDateStr.toLowerCase() === 'current' ||
-                    endDateStr.toLowerCase() === 'now' ||
-                    endDateStr.toLowerCase() === 'till date'
-                  
-                  // Format dates to yyyy-MM format (required for HTML5 month input)
-                  const formattedStartDate = formatDateToMonth(exp.startDate || '')
-                  const formattedEndDate = isCurrent ? '' : formatDateToMonth(endDateStr)
-                  
-                  // Format the extracted data to match expected structure
-                  const formattedExp = {
-                    company: (exp.company || '').trim(),
-                    position: (exp.position || '').trim(),
-                    startDate: formattedStartDate,
-                    endDate: formattedEndDate,
-                    current: isCurrent,
-                    responsibilities: (exp.responsibilities || '').trim(),
-                  }
-                  
-                  console.log(`Processing work experience ${index + 1}:`, formattedExp)
-                  
-                  // If first entry is empty and this is the first extracted entry, update it instead of adding
-                  if (index === 0 && firstIsEmpty && firstExp) {
-                    console.log('Updating first empty work experience entry')
-                    updateWorkExperience(firstExp.id, formattedExp)
-                  } else {
-                    // Add new entry for subsequent ones
-                    console.log('Adding new work experience entry')
-                    addWorkExperience(formattedExp)
-                  }
-                }, index * 100) // Stagger updates to avoid conflicts
-              })
-              
-              // Automatically navigate to Work Experience section after a short delay
-              setTimeout(() => {
-                setCurrentStep(2)
-                setToast({ 
-                  message: `Extracted ${validWorkExp.length} work experience ${validWorkExp.length === 1 ? 'entry' : 'entries'}. Review and update if needed.`, 
-                  type: 'success',
-                  duration: 5000
-                })
-              }, validWorkExp.length * 100 + 200)
-            }}
           />
         )
       case 2:
         return (
           <WorkExperienceForm
-            experiences={resumeData.workExperience}
+            experiences={resumeData.workExperience || []}
             onAdd={addWorkExperience}
             onUpdate={updateWorkExperience}
             onRemove={removeWorkExperience}
@@ -226,12 +193,16 @@ function Builder() {
         )
       case 4:
         return (
-          <SkillsForm skills={resumeData.skills} onUpdate={updateSkills} />
+          <SkillsForm 
+            skills={resumeData.skills} 
+            onUpdate={updateSkills}
+            workExperience={resumeData.workExperience}
+          />
         )
       case 5:
         return (
           <CertificationsForm
-            certifications={resumeData.certifications}
+            certifications={resumeData.certifications || []}
             onAdd={addCertification}
             onUpdate={updateCertification}
             onRemove={removeCertification}
@@ -240,7 +211,7 @@ function Builder() {
       case 6:
         return (
           <LanguagesForm
-            languages={resumeData.languages}
+            languages={resumeData.languages || []}
             onAdd={addLanguage}
             onUpdate={updateLanguage}
             onRemove={removeLanguage}
@@ -259,8 +230,8 @@ function Builder() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 py-4 sm:py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <div className="min-h-[calc(100vh-4rem)] bg-gray-50 dark:bg-gray-900 py-4 sm:py-6 md:py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
         <Breadcrumbs
           items={[
             { label: 'Home', path: '/' },
@@ -269,14 +240,14 @@ function Builder() {
         />
         <WorkflowProgress />
         
-        <div className="mb-6 sm:mb-8">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-2">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Build Your Resume
               </h1>
-              <div className="flex items-center gap-4 flex-wrap">
-                <p className="text-sm sm:text-base text-gray-600">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-wrap">
+                <p className="text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400">
                   Fill in your details step by step. Your progress is automatically saved.
                 </p>
                 <AutoSaveIndicator status={saveStatus} lastSaved={lastSaved} />
@@ -285,7 +256,7 @@ function Builder() {
             <Button
               variant="secondary"
               onClick={() => navigate('/')}
-              className="hidden sm:flex"
+              className="hidden sm:flex whitespace-nowrap"
             >
               ← Home
             </Button>
@@ -293,53 +264,102 @@ function Builder() {
         </div>
 
         <Stepper
-          steps={steps}
-          currentStep={currentStep}
-          onStepClick={handleStepClick}
+          steps={regularSteps}
+          currentStep={currentStep <= regularSteps.length ? currentStep : regularSteps.length}
+          onStepClick={(stepNumber) => {
+            // Only allow clicking on regular steps
+            if (stepNumber <= regularSteps.length) {
+              handleStepClick(stepNumber)
+            }
+          }}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="lg:col-span-2">
-            {renderStepContent()}
-          </div>
-          <div className="lg:col-span-1 space-y-4">
-            <VersionManager
-              resumeData={resumeData}
-              onRestore={restoreResumeData}
-            />
-            <ExportImport
-              resumeData={resumeData}
-              onImport={restoreResumeData}
-            />
-          </div>
+        <div className="max-w-3xl mx-auto mb-24 sm:mb-20 pb-4">
+          {renderStepContent()}
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 bg-white rounded-lg shadow-md p-4 sticky bottom-0 sm:relative z-10">
-          <Button
-            variant="secondary"
-            onClick={handlePrevious}
-            disabled={currentStep === 1}
-            className="w-full sm:w-auto order-2 sm:order-1"
-          >
-            Previous
-          </Button>
+        {/* Floating Navigation Bar */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg safe-area-bottom">
+          <div className="max-w-3xl mx-auto px-3 sm:px-4 md:px-6">
+            <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 py-2.5 sm:py-3">
+              {/* Previous Button */}
+              <Button
+                variant="secondary"
+                onClick={handlePrevious}
+                disabled={currentStep === 1}
+                className="w-full sm:w-auto sm:flex-shrink-0 order-2 sm:order-1 min-h-[44px] sm:min-h-[40px] text-sm sm:text-base px-4 sm:px-4 py-2 touch-manipulation"
+              >
+                ← Previous
+              </Button>
 
-          {currentStep < steps.length ? (
-            <Button 
-              onClick={handleNext}
-              className="w-full sm:w-auto order-1 sm:order-2"
-            >
-              Next
-            </Button>
-          ) : (
-            <Button 
-              onClick={handleGenerateResume} 
-              variant="primary"
-              className="w-full sm:w-auto order-1 sm:order-2"
-            >
-              Generate Resume
-            </Button>
-          )}
+              {/* Right Side Actions */}
+              <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto sm:flex-shrink-0 order-1 sm:order-2">
+                {currentStep < regularSteps.length ? (
+                  <Button 
+                    onClick={handleNext}
+                    className="w-full sm:w-auto min-h-[44px] sm:min-h-[40px] text-sm sm:text-base px-4 sm:px-4 py-2 touch-manipulation"
+                    disabled={isNavigating}
+                  >
+                    Next →
+                  </Button>
+                ) : currentStep === regularSteps.length ? (
+                  // Show both options at the last regular step
+                  <>
+                    <Button 
+                      onClick={handleNext}
+                      variant="outline"
+                      className="w-full sm:w-auto sm:flex-1 min-h-[44px] sm:min-h-[40px] text-xs sm:text-sm px-3 sm:px-4 py-2 touch-manipulation"
+                      disabled={isNavigating}
+                    >
+                      <span className="hidden sm:inline">Add Job Details</span>
+                      <span className="sm:hidden">Job Details</span>
+                      <span className="hidden md:inline"> →</span>
+                    </Button>
+                    <Button 
+                      onClick={handleGenerateResume} 
+                      variant="primary"
+                      className="w-full sm:w-auto sm:flex-1 min-h-[44px] sm:min-h-[40px] text-xs sm:text-sm px-3 sm:px-4 py-2 touch-manipulation"
+                      disabled={isNavigating}
+                    >
+                      {isNavigating ? (
+                        <>
+                          <span className="animate-spin inline-block mr-1">⏳</span>
+                          <span className="hidden sm:inline">Generating...</span>
+                          <span className="sm:hidden">Generating</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="hidden sm:inline">Generate Resume</span>
+                          <span className="sm:hidden">Generate</span>
+                        </>
+                      )}
+                    </Button>
+                  </>
+                ) : (
+                  // At Job Application step, only show Generate Resume
+                  <Button 
+                    onClick={handleGenerateResume} 
+                    variant="primary"
+                    className="w-full sm:w-auto min-h-[44px] sm:min-h-[40px] text-sm sm:text-base px-4 sm:px-4 py-2 touch-manipulation"
+                    disabled={isNavigating}
+                  >
+                    {isNavigating ? (
+                      <>
+                        <span className="animate-spin inline-block mr-1">⏳</span>
+                        <span className="hidden sm:inline">Generating...</span>
+                        <span className="sm:hidden">Generating</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="hidden sm:inline">Generate Resume</span>
+                        <span className="sm:hidden">Generate</span>
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {toast && (

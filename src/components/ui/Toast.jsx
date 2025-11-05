@@ -3,13 +3,17 @@ import PropTypes from 'prop-types'
 
 function Toast({ message, type = 'success', onClose, duration = 3000 }) {
   useEffect(() => {
-    if (duration > 0) {
+    if (message && duration > 0) {
       const timer = setTimeout(() => {
         onClose()
       }, duration)
       return () => clearTimeout(timer)
     }
-  }, [duration, onClose])
+  }, [message, duration, onClose])
+
+  if (!message) {
+    return null
+  }
 
   const bgColors = {
     success: 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-300',
@@ -23,7 +27,9 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
       className={`fixed top-4 right-4 left-4 sm:left-auto sm:max-w-md z-50 p-4 rounded-lg border shadow-lg animate-slide-in ${bgColors[type]}`}
     >
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-medium flex-1">{message}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium whitespace-pre-line break-words">{message}</p>
+        </div>
         <button
           onClick={onClose}
           className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 active:scale-95 touch-manipulation flex-shrink-0 w-6 h-6 flex items-center justify-center"
@@ -37,7 +43,7 @@ function Toast({ message, type = 'success', onClose, duration = 3000 }) {
 }
 
 Toast.propTypes = {
-  message: PropTypes.string.isRequired,
+  message: PropTypes.string,
   type: PropTypes.oneOf(['success', 'error', 'info', 'warning']),
   onClose: PropTypes.func.isRequired,
   duration: PropTypes.number,

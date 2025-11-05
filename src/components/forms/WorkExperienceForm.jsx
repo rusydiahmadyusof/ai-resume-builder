@@ -1,16 +1,24 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
 import { validateDateRange, validateDateNotFuture, validateDateNotTooOld } from '../../utils/dateValidation'
 import { validateWorkExperience } from '../../utils/validation'
+import { groqService } from '../../services/groqService'
 
-function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
+function WorkExperienceForm({ experiences = [], onAdd, onUpdate, onRemove }) {
   const [dateErrors, setDateErrors] = useState({})
+  const [aiAssistanceEnabled, setAiAssistanceEnabled] = useState({})
+  const [improvingIds, setImprovingIds] = useState(new Set())
+  const improvementTimers = useRef({})
 
   const handleAdd = () => {
-    onAdd()
+    if (typeof onAdd === 'function') {
+      onAdd()
+    } else {
+      console.error('onAdd is not a function:', onAdd)
+    }
   }
 
   const validateDates = (id, startDate, endDate, current) => {
@@ -75,11 +83,75 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
         )
       }
     }
+
+    // Auto-improve responsibilities if AI assistance is enabled
+    if (field === 'responsibilities' && aiAssistanceEnabled[id] && value && value.trim().length > 20) {
+      // Clear existing timer for this entry
+      if (improvementTimers.current[id]) {
+        clearTimeout(improvementTimers.current[id])
+      }
+
+      // Debounce AI improvement (wait 2 seconds after user stops typing)
+      improvementTimers.current[id] = setTimeout(async () => {
+        const exp = experiences.find((e) => e.id === id)
+        if (!exp || !exp.responsibilities || exp.responsibilities.trim() !== value.trim()) {
+          return // User has continued typing
+        }
+
+        setImprovingIds(prev => new Set(prev).add(id))
+
+        try {
+          const result = await groqService.improveResponsibilitiesCompact(
+            value,
+            exp.position || '',
+            exp.company || '',
+            500 // Max length for compact formatting
+          )
+
+          if (result.success && result.improvedText) {
+            // Only update if the user hasn't changed the text since we started improving
+            const currentExp = experiences.find((e) => e.id === id)
+            if (currentExp && currentExp.responsibilities === value) {
+              onUpdate(id, { responsibilities: result.improvedText })
+            }
+          }
+        } catch (error) {
+          console.error('Error improving responsibilities:', error)
+        } finally {
+          setImprovingIds(prev => {
+            const newSet = new Set(prev)
+            newSet.delete(id)
+            return newSet
+          })
+        }
+      }, 2000) // 2 second debounce
+    }
+  }
+
+  const handleToggleAiAssistance = (id) => {
+    setAiAssistanceEnabled(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
   }
 
   const handleRemove = (id) => {
+    // Clean up timer if it exists
+    if (improvementTimers.current[id]) {
+      clearTimeout(improvementTimers.current[id])
+      delete improvementTimers.current[id]
+    }
     onRemove(id)
   }
+
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      Object.values(improvementTimers.current).forEach(timer => {
+        if (timer) clearTimeout(timer)
+      })
+    }
+  }, [])
 
   return (
     <Card title="Work Experience">
@@ -164,13 +236,43 @@ function WorkExperienceForm({ experiences, onAdd, onUpdate, onRemove }) {
               </div>
             </div>
 
-            <Textarea
-              label="Responsibilities & Achievements"
-              rows={4}
-              value={exp.responsibilities || ''}
-              onChange={(e) => handleUpdate(exp.id, 'responsibilities', e.target.value)}
-              placeholder="Describe your key responsibilities and achievements..."
-            />
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Responsibilities & Achievements
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={aiAssistanceEnabled[exp.id] || false}
+                    onChange={() => handleToggleAiAssistance(exp.id)}
+                    className="rounded w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 cursor-pointer"
+                    aria-label="Enable AI assistance for improving wording"
+                  />
+                  <span className="text-xs text-gray-600 dark:text-gray-400">
+                    {improvingIds.has(exp.id) ? (
+                      <span className="flex items-center gap-1">
+                        <span className="animate-spin">⏳</span>
+                        AI improving...
+                      </span>
+                    ) : (
+                      '✨ AI Assistance'
+                    )}
+                  </span>
+                </label>
+              </div>
+              <Textarea
+                rows={4}
+                value={exp.responsibilities || ''}
+                onChange={(e) => handleUpdate(exp.id, 'responsibilities', e.target.value)}
+                placeholder="Describe your key responsibilities and achievements..."
+              />
+              {aiAssistanceEnabled[exp.id] && (
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  AI will automatically improve your text as bullet points when you stop typing
+                </p>
+              )}
+            </div>
           </div>
         ))}
 

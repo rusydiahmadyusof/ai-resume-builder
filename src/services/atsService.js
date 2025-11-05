@@ -175,12 +175,6 @@ function calculateCompleteness(resumeData) {
   } else {
     checks.push({ item: 'Email', status: 'missing' })
   }
-  if (resumeData.personalInfo?.summary) {
-    score += 1
-    checks.push({ item: 'Professional Summary', status: 'complete' })
-  } else {
-    checks.push({ item: 'Professional Summary', status: 'missing' })
-  }
 
   // Work experience (5 points)
   if (resumeData.workExperience && resumeData.workExperience.length > 0) {
@@ -267,9 +261,6 @@ function checkFormatting(resumeData) {
 
   // Check for empty sections
   const emptySections = []
-  if (!resumeData.personalInfo?.summary) {
-    emptySections.push('Professional Summary')
-  }
   if (workExp.length === 0) {
     emptySections.push('Work Experience')
   }
@@ -314,7 +305,6 @@ function checkStructure(resumeData) {
   if (!hasWorkExp) score -= 3
   if (!hasEducation) score -= 2
   if (!hasSkills) score -= 2
-  if (!resumeData.personalInfo?.summary) score -= 1
 
   return {
     score: Math.max(0, score),
@@ -392,10 +382,6 @@ function findMissingSkills(resumeData, jobData) {
  */
 function buildResumeText(resumeData) {
   const parts = []
-
-  if (resumeData.personalInfo?.summary) {
-    parts.push(resumeData.personalInfo.summary)
-  }
 
   if (resumeData.workExperience) {
     resumeData.workExperience.forEach(exp => {

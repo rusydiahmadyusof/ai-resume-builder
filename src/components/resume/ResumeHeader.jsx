@@ -45,6 +45,46 @@ function ResumeHeader({ personalInfo }) {
     )
   }
 
+  if (personalInfo.twitter) {
+    contactItems.push(
+      <a key="twitter" href={personalInfo.twitter} target="_blank" rel="noopener noreferrer">
+        Twitter
+      </a>
+    )
+  }
+
+  if (personalInfo.instagram) {
+    contactItems.push(
+      <a key="instagram" href={personalInfo.instagram} target="_blank" rel="noopener noreferrer">
+        Instagram
+      </a>
+    )
+  }
+
+  if (personalInfo.facebook) {
+    contactItems.push(
+      <a key="facebook" href={personalInfo.facebook} target="_blank" rel="noopener noreferrer">
+        Facebook
+      </a>
+    )
+  }
+
+  if (personalInfo.youtube) {
+    contactItems.push(
+      <a key="youtube" href={personalInfo.youtube} target="_blank" rel="noopener noreferrer">
+        YouTube
+      </a>
+    )
+  }
+
+  if (personalInfo.website) {
+    contactItems.push(
+      <a key="website" href={personalInfo.website} target="_blank" rel="noopener noreferrer">
+        Website
+      </a>
+    )
+  }
+
   return (
     <div className="resume-header">
       <div className="resume-header-content">

@@ -1,9 +1,17 @@
 import Groq from 'groq-sdk'
 
-const groq = new Groq({
-  apiKey: import.meta.env.VITE_GROQ_API_KEY,
-  dangerouslyAllowBrowser: true, // Required for browser usage
-})
+// Lazy initialization to handle missing API keys gracefully
+let groq = null
+
+function getGroqClient() {
+  if (!groq && import.meta.env.VITE_GROQ_API_KEY) {
+    groq = new Groq({
+      apiKey: import.meta.env.VITE_GROQ_API_KEY,
+      dangerouslyAllowBrowser: true, // Required for browser usage
+    })
+  }
+  return groq
+}
 
 export const groqService = {
   /**
@@ -14,34 +22,36 @@ export const groqService = {
    */
   generateResumeContent: async (personalData, jobData) => {
     try {
-      if (!import.meta.env.VITE_GROQ_API_KEY) {
+      const client = getGroqClient()
+      if (!client) {
         throw new Error('Groq API key is not configured. Please add VITE_GROQ_API_KEY to your .env file.')
       }
 
       const prompt = createPrompt(personalData, jobData)
 
-      const completion = await groq.chat.completions.create({
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
             content: `You are an expert resume writer and career counselor. Your task is to create a professional, tailored resume that highlights the candidate's experience and skills relevant to the job they're applying for. Focus on:
-1. Creating a compelling professional summary
+1. Creating a compelling professional summary (1-2 sentences, max 50 words) that analyzes work experience and matches it to job requirements
 2. Rewriting work experience descriptions to match job requirements
-3. Highlighting relevant skills and achievements
-4. Using industry-standard keywords
-5. Quantifying achievements where possible
-6. Making the resume ATS-friendly
+3. Formatting responsibilities as bullet points (use "- " prefix for each bullet)
+4. Highlighting relevant skills and achievements
+5. Using industry-standard keywords
+6. Quantifying achievements where possible
+7. Making the resume ATS-friendly
 
 Return the response as a JSON object with the following structure:
 {
-  "summary": "tailored professional summary",
+  "summary": "professional summary tailored to the job (1-2 sentences, max 50 words)",
   "workExperience": [
     {
       "company": "company name",
       "position": "position title",
       "startDate": "start date",
       "endDate": "end date or 'Present'",
-      "responsibilities": "tailored responsibilities and achievements"
+      "responsibilities": "tailored responsibilities and achievements formatted as bullet points, each on a new line starting with '- '"
     }
   ],
   "skills": ["relevant skill 1", "relevant skill 2", ...]
@@ -54,7 +64,7 @@ Return the response as a JSON object with the following structure:
         ],
         model: 'llama-3.3-70b-versatile',
         temperature: 0.7,
-        max_tokens: 2000,
+        max_tokens: 2500, // Increased to ensure summary is included
       })
 
       const content = completion.choices[0]?.message?.content || ''
@@ -66,13 +76,57 @@ Return the response as a JSON object with the following structure:
         const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/```\n([\s\S]*?)\n```/)
         const jsonString = jsonMatch ? jsonMatch[1] : content
         generatedContent = JSON.parse(jsonString)
+        
+        // Limit skills to maximum 10
+        if (generatedContent.skills && Array.isArray(generatedContent.skills)) {
+          generatedContent.skills = generatedContent.skills.slice(0, 10)
+        }
+        
+        // Ensure work experience responsibilities are formatted as bullet points
+        if (generatedContent.workExperience && Array.isArray(generatedContent.workExperience)) {
+          generatedContent.workExperience = generatedContent.workExperience.map(exp => {
+            if (exp.responsibilities && typeof exp.responsibilities === 'string') {
+              // Split by newlines or periods followed by space (for paragraph text)
+              let lines = exp.responsibilities.split('\n').filter(line => line.trim())
+              
+              // If it's a single paragraph without line breaks, split by sentences
+              if (lines.length === 1 && lines[0].length > 50) {
+                // Split by periods or semicolons followed by space
+                lines = lines[0].split(/[.;]\s+/).filter(line => line.trim().length > 10)
+              }
+              
+              // Convert to bullet points if not already formatted
+              if (lines.length > 0) {
+                const hasBullets = lines.some(line => line.trim().match(/^[-•*]\s/))
+                if (!hasBullets) {
+                  exp.responsibilities = lines.map(line => {
+                    const trimmed = line.trim()
+                    // Remove trailing period if present (will be added by bullet formatting)
+                    const cleaned = trimmed.replace(/\.$/, '')
+                    return `- ${cleaned}`
+                  }).join('\n')
+                } else {
+                  // Already has bullets, just ensure format is consistent
+                  exp.responsibilities = lines.map(line => {
+                    const trimmed = line.trim()
+                    if (trimmed.match(/^[-•*]\s/)) {
+                      return trimmed
+                    }
+                    return `- ${trimmed.replace(/^[-•*]\s*/, '')}`
+                  }).join('\n')
+                }
+              }
+            }
+            return exp
+          })
+        }
       } catch (parseError) {
         // If JSON parsing fails, create a fallback structure
         console.warn('Failed to parse AI response as JSON, using fallback:', parseError)
         generatedContent = {
-          summary: content.split('\n')[0] || 'Professional summary generated by AI',
+          summary: '',
           workExperience: personalData.workExperience || [],
-          skills: personalData.skills || [],
+          skills: (personalData.skills || []).slice(0, 10),
         }
       }
 
@@ -90,28 +144,161 @@ Return the response as a JSON object with the following structure:
   },
 
   /**
-   * Generate only the professional summary
+   * Recommend skills based on work experience
+   * Analyzes work experience and recommends relevant skills
    */
-  generateSummary: async (personalData, jobData) => {
+  recommendSkillsFromExperience: async (workExperience) => {
     try {
-      const prompt = `Create a compelling professional summary (2-3 sentences) for a resume based on:
-      
-Personal Information:
-- Name: ${personalData.name || 'Candidate'}
-- Experience: ${personalData.workExperience?.length || 0} position(s)
-- Skills: ${personalData.skills?.join(', ') || 'Various skills'}
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
 
-Job Application:
-- Title: ${jobData.jobTitle || 'Position'}
-- Description: ${jobData.jobDescription?.substring(0, 500) || 'Not provided'}
+      if (!workExperience || workExperience.length === 0) {
+        return { success: false, error: 'No work experience provided', data: [] }
+      }
 
-Make it concise, impactful, and tailored to the job requirements.`
+      // Format work experience for analysis
+      const workExpText = workExperience.map((exp, index) => {
+        return `Position ${index + 1}:
+- Company: ${exp.company || 'N/A'}
+- Position: ${exp.position || 'N/A'}
+- Duration: ${exp.startDate || 'N/A'} to ${exp.current ? 'Present' : exp.endDate || 'N/A'}
+- Responsibilities: ${exp.responsibilities || 'N/A'}`
+      }).join('\n\n')
 
-      const completion = await groq.chat.completions.create({
+      const prompt = `Analyze the following work experience and recommend relevant technical and professional skills that the candidate likely possesses based on their job responsibilities and experience.
+
+Work Experience:
+${workExpText}
+
+INSTRUCTIONS:
+1. Analyze each position's responsibilities and duties
+2. Identify technical skills, tools, software, methodologies, and technologies mentioned or implied
+3. Recommend maximum 10 most relevant skills that match the experience level
+4. Prioritize technical skills (programming languages, frameworks, tools) over soft skills
+5. Focus on skills that are most commonly used and relevant to similar roles
+6. Return ONLY a JSON array of skill names, no additional text
+7. Maximum 10 skills only
+
+Return ONLY a valid JSON array like this: ["Skill 1", "Skill 2", "Skill 3", ...]`
+
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
-            content: 'You are an expert resume writer. Create professional, concise summaries.',
+            content: 'You are an expert career counselor and recruiter. Analyze work experience and recommend relevant skills that candidates likely possess based on their job responsibilities. Return only valid JSON arrays of skill names.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.5,
+        max_tokens: 500,
+      })
+
+      const content = completion.choices[0]?.message?.content || ''
+      
+      // Try to parse JSON from the response
+      let recommendedSkills = []
+      try {
+        // Extract JSON array from markdown code blocks if present
+        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || 
+                         content.match(/```\n([\s\S]*?)\n```/) ||
+                         content.match(/\[[\s\S]*\]/)
+        const jsonString = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : content.trim()
+        recommendedSkills = JSON.parse(jsonString)
+        
+        // Ensure it's an array
+        if (!Array.isArray(recommendedSkills)) {
+          recommendedSkills = []
+        }
+        
+        // Clean and validate skills
+        recommendedSkills = recommendedSkills
+          .map(skill => typeof skill === 'string' ? skill.trim() : null)
+          .filter(skill => skill && skill.length > 0)
+          .slice(0, 10) // Limit to 10 skills
+      } catch (parseError) {
+        console.warn('Failed to parse skills recommendation as JSON, using fallback:', parseError)
+        // Try to extract skills from text as fallback
+        const skillMatches = content.match(/"([^"]+)"/g) || content.match(/'([^']+)'/g)
+        if (skillMatches) {
+          recommendedSkills = skillMatches
+            .map(match => match.replace(/["']/g, '').trim())
+            .filter(skill => skill.length > 0)
+            .slice(0, 10) // Limit to 10 skills
+        }
+      }
+
+      return {
+        success: true,
+        data: recommendedSkills,
+      }
+    } catch (error) {
+      console.error('Error recommending skills from experience:', error)
+      return {
+        success: false,
+        error: error.message || 'Failed to recommend skills',
+        data: [],
+      }
+    }
+  },
+
+  /**
+   * Generate only the professional summary
+   * Analyzes work experience and job application to create a tailored summary
+   */
+  generateSummary: async (personalData, jobData) => {
+    try {
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      // Format work experience for analysis
+      const workExpText = personalData.workExperience?.length > 0
+        ? personalData.workExperience.map((exp, index) => {
+            return `Position ${index + 1}:
+- Company: ${exp.company || 'N/A'}
+- Position: ${exp.position || 'N/A'}
+- Duration: ${exp.startDate || 'N/A'} to ${exp.current ? 'Present' : exp.endDate || 'N/A'}
+- Responsibilities: ${exp.responsibilities || 'N/A'}`
+          }).join('\n\n')
+        : 'No work experience provided'
+
+      const prompt = `Create a concise professional summary (1-2 sentences, maximum 50 words) for a resume by analyzing the candidate's work experience and matching it to the job requirements.
+
+CANDIDATE'S WORK EXPERIENCE:
+${workExpText}
+
+SKILLS:
+${personalData.skills?.join(', ') || 'Various skills'}
+
+JOB APPLICATION:
+- Job Title: ${jobData.jobTitle || 'Position'}
+- Job Description: ${jobData.jobDescription || 'Not provided'}
+
+INSTRUCTIONS:
+1. Analyze the candidate's work experience and identify key expertise
+2. Match their experience to the job requirements
+3. Create a brief, impactful summary (1-2 sentences, max 50 words) that:
+   - Mentions years of experience and key expertise
+   - Highlights most relevant achievements for this job
+   - Uses keywords from the job description
+4. Make it professional, ATS-friendly, and tailored to this job
+5. Do NOT include the candidate's name
+6. Keep it concise and impactful - maximum 50 words
+
+Return ONLY the professional summary text, no additional commentary or formatting.`
+
+      const completion = await client.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert resume writer and career counselor. Create professional, concise, and impactful professional summaries that are tailored to specific job applications. Focus on highlighting relevant experience and achievements.',
           },
           {
             role: 'user',
@@ -120,12 +307,17 @@ Make it concise, impactful, and tailored to the job requirements.`
         ],
         model: 'llama-3.3-70b-versatile',
         temperature: 0.7,
-        max_tokens: 200,
+        max_tokens: 150,
       })
+
+      const summaryText = completion.choices[0]?.message?.content || ''
+      // Clean up the summary text (remove quotes, extra whitespace, etc.)
+      const cleanedSummary = summaryText.trim().replace(/^["']|["']$/g, '').trim()
 
       return {
         success: true,
-        summary: completion.choices[0]?.message?.content || '',
+        data: { summary: cleanedSummary },
+        summary: cleanedSummary, // For backward compatibility
       }
     } catch (error) {
       console.error('Error generating summary:', error)
@@ -182,7 +374,6 @@ Make it concise, impactful, and tailored to the job requirements.`
   "linkedin": "LinkedIn URL or empty string",
   "github": "GitHub URL or empty string",
   "portfolio": "portfolio website URL or empty string",
-  "summary": "professional summary or empty string",
   "workExperience": [
     {
       "company": "company name",
@@ -207,7 +398,12 @@ IMPORTANT INSTRUCTIONS:
 7. Return ONLY valid JSON, no markdown, no code blocks, no explanations
 8. Ensure workExperience is always an array, even if empty`
 
-      const completion = await groq.chat.completions.create({
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
@@ -253,7 +449,6 @@ IMPORTANT INSTRUCTIONS:
           linkedin: (extractedData.linkedin || '').trim(),
           github: (extractedData.github || '').trim(),
           portfolio: (extractedData.portfolio || '').trim(),
-          summary: (extractedData.summary || '').trim(),
           workExperience: Array.isArray(extractedData.workExperience) 
             ? extractedData.workExperience
                 .map(exp => {
@@ -285,7 +480,6 @@ IMPORTANT INSTRUCTIONS:
           linkedin: extractLinkedIn(pdfText),
           github: extractGitHub(pdfText),
           portfolio: '',
-          summary: '',
         }
         console.log('Fallback extracted data:', extractedData)
       }
@@ -335,7 +529,12 @@ Important:
 - For job description, include all relevant details: requirements, responsibilities, qualifications, etc.
 - Return ONLY valid JSON, no additional text or explanation`
 
-      const completion = await groq.chat.completions.create({
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
@@ -436,9 +635,6 @@ Name: ${personalData.name || 'Not provided'}
 Email: ${personalData.email || 'Not provided'}
 Phone: ${personalData.phone || 'Not provided'}
 
-Professional Summary:
-${personalData.summary || 'No summary provided'}
-
 Work Experience:
 ${formatWorkExperience(personalData.workExperience)}
 
@@ -473,7 +669,12 @@ INSTRUCTIONS:
 
 Return ONLY the cover letter text, no additional explanations or formatting. Start directly with the greeting.`
 
-      const completion = await groq.chat.completions.create({
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      const completion = await client.chat.completions.create({
         messages: [
           {
             role: 'system',
@@ -527,6 +728,194 @@ Always return only the cover letter text, properly formatted with paragraphs.`,
       }
     }
   },
+
+  /**
+   * Improve wording of responsibilities/achievements text
+   * Makes the text more professional, impactful, and ATS-friendly
+   * @param {string} responsibilities - Original responsibilities/achievements text
+   * @param {string} position - Job position/title (optional, for context)
+   * @param {string} company - Company name (optional, for context)
+   * @returns {Promise<Object>} Improved text
+   */
+  improveResponsibilitiesWording: async (responsibilities, position = '', company = '') => {
+    try {
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      if (!responsibilities || !responsibilities.trim()) {
+        return {
+          success: false,
+          error: 'Please provide responsibilities/achievements text to improve.',
+        }
+      }
+
+      const contextInfo = []
+      if (position) contextInfo.push(`Position: ${position}`)
+      if (company) contextInfo.push(`Company: ${company}`)
+
+      const prompt = `Improve the following job responsibilities and achievements text to make it more professional, impactful, and ATS-friendly.
+
+${contextInfo.length > 0 ? `Context:\n${contextInfo.join('\n')}\n\n` : ''}Original Text:
+${responsibilities}
+
+INSTRUCTIONS:
+1. Keep all the key information and achievements from the original text
+2. Use strong action verbs (e.g., "Led", "Developed", "Implemented", "Optimized", "Managed")
+3. Quantify achievements with numbers, percentages, or metrics where possible
+4. Make the language more professional and concise
+5. Use industry-standard terminology and keywords
+6. Format as bullet points or clear paragraphs
+7. Focus on impact and results rather than just duties
+8. Make it ATS-friendly (avoid special characters that might break parsing)
+9. Keep the same length or slightly longer if needed to add impact
+10. Do NOT add information that wasn't in the original text
+
+Return ONLY the improved text, no additional commentary or explanation.`
+
+      const completion = await client.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert resume writer and career counselor. Your task is to improve job responsibilities and achievements text to make it more professional, impactful, and effective for resumes. Focus on using action verbs, quantifying achievements, and making the text ATS-friendly.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.7,
+        max_tokens: 1000,
+      })
+
+      const improvedText = completion.choices[0]?.message?.content || ''
+      const cleanedText = improvedText.trim().replace(/^["']|["']$/g, '').trim()
+
+      if (!cleanedText) {
+        return {
+          success: false,
+          error: 'Failed to generate improved text. Please try again.',
+        }
+      }
+
+      return {
+        success: true,
+        data: { improvedText: cleanedText },
+        improvedText: cleanedText, // For convenience
+      }
+    } catch (error) {
+      console.error('Error improving responsibilities wording:', error)
+      return {
+        success: false,
+        error: error.message || 'Failed to improve wording. Please try again.',
+      }
+    }
+  },
+
+  /**
+   * Improve and format responsibilities/achievements as compact bullet points
+   * Makes the text short, compact, and formatted as bullet points
+   * Adjusts length based on available space in resume template
+   * @param {string} responsibilities - Original responsibilities/achievements text
+   * @param {string} position - Job position/title (optional, for context)
+   * @param {string} company - Company name (optional, for context)
+   * @param {number} maxLength - Maximum approximate length in characters (for space optimization)
+   * @returns {Promise<Object>} Improved text as bullet points
+   */
+  improveResponsibilitiesCompact: async (responsibilities, position = '', company = '', maxLength = 500) => {
+    try {
+      const client = getGroqClient()
+      if (!client) {
+        throw new Error('Groq API key is not configured.')
+      }
+
+      if (!responsibilities || !responsibilities.trim()) {
+        return {
+          success: false,
+          error: 'Please provide responsibilities/achievements text to improve.',
+        }
+      }
+
+      const contextInfo = []
+      if (position) contextInfo.push(`Position: ${position}`)
+      if (company) contextInfo.push(`Company: ${company}`)
+
+      const prompt = `Improve and format the following job responsibilities and achievements text as compact, professional bullet points optimized for resume space.
+
+${contextInfo.length > 0 ? `Context:\n${contextInfo.join('\n')}\n\n` : ''}Original Text:
+${responsibilities}
+
+INSTRUCTIONS:
+1. Keep ALL key information and achievements from the original text - do NOT remove any important points
+2. Format as bullet points (use "- " or "• " prefix)
+3. Make it SHORT and COMPACT - optimize for resume space (target approximately ${maxLength} characters or less)
+4. Use strong action verbs (e.g., "Led", "Developed", "Implemented", "Optimized", "Managed")
+5. Quantify achievements with numbers, percentages, or metrics where possible
+6. Each bullet point should be concise (ideally 1 line, max 2 lines)
+7. Focus on impact and results rather than just duties
+8. Use industry-standard terminology and keywords
+9. Make it ATS-friendly (avoid special characters that might break parsing)
+10. Prioritize the most important achievements first
+11. If the text is too long, condense but keep all key points
+12. Do NOT add information that wasn't in the original text
+
+Return ONLY the improved text formatted as bullet points, no additional commentary or explanation.`
+
+      const completion = await client.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert resume writer. Format job responsibilities and achievements as compact, professional bullet points optimized for resume space. Keep all important points while making it concise.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
+        ],
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.7,
+        max_tokens: 800,
+      })
+
+      const improvedText = completion.choices[0]?.message?.content || ''
+      let cleanedText = improvedText.trim().replace(/^["']|["']$/g, '').trim()
+
+      // Ensure it's formatted as bullet points
+      // If it doesn't start with bullet points, add them
+      if (cleanedText && !cleanedText.match(/^[-•*]/)) {
+        // Split by lines and add bullet points
+        const lines = cleanedText.split('\n').filter(line => line.trim())
+        cleanedText = lines.map(line => {
+          const trimmed = line.trim()
+          if (trimmed.match(/^[-•*]/)) {
+            return trimmed
+          }
+          return `- ${trimmed}`
+        }).join('\n')
+      }
+
+      if (!cleanedText) {
+        return {
+          success: false,
+          error: 'Failed to generate improved text. Please try again.',
+        }
+      }
+
+      return {
+        success: true,
+        data: { improvedText: cleanedText },
+        improvedText: cleanedText, // For convenience
+      }
+    } catch (error) {
+      console.error('Error improving responsibilities wording:', error)
+      return {
+        success: false,
+        error: error.message || 'Failed to improve wording. Please try again.',
+      }
+    }
+  },
 }
 
 /**
@@ -539,9 +928,6 @@ CANDIDATE INFORMATION:
 Name: ${personalData.name || 'Not provided'}
 Email: ${personalData.email || 'Not provided'}
 Phone: ${personalData.phone || 'Not provided'}
-
-Professional Summary:
-${personalData.summary || 'No summary provided'}
 
 Work Experience:
 ${formatWorkExperience(personalData.workExperience)}
@@ -563,13 +949,15 @@ Job Description:
 ${jobData.jobDescription || 'No job description provided'}
 
 INSTRUCTIONS:
-1. Create an optimized professional summary (2-3 sentences) that highlights relevant experience for this specific job
+1. Create a concise professional summary (1-2 sentences, max 50 words) by analyzing the candidate's work experience and matching it to the job requirements. Highlight key expertise and relevant achievements using industry keywords.
 2. Rewrite each work experience entry to emphasize achievements and responsibilities that match the job requirements
-3. Use action verbs and quantify achievements where possible
-4. Highlight skills that are most relevant to the job
-5. Use keywords from the job description naturally
-6. Make the resume ATS-friendly and professional
-7. Ensure all dates and company names are preserved exactly as provided
+3. Format responsibilities as bullet points - each responsibility/achievement must start with "- " and be on a new line
+4. Use action verbs and quantify achievements where possible
+5. Highlight skills that are most relevant to the job
+6. Use keywords from the job description naturally
+7. Make the resume ATS-friendly and professional
+8. Ensure all dates and company names are preserved exactly as provided
+9. Keep responsibilities concise and impactful (3-6 bullet points per position)
 
 Return ONLY a valid JSON object with the structure specified in the system message.`
 }

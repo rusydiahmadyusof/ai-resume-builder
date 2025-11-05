@@ -4,9 +4,13 @@ import Button from '../ui/Button'
 
 const proficiencyLevels = ['Native', 'Fluent', 'Advanced', 'Intermediate', 'Basic']
 
-function LanguagesForm({ languages, onAdd, onUpdate, onRemove }) {
+function LanguagesForm({ languages = [], onAdd, onUpdate, onRemove }) {
   const handleAdd = () => {
-    onAdd()
+    if (typeof onAdd === 'function') {
+      onAdd()
+    } else {
+      console.error('onAdd is not a function:', onAdd)
+    }
   }
 
   const handleUpdate = (id, field, value) => {

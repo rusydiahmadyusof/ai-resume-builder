@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import Button from './Button'
-import Card from './Card'
 
 function PDFOptions({ onDownload, isGenerating }) {
   const [options, setOptions] = useState({
@@ -15,8 +14,7 @@ function PDFOptions({ onDownload, isGenerating }) {
   }
 
   return (
-    <Card title="PDF Download Options">
-      <div className="space-y-4">
+    <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Quality
@@ -75,7 +73,6 @@ function PDFOptions({ onDownload, isGenerating }) {
           💡 Tip: High quality produces the best results but may take longer to generate.
         </div>
       </div>
-    </Card>
   )
 }
 

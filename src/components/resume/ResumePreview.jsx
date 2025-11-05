@@ -54,12 +54,12 @@ function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedConte
   // Use generated content if available, otherwise use original data
   const displayData = {
     personalInfo: resumeData.personalInfo,
+    summary: generatedContent?.summary || '',
     workExperience: generatedContent?.workExperience || resumeData.workExperience,
     education: resumeData.education,
     skills: generatedContent?.skills || resumeData.skills,
     certifications: resumeData.certifications,
     languages: resumeData.languages,
-    summary: generatedContent?.summary || resumeData.personalInfo.summary,
   }
 
   const templateClass = `resume-${selectedTemplate}`
@@ -73,7 +73,7 @@ function ResumePreview({ resumeData, selectedTemplate = 'modern', generatedConte
         <>
           <div className="resume-sidebar-content">
             {displayData.summary && (
-              <ResumeSection title="Summary">
+              <ResumeSection title="Professional Summary">
                 <div className="summary">{displayData.summary}</div>
               </ResumeSection>
             )}

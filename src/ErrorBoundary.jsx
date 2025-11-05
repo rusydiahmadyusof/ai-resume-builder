@@ -91,15 +91,15 @@ class ErrorBoundary extends React.Component {
               </p>
             </div>
 
-            {/* Error Details (Development Only) */}
-            {isDevelopment && error && (
+            {/* Error Details (Show in production too, but simpler) */}
+            {error && (
               <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
                 <h3 className="text-sm font-semibold text-red-900 dark:text-red-300 mb-2">Error Details:</h3>
                 <pre className="text-xs text-red-800 dark:text-red-300 overflow-auto max-h-48">
                   {error.toString()}
-                  {error.stack && `\n\n${error.stack}`}
+                  {isDevelopment && error.stack && `\n\n${error.stack}`}
                 </pre>
-                {errorInfo && (
+                {isDevelopment && errorInfo && (
                   <details className="mt-2">
                     <summary className="text-xs text-red-700 dark:text-red-400 cursor-pointer hover:text-red-900 dark:hover:text-red-300">
                       Component Stack

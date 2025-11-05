@@ -5,14 +5,10 @@ import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
 import Button from '../ui/Button'
 import Toast from '../ui/Toast'
-import { pdfParserService } from '../../services/pdfParserService'
-import { groqService } from '../../services/groqService'
-import { validateEmail, validatePhone, validateURL, validateName, validateSummary } from '../../utils/validation'
+import { validateEmail, validatePhone, validateURL, validateName } from '../../utils/validation'
 
-function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
+function PersonalInfoForm({ data, onUpdate }) {
   const [photoPreview, setPhotoPreview] = useState(data?.photo || '')
-  const [isParsingPDF, setIsParsingPDF] = useState(false)
-  const [pdfError, setPdfError] = useState(null)
   const [toast, setToast] = useState(null)
 
   useEffect(() => {
@@ -68,109 +64,6 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
     setValue('photo', '')
   }
 
-  const handlePDFUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    // Validate PDF
-    const validation = pdfParserService.validatePDF(file)
-    if (!validation.valid) {
-      setPdfError(validation.error)
-      return
-    }
-
-    setIsParsingPDF(true)
-    setPdfError(null)
-
-    try {
-      // Extract text from PDF
-      const pdfText = await pdfParserService.extractTextFromPDF(file)
-      
-      if (!pdfText || pdfText.trim().length === 0) {
-        setPdfError('No text could be extracted from the PDF. The PDF might be image-based or corrupted.')
-        return
-      }
-      
-      console.log('Extracted PDF text length:', pdfText.length)
-      
-      // Use AI to extract personal information
-      const result = await groqService.extractPersonalInfoFromPDF(pdfText)
-      
-      console.log('AI extraction result:', result)
-
-      if (result.success && result.data) {
-        // Pre-fill form with extracted data
-        const extractedData = result.data
-        const currentValues = watch()
-        
-        console.log('Current form values:', currentValues)
-        console.log('Extracted data:', extractedData)
-        
-        // Build updated form data - merge extracted data with current values
-        // Prefer extracted data if it exists, otherwise keep current values
-        const updatedData = {
-          ...currentValues,
-          name: (extractedData.name && extractedData.name.trim()) ? extractedData.name : (currentValues.name || ''),
-          email: (extractedData.email && extractedData.email.trim()) ? extractedData.email : (currentValues.email || ''),
-          phone: (extractedData.phone && extractedData.phone.trim()) ? extractedData.phone : (currentValues.phone || ''),
-          address: (extractedData.address && extractedData.address.trim()) ? extractedData.address : (currentValues.address || ''),
-          linkedin: (extractedData.linkedin && extractedData.linkedin.trim()) ? extractedData.linkedin : (currentValues.linkedin || ''),
-          github: (extractedData.github && extractedData.github.trim()) ? extractedData.github : (currentValues.github || ''),
-          portfolio: (extractedData.portfolio && extractedData.portfolio.trim()) ? extractedData.portfolio : (currentValues.portfolio || ''),
-          summary: (extractedData.summary && extractedData.summary.trim()) ? extractedData.summary : (currentValues.summary || ''),
-          // Preserve photo if it exists
-          photo: currentValues.photo || '',
-        }
-        
-        console.log('Updated data to set:', updatedData)
-        
-        // Use reset() to update all form values at once - this triggers re-render
-        reset(updatedData, { 
-          keepDefaultValues: false,
-          keepDirty: false,
-          keepErrors: false,
-        })
-        
-        // Also trigger form update to save to localStorage
-        onUpdate(updatedData)
-
-        // If work experience was extracted, notify parent component
-        if (extractedData.workExperience && extractedData.workExperience.length > 0 && onWorkExperienceExtracted) {
-          console.log('Extracted work experience:', extractedData.workExperience)
-          onWorkExperienceExtracted(extractedData.workExperience)
-        }
-
-        // Show success message with details
-        const extractedFields = Object.entries(extractedData)
-          .filter(([key, value]) => {
-            // Exclude workExperience array and only check string fields
-            if (key === 'workExperience' || Array.isArray(value) || typeof value !== 'string') {
-              return false
-            }
-            return value && value.trim().length > 0
-          })
-          .map(([key]) => key)
-          .join(', ')
-        
-        setToast({ 
-          message: extractedFields 
-            ? `Extracted information: ${extractedFields}. Please review and update the fields.`
-            : 'Personal information extracted successfully! Please review and update the fields.', 
-          type: 'success' 
-        })
-      } else {
-        setPdfError(result.error || 'Failed to extract information from PDF')
-      }
-    } catch (error) {
-      console.error('Error parsing PDF:', error)
-      setPdfError(error.message || 'Failed to process PDF')
-    } finally {
-      setIsParsingPDF(false)
-      // Reset file input
-      e.target.value = ''
-    }
-  }
-
   const onSubmit = (formData) => {
     onUpdate(formData)
   }
@@ -178,40 +71,6 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
   return (
     <Card title="Personal Information">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* PDF Upload Section */}
-        <div className="space-y-2 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-          <label htmlFor="pdf-upload" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-            Upload Existing Resume (PDF) - Optional
-          </label>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">
-            Upload your existing resume PDF to automatically extract and fill in your personal information.
-          </p>
-          <div className="flex items-center gap-2">
-            <input
-              id="pdf-upload"
-              type="file"
-              accept="application/pdf"
-              onChange={handlePDFUpload}
-              disabled={isParsingPDF}
-              aria-label="Upload resume PDF"
-              aria-describedby="pdf-upload-help"
-              className="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:hover:file:bg-blue-200 file:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            />
-            <span id="pdf-upload-help" className="sr-only">Upload a PDF file to extract personal information</span>
-          </div>
-          {isParsingPDF && (
-            <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400" role="status" aria-live="polite">
-              <span className="animate-spin" aria-hidden="true">⏳</span>
-              <span>Extracting information from PDF...</span>
-            </div>
-          )}
-          {pdfError && (
-            <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-2 rounded" role="alert">
-              {pdfError}
-            </div>
-          )}
-        </div>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             label="Full Name *"
@@ -306,23 +165,77 @@ function PersonalInfoForm({ data, onUpdate, onWorkExperienceExtracted }) {
           />
         </div>
 
-        <Textarea
-          label="Professional Summary"
-          rows={4}
-          placeholder="Brief summary of your professional background and key achievements..."
-          {...register('summary', {
-            validate: (value) => {
-              if (!value) return true
-              const result = validateSummary(value)
-              return result.valid || result.error
-            },
-            maxLength: {
-              value: 500,
-              message: 'Summary must not exceed 500 characters',
-            },
-          })}
-          error={errors.summary?.message}
-        />
+        {/* Social Media Section */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Social Media (Optional)</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Input
+              label="Twitter/X"
+              type="url"
+              placeholder="https://twitter.com/username or https://x.com/username"
+              {...register('twitter', {
+                validate: (value) => {
+                  if (!value) return true
+                  const result = validateURL(value, 'Twitter/X URL')
+                  return result.valid || result.error
+                },
+              })}
+              error={errors.twitter?.message}
+            />
+            <Input
+              label="Instagram"
+              type="url"
+              placeholder="https://instagram.com/username"
+              {...register('instagram', {
+                validate: (value) => {
+                  if (!value) return true
+                  const result = validateURL(value, 'Instagram URL')
+                  return result.valid || result.error
+                },
+              })}
+              error={errors.instagram?.message}
+            />
+            <Input
+              label="Facebook"
+              type="url"
+              placeholder="https://facebook.com/username"
+              {...register('facebook', {
+                validate: (value) => {
+                  if (!value) return true
+                  const result = validateURL(value, 'Facebook URL')
+                  return result.valid || result.error
+                },
+              })}
+              error={errors.facebook?.message}
+            />
+            <Input
+              label="YouTube"
+              type="url"
+              placeholder="https://youtube.com/@channel or https://youtube.com/c/channel"
+              {...register('youtube', {
+                validate: (value) => {
+                  if (!value) return true
+                  const result = validateURL(value, 'YouTube URL')
+                  return result.valid || result.error
+                },
+              })}
+              error={errors.youtube?.message}
+            />
+            <Input
+              label="Website/Blog"
+              type="url"
+              placeholder="https://yourwebsite.com"
+              {...register('website', {
+                validate: (value) => {
+                  if (!value) return true
+                  const result = validateURL(value, 'Website URL')
+                  return result.valid || result.error
+                },
+              })}
+              error={errors.website?.message}
+            />
+          </div>
+        </div>
 
         {/* Photo Upload Section */}
         <div className="space-y-2">
