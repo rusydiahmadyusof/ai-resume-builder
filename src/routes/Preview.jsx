@@ -280,7 +280,10 @@ function Preview() {
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <Button 
                 variant="secondary" 
-                onClick={() => navigate('/builder')}
+                onClick={() => {
+                  // Navigate to builder, which will restore last step from localStorage
+                  navigate('/builder')
+                }}
                 className="w-full sm:w-auto"
               >
                 ← Edit Resume

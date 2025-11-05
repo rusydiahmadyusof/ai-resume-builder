@@ -31,8 +31,13 @@ const steps = [
 
 function Builder() {
   const navigate = useNavigate()
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(() => {
+    // Load last step from localStorage
+    const savedStep = localStorage.getItem('lastBuilderStep')
+    return savedStep ? parseInt(savedStep, 10) : 1
+  })
   const [toast, setToast] = useState(null)
+  const [isNavigating, setIsNavigating] = useState(false)
   const {
     resumeData,
     isLoaded,
@@ -69,6 +74,11 @@ function Builder() {
     }
   }, [storageError])
 
+  // Save step to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('lastBuilderStep', currentStep.toString())
+  }, [currentStep])
+
   if (!isLoaded) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
@@ -82,39 +92,59 @@ function Builder() {
 
   const handleNext = () => {
     if (currentStep < steps.length) {
-      setCurrentStep(currentStep + 1)
+      const nextStep = currentStep + 1
+      setCurrentStep(nextStep)
+      localStorage.setItem('lastBuilderStep', nextStep.toString())
     }
   }
 
   const handlePrevious = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
+      const prevStep = currentStep - 1
+      setCurrentStep(prevStep)
+      localStorage.setItem('lastBuilderStep', prevStep.toString())
     }
   }
 
   const handleStepClick = (stepNumber) => {
     setCurrentStep(stepNumber)
+    // Save current step to localStorage
+    localStorage.setItem('lastBuilderStep', stepNumber.toString())
   }
 
-  const handleGenerateResume = () => {
+  const handleGenerateResume = async () => {
     // Basic validation
     if (!resumeData.personalInfo.name) {
       setToast({ message: 'Please fill in your name first', type: 'error' })
       setCurrentStep(1)
+      localStorage.setItem('lastBuilderStep', '1')
       return
     }
     if (resumeData.workExperience.length === 0 || !resumeData.workExperience[0].company) {
       setToast({ message: 'Please add at least one work experience', type: 'error' })
       setCurrentStep(2)
+      localStorage.setItem('lastBuilderStep', '2')
       return
     }
-    if (!resumeData.jobApplication.jobTitle || !resumeData.jobApplication.jobDescription) {
-      setToast({ message: 'Please fill in job application details', type: 'error' })
+    if (!resumeData.jobApplication?.jobTitle?.trim() || !resumeData.jobApplication?.jobDescription?.trim()) {
+      setToast({ 
+        message: 'Please fill in job application details. Both Job Title and Job Description are required.', 
+        type: 'error',
+        duration: 5000
+      })
       setCurrentStep(7)
+      localStorage.setItem('lastBuilderStep', '7')
       return
     }
-    // Navigate to preview page
-    navigate('/preview')
+    
+    // Show loading state and navigate to preview
+    setIsNavigating(true)
+    setToast({ message: 'Generating your resume...', type: 'success', duration: 2000 })
+    
+    // Small delay for smooth transition
+    setTimeout(() => {
+      navigate('/preview')
+    }, 500)
   }
 
   const renderStepContent = () => {
@@ -328,6 +358,7 @@ function Builder() {
             <Button 
               onClick={handleNext}
               className="w-full sm:w-auto order-1 sm:order-2"
+              disabled={isNavigating}
             >
               Next
             </Button>
@@ -336,8 +367,9 @@ function Builder() {
               onClick={handleGenerateResume} 
               variant="primary"
               className="w-full sm:w-auto order-1 sm:order-2"
+              disabled={isNavigating}
             >
-              Generate Resume
+              {isNavigating ? 'Generating...' : 'Generate Resume'}
             </Button>
           )}
         </div>
