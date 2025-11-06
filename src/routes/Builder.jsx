@@ -143,14 +143,20 @@ function Builder() {
   }
 
   const handleGenerateResume = async () => {
-    // Basic validation
-    if (!resumeData.personalInfo.name) {
+    // Basic validation - check trimmed values to handle whitespace-only strings
+    if (!resumeData.personalInfo?.name?.trim()) {
       setToast({ message: 'Please fill in your name first', type: 'error' })
       setCurrentStep(1)
       localStorage.setItem('lastBuilderStep', '1')
       return
     }
-    if (resumeData.workExperience.length === 0 || !resumeData.workExperience[0].company) {
+    if (!resumeData.personalInfo?.email?.trim()) {
+      setToast({ message: 'Please fill in your email first', type: 'error' })
+      setCurrentStep(1)
+      localStorage.setItem('lastBuilderStep', '1')
+      return
+    }
+    if (resumeData.workExperience.length === 0 || !resumeData.workExperience[0]?.company?.trim()) {
       setToast({ message: 'Please add at least one work experience', type: 'error' })
       setCurrentStep(2)
       localStorage.setItem('lastBuilderStep', '2')
