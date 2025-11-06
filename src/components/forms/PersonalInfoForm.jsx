@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Input from '../ui/Input'
 import Textarea from '../ui/Textarea'
 import Card from '../ui/Card'
@@ -25,14 +25,43 @@ function PersonalInfoForm({ data, onUpdate }) {
     watch,
   } = useForm({
     defaultValues: data,
+    mode: 'onChange', // Enable validation on change
   })
 
-  // Update form when data prop changes
+  // Watch all form values for auto-save
+  const formValues = watch()
+
+
+  // Auto-save form data on change (debounced)
+  // Use a ref to track if we're currently updating from props to avoid loops
+  const isUpdatingFromProps = useRef(false)
+  
   useEffect(() => {
     if (data) {
+      isUpdatingFromProps.current = true
       reset(data)
+      // Reset the flag after a short delay
+      setTimeout(() => {
+        isUpdatingFromProps.current = false
+      }, 100)
     }
   }, [data, reset])
+
+  useEffect(() => {
+    // Skip auto-save if we're updating from props
+    if (isUpdatingFromProps.current || !formValues || Object.keys(formValues).length === 0) return
+
+    const timer = setTimeout(() => {
+      // Only save if there's actual data (not just empty fields)
+      const hasData = formValues.name?.trim() || formValues.email?.trim() || formValues.phone?.trim()
+      if (hasData) {
+        onUpdate(formValues)
+      }
+    }, 500) // Debounce for 500ms
+
+    return () => clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formValues])
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0]
